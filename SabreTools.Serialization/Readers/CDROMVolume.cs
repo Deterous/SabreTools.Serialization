@@ -27,8 +27,8 @@ namespace SabreTools.Serialization.Readers
             if (SectorSize * (Constants.SystemAreaSectors + 2) > data.Length - data.Position)
                 return null;
 
-            // try
-            // {
+            try
+            {
                 // Create a new Volume to fill
                 var volume = new Volume();
 
@@ -44,12 +44,12 @@ namespace SabreTools.Serialization.Readers
                 volume.DirectoryDescriptors = [];
 
                 return volume;
-            // }
-            // catch
-            // {
-            //     // Ignore the actual error
-            //     return null;
-            // }
+            }
+            catch
+            {
+                // Ignore the actual error
+                return null;
+            }
         }
 
         /// <summary>
@@ -155,15 +155,11 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         private static void SkipSectorTrailer(Stream data, SectorMode mode)
         {
-            if (mode == SectorMode.MODE1)
+            if (mode == SectorMode.MODE1 || mode == SectorMode.MODE0 || mode == SectorMode.UNKNOWN)
             {
                 _ = data.ReadBytes(288);
             }
-            else if (mode == SectorMode.MODE2_FORM1)
-            {
-                _ = data.ReadBytes(280);
-            }
-            else if (mode == SectorMode.MODE2_FORM2)
+            else if (mode == SectorMode.MODE2 || mode == SectorMode.MODE2_FORM1 || mode == SectorMode.MODE2_FORM2)
             {
                 // TODO: Better deal with Form 2
                 _ = data.ReadBytes(280);
