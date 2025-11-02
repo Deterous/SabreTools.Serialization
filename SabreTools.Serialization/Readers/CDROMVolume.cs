@@ -37,8 +37,8 @@ namespace SabreTools.Serialization.Readers
 
                 // Read the set of Volume Descriptors
                 var vdSet = ParseCDROMVolumeDescriptorSet(data);
-                // if (vdSet == null || vdSet.Length == 0)
-                //     return null;
+                if (vdSet == null || vdSet.Length == 0)
+                    return null;
                 
                 volume.PathTableGroups = [];
                 volume.DirectoryDescriptors = [];
@@ -63,6 +63,9 @@ namespace SabreTools.Serialization.Readers
             // Process in sectors
             for (int i = 0; i < Constants.SystemAreaSectors; i++)
             {
+                // Ignore sector header
+                var mode = SkipSectorHeader(data);
+
                 // Read user data
                 var userData = data.ReadBytes(Constants.MinimumSectorSize);
 
@@ -70,7 +73,7 @@ namespace SabreTools.Serialization.Readers
                 Buffer.BlockCopy(userData, 0, systemArea, i * Constants.MinimumSectorSize, Constants.MinimumSectorSize);
 
                 // Ignore sector trailer
-                _ = data.ReadBytes(288);
+                SkipSectorTrailer(data, mode);
             }
 
             return systemArea;
