@@ -4,7 +4,7 @@ using SabreTools.Data.Extensions;
 
 namespace SabreTools.Serialization.Wrappers
 {
-    public partial class Skeleton : IPrintable
+    public partial class CDROM : IPrintable
     {
         /// <inheritdoc/>
         public new void PrintInformation(StringBuilder builder)
@@ -22,11 +22,6 @@ namespace SabreTools.Serialization.Wrappers
             builder.AppendLine();
 
             Print(builder, Model.VolumeDescriptorSet);
-
-            // TODO: Parse the volume descriptors to print the Path Table Groups and Directory Descriptors with proper encoding
-            Encoding encoding = Encoding.UTF8;
-            Print(builder, Model.PathTableGroups, encoding);
-            Print(builder, Model.DirectoryDescriptors, encoding);
         }
     }
 }
