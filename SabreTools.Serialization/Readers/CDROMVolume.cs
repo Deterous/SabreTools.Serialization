@@ -72,6 +72,8 @@ namespace SabreTools.Serialization.Readers
                 // Ignore sector trailer
                 _ = data.ReadBytes(288);
             }
+
+            return systemArea;
         }
 
         /// <summary>
@@ -79,7 +81,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled byte[] on success, null on error</returns>
-        public static byte[]? ParseCDROMVolumeDescriptorSet(Stream data)
+        public static VolumeDescriptor[]? ParseCDROMVolumeDescriptorSet(Stream data)
         {
             var obj = new List<VolumeDescriptor>();
 
@@ -142,7 +144,7 @@ namespace SabreTools.Serialization.Readers
                     return SectorMode.MODE2_FORM1;
             }
             else
-                return SectoMode.UNKNOWN;
+                return SectorMode.UNKNOWN;
         }
 
         /// <summary>
@@ -150,7 +152,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         private static void SkipSectorTrailer(Stream data, SectorMode mode)
         {
-            if (mode == SectoMode.MODE1)
+            if (mode == SectorMode.MODE1)
             {
                 _ = data.ReadBytes(288);
             }
