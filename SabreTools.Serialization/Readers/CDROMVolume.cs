@@ -59,11 +59,10 @@ namespace SabreTools.Serialization.Readers
         /// <returns>Filled byte[] on success, null on error</returns>
         public static byte[]? ParseCDROMSystemArea(Stream data)
         {
-            var systemArea = new byte[Constants.SystemAreaSectors * Constants.MinimumSectorSize]
+            var systemArea = new byte[Constants.SystemAreaSectors * Constants.MinimumSectorSize];
             // Process in sectors
             for (int i = 0; i < Constants.SystemAreaSectors; i++)
             {
-
                 // Read user data
                 var userData = data.ReadBytes(Constants.MinimumSectorSize);
 
@@ -71,7 +70,7 @@ namespace SabreTools.Serialization.Readers
                 Buffer.BlockCopy(userData, 0, systemArea, i * Constants.MinimumSectorSize, Constants.MinimumSectorSize);
 
                 // Ignore sector trailer
-                _ data.ReadBytes(288);
+                _ = data.ReadBytes(288);
             }
         }
 

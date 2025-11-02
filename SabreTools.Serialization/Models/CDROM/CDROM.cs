@@ -13,7 +13,5 @@ namespace SabreTools.Data.Models.CDROM
         /// CD-ROM data tracks
         /// </summary>
         public DataTrack[] Tracks { get; set; } = [];
-
-        #endregion
     }
 }

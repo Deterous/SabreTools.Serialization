@@ -21,8 +21,6 @@ namespace SabreTools.Data.Models.CDROM
         /// <summary>
         /// CD-ROM mode
         /// </summary>
-        public byte Mode { get; set; };
-
-        #endregion
+        public byte Mode { get; set; }
     }
 }

@@ -23,7 +23,5 @@ namespace SabreTools.Data.Models.CDROM
         /// Error Detection Code, 4 bytes
         /// </summary>
         public byte[] EDC { get; set; } = new byte[4];
-
-        #endregion
     }
 }
