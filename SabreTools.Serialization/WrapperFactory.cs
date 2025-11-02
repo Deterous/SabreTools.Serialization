@@ -206,7 +206,7 @@ namespace SabreTools.Serialization
             #region CDROM
 
             if (magic.StartsWith([0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]) && 
-                (extension.Equals("bin", StringComparison.OrdinalIgnoreCase ||
+                (extension.Equals("bin", StringComparison.OrdinalIgnoreCase) ||
                  extension.Equals("skeleton", StringComparison.OrdinalIgnoreCase))
                 return WrapperType.CDROM;
 
