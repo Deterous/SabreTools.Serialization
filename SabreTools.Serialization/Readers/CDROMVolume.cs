@@ -37,8 +37,8 @@ namespace SabreTools.Serialization.Readers
 
                 // Read the set of Volume Descriptors
                 var vdSet = ParseCDROMVolumeDescriptorSet(data);
-                if (vdSet == null || vdSet.Length == 0)
-                    return null;
+                // if (vdSet == null || vdSet.Length == 0)
+                //     return null;
                 
                 volume.PathTableGroups = [];
                 volume.DirectoryDescriptors = [];
