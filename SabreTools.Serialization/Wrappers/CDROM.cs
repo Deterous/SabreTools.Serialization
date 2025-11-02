@@ -68,8 +68,8 @@ namespace SabreTools.Serialization.Wrappers
             if (data == null || !data.CanRead)
                 return null;
 
-            // try
-            // {
+            try
+            {
                 // Cache the current offset
                 long currentOffset = data.Position;
 
@@ -78,11 +78,11 @@ namespace SabreTools.Serialization.Wrappers
                     return null;
 
                 return new CDROM(model, data, currentOffset);
-            // }
-            // catch
-            // {
-            //     return null;
-            // }
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion

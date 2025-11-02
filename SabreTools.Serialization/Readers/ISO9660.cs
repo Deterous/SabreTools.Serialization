@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Extensions;
@@ -116,9 +115,7 @@ namespace SabreTools.Serialization.Readers
         /// <returns>Filled VolumeDescriptor on success, null on error</returns>
         public static VolumeDescriptor? ParseVolumeDescriptor(Stream data, short sectorLength)
         {
-            Console.WriteLine($"{data.PeekByteValue()} at {data.Position}");
             var type = (VolumeDescriptorType)data.ReadByteValue();
-            Console.WriteLine($"{Encoding.ASCII.GetString(data.PeekBytes(5))} at {data.Position}");
 
             return type switch
             {

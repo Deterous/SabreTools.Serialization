@@ -27,8 +27,8 @@ namespace SabreTools.Serialization.Readers
             if (SectorSize * (Constants.SystemAreaSectors + 2) > data.Length - data.Position)
                 return null;
 
-            // try
-            // {
+            try
+            {
                 // Create a new Volume to fill
                 var volume = new Volume();
 
@@ -37,19 +37,19 @@ namespace SabreTools.Serialization.Readers
 
                 // Read the set of Volume Descriptors
                 var vdSet = ParseCDROMVolumeDescriptorSet(data);
-                // if (vdSet == null || vdSet.Length == 0)
-                //     return null;
+                if (vdSet == null || vdSet.Length == 0)
+                    return null;
                 
                 volume.PathTableGroups = [];
                 volume.DirectoryDescriptors = [];
 
                 return volume;
-            // }
-            // catch
-            // {
-            //     // Ignore the actual error
-            //     return null;
-            // }
+            }
+            catch
+            {
+                // Ignore the actual error
+                return null;
+            }
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace SabreTools.Serialization.Readers
         private static SectorMode SkipSectorHeader(Stream data)
         {
             // Ignore sector header
-            _ = data.ReadBytes(16);
+            _ = data.ReadBytes(15);
 
             // Read sector mode
             byte mode = data.ReadByteValue();
