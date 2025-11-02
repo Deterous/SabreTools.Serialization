@@ -27,8 +27,8 @@ namespace SabreTools.Serialization.Readers
             if (SectorSize * (Constants.SystemAreaSectors + 2) > data.Length - data.Position)
                 return null;
 
-            try
-            {
+            // try
+            // {
                 // Create a new Volume to fill
                 var volume = new Volume();
 
@@ -44,12 +44,12 @@ namespace SabreTools.Serialization.Readers
                 volume.DirectoryDescriptors = [];
 
                 return volume;
-            }
-            catch
-            {
-                // Ignore the actual error
-                return null;
-            }
+            // }
+            // catch
+            // {
+            //     // Ignore the actual error
+            //     return null;
+            // }
         }
 
         /// <summary>
