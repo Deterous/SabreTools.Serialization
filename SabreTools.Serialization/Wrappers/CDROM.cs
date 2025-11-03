@@ -125,7 +125,8 @@ namespace SabreTools.Serialization.Wrappers
                 var model = new DataTrack();
                 // TODO: Set model.Sectors using CDROM Deserializer on CDROM sub-stream
                 ISO9660 iso = ISO9660.Create(userData);
-                model.Volume = iso.Model;
+                if (iso != null)
+                    model.Volume = iso.Model;
                 if (model == null)
                     return null;
 
@@ -140,4 +141,5 @@ namespace SabreTools.Serialization.Wrappers
         #endregion
     }
 }
+
 
