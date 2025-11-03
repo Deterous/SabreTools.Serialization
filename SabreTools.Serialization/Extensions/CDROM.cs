@@ -8,7 +8,10 @@ namespace SabreTools.Data.Extensions
 {
     public static class CDROM
     {
-        protected class ISO9660Stream : Stream
+        /// <summary>
+        /// Creates a stream that provides only the user data of a CDROM stream
+        /// </summary>
+        public class ISO9660Stream : Stream
         {
             private readonly Stream _baseStream;
             private const long _baseSectorSize = 2352;
@@ -240,4 +243,5 @@ namespace SabreTools.Data.Extensions
         }
     }
 }
+
 
