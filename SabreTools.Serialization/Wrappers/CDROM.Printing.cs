@@ -5,6 +5,11 @@ namespace SabreTools.Serialization.Wrappers
 {
     public partial class CDROM : IPrintable
     {
+#if NETCOREAPP
+        /// <inheritdoc/>
+        public string ExportJSON() => System.Text.Json.JsonSerializer.Serialize(Model, _jsonSerializerOptions);
+#endif
+
         /// <inheritdoc/>
         public void PrintInformation(StringBuilder builder)
         {
@@ -17,3 +22,4 @@ namespace SabreTools.Serialization.Wrappers
         }
     }
 }
+
