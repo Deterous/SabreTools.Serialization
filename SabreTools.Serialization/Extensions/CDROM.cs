@@ -23,8 +23,10 @@ namespace SabreTools.Data.Extensions
 
             public ISO9660Stream(Stream inputStream)
             {
-                if (inputStream == null || !inputStream.CanSeek || !_baseStream.CanRead)
-                    throw new ArgumentException("Stream must be readable and seekable: ", nameof(inputStream));
+                if (inputStream == null)
+                    throw new ArgumentNullException("Stream cannot be null.", nameof(inputStream));
+                else if (!inputStream.CanSeek || !_baseStream.CanRead)
+                    throw new ArgumentException("Stream must be readable and seekable.", nameof(inputStream));
                 _baseStream = inputStream;
             }
 
@@ -73,7 +75,7 @@ namespace SabreTools.Data.Extensions
                     long isoPosition = (_position / _baseSectorSize) * _isoSectorSize;
 
                     // Get the user data location based on the current sector mode
-                    SetUserDataLocation();
+                    SetSectorMode(_position);
 
                     // Add the within-sector position
                     long remainder = _position % _baseSectorSize;
@@ -151,10 +153,9 @@ namespace SabreTools.Data.Extensions
                     int bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
 
                     // Update state for base stream
+                    _position = baseStream.Position;
                     if (readEntireSector)
-                        _position += bytesRead + (_baseSectorSize - _userDataEnd) + _userDataStart;
-                    else
-                        _position += bytesRead;
+                        _position += (_baseSectorSize - _userDataEnd) + _userDataStart;
 
                     // Update state for ISO stream
                     totalRead += bytesRead;
@@ -206,7 +207,7 @@ namespace SabreTools.Data.Extensions
 
             private void SetSectorMode(long sectorLocation)
             {
-                long modePosition = sectorLocation + 15;
+                long modePosition = (sectorLocation - sectorLocation % _baseSectorSize) + 15;
                 _baseStream.Seek(modePosition, SeekOrigin.Begin);
                 byte modeByte = _baseStream.ReadByteValue();
                 if (modeByte == 0)
@@ -225,12 +226,7 @@ namespace SabreTools.Data.Extensions
                 else
                     _currentMode = SectorMode.UNKNOWN;
 
-                SetUserDataLocation();
-                return;
-            }
-
-            private void SetUserDataLocation()
-            {
+                // Set the user data location variables
                 switch (_currentMode)
                 {
                     case SectorMode.MODE1:
@@ -259,6 +255,8 @@ namespace SabreTools.Data.Extensions
                         _userDataEnd = 2064;
                         return;
                 }
+
+                return;
             }
         }
     }
