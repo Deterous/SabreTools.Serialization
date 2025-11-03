@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using SabreTools.Data.Models.CDROM;
+using SabreTools.IO;
+using SabreTools.IO.Extensions;
 
 namespace SabreTools.Data.Extensions
 {
@@ -87,7 +89,7 @@ namespace SabreTools.Data.Extensions
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                long totalRead = 0;
+                int totalRead = 0;
                 long remaining = count;
 
                 while (remaining > 0 && _position < Length)
@@ -128,7 +130,7 @@ namespace SabreTools.Data.Extensions
                         break;
 
                     // Read from base CDROM stream
-                    long bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
+                    int bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
 
                     // Update state
                     _position += bytesRead;
