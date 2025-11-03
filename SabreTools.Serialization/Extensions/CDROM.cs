@@ -23,7 +23,7 @@ namespace SabreTools.Data.Extensions
 
             public ISO9660Stream(Stream inputStream)
             {
-                if (!inputStream.CanSeek || !_baseStream.CanRead)
+                if (inputStream == null || !inputStream.CanSeek || !_baseStream.CanRead)
                     throw new ArgumentException("Stream must be readable and seekable: ", nameof(inputStream));
                 _baseStream = inputStream;
             }
