@@ -123,7 +123,7 @@ namespace SabreTools.Data.Extensions
                     int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
 
                     // Don't overshoot end of stream
-                    bytesToRead = Math.Min(bytesToRead, Length - _position);
+                    bytesToRead = (int)Math.Min(bytesToRead, Length - _position);
 
                     // Finish reading if no more bytes to be read
                     if (bytesToRead <= 0)
@@ -240,3 +240,4 @@ namespace SabreTools.Data.Extensions
         }
     }
 }
+
