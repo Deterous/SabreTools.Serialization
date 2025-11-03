@@ -16,7 +16,7 @@ namespace SabreTools.Serialization.Wrappers
 
         #region Sub Wrappers
 
-        public WrapperBase<T>? FileSystem;
+        public WrapperBase? FileSystem;
 
         #endregion
 
