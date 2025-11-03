@@ -92,23 +92,33 @@ namespace SabreTools.Data.Extensions
 
             public override int Read(byte[] buffer, int offset, int count)
             {
+                bool readEntireSector = false;
                 int totalRead = 0;
                 int remaining = count;
 
                 while (remaining > 0 && _position < Length)
                 {
                     // Determine location of current sector
-                    long baseStreamOffset = _position / _baseSectorSize;
+                    long baseStreamOffset = (_position / _baseSectorSize) * _baseSectorSize;
 
                     // Set the current sector's mode and user data location
                     SetSectorMode(baseStreamOffset);
 
-                    // Add the within-sector position
+                    // Deal with case where base position is not in ISO stream
                     long remainder = _position % _baseSectorSize;
+                    long sectorOffset = remainder - _userDataStart;
                     if (remainder < _userDataStart)
+                    {
                         baseStreamOffset += _userDataStart;
+                        sectorOffset = 0;
+                        _position += _userDataStart;
+                    }
                     else if (remainder >= _userDataEnd)
+                    {
                         baseStreamOffset += _baseSectorSize;
+                        sectorOffset = 0;
+                        _position += _baseSectorSize - _userDataEnd + _userDataStart;
+                    }
                     else
                         baseStreamOffset += remainder;
 
@@ -119,24 +129,33 @@ namespace SabreTools.Data.Extensions
                     }
 
                     // Seek to target position in base CDROM stream
-                    _baseStream.Seek(baseStreamOffset, SeekOrigin.Begin);
+                    _baseStream.SeekIfPossible(baseStreamOffset, SeekOrigin.Begin);
 
                     // Read the remaining bytes, up to max of one ISO sector (2048 bytes)
-                    long withinSectorLocation = baseStreamOffset % _baseSectorSize;
-                    int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
+                    int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - sectorOffset);
 
                     // Don't overshoot end of stream
                     bytesToRead = (int)Math.Min(bytesToRead, Length - _position);
+
+                    if (bytesToRead == (_isoSectorSize - sectorOffset))
+                        readEntireSector = true;
+                    else
+                        readEntireSector = false;
 
                     // Finish reading if no more bytes to be read
                     if (bytesToRead <= 0)
                         break;
 
-                    // Read from base CDROM stream
+                    // Read up to 2048 bytes from base CDROM stream
                     int bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
 
-                    // Update state
-                    _position += bytesRead;
+                    // Update state for base stream
+                    if (readEntireSector)
+                        _position += bytesRead + (_baseSectorSize - _userDataEnd) + _userDataStart;
+                    else
+                        _position += bytesRead;
+
+                    // Update state for ISO stream
                     totalRead += bytesRead;
                     remaining -= bytesRead;
 
@@ -243,5 +262,3 @@ namespace SabreTools.Data.Extensions
         }
     }
 }
-
-
