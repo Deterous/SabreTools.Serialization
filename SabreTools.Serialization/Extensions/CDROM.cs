@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using SabreTools.Data.Models.CDROM;
 
 namespace SabreTools.Data.Extensions
 {
@@ -12,6 +13,9 @@ namespace SabreTools.Data.Extensions
             private const long _isoSectorSize = 2048;
             private long _position = 0;
             private SectorMode _currentMode = SectorMode.UNKNOWN;
+            private long _userDataStart = 16;
+            private long _userDataEnd = 2064;
+
 
             public ISO9660Stream(Stream inputStream)
             {
@@ -63,14 +67,14 @@ namespace SabreTools.Data.Extensions
                     long isoPosition = (_position / _baseSectorSize) * _isoSectorSize;
 
                     // Get the user data location based on the current sector mode
-                    var userData = GetUserDataLocation();
+                    SetUserDataLocation();
 
                     // Add the within-sector position
                     long remainder = _position % _baseSectorSize;
-                    if (remainder > userData.End)
+                    if (remainder > _userDataEnd)
                         isoPosition += _isoSectorSize;
-                    else if (remainder > userData.Start)
-                        isoPosition += remainder - userData.Start;
+                    else if (remainder > _userDataStart)
+                        isoPosition += remainder - _userDataStart;
 
                     return isoPosition;
                 }
@@ -91,17 +95,14 @@ namespace SabreTools.Data.Extensions
                     // Determine location of current sector
                     long baseStreamOffset = _position / _baseSectorSize;
 
-                    // Set the current sector's mode
+                    // Set the current sector's mode and user data location
                     SetSectorMode(baseStreamOffset);
-
-                    // Get the user data position based on the mode
-                    var userData = GetUserDataLocation();
 
                     // Add the within-sector position
                     long remainder = _position % _baseSectorSize;
-                    if (remainder < userData.Start)
-                        baseStreamOffset += userData.Start;
-                    else if (remainder >= userData.End)
+                    if (remainder < _userDataStart)
+                        baseStreamOffset += _userDataStart;
+                    else if (remainder >= _userDataEnd)
                         baseStreamOffset += _baseSectorSize;
                     else
                         baseStreamOffset += remainder;
@@ -117,7 +118,7 @@ namespace SabreTools.Data.Extensions
 
                     // Read the remaining bytes, up to max of one ISO sector (2048 bytes)
                     int withinSectorLocation = baseStreamOffset % _baseSectorSize;
-                    int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - (withinSectorLocation - userData.Start));
+                    int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
 
                     // Don't overshoot end of stream
                     bytesToRead = (int)Math.Min(bytesToRead, Length - _position);
@@ -163,14 +164,11 @@ namespace SabreTools.Data.Extensions
                 // Get the number of ISO sectors before current position
                 long newPosition = (targetPosition / _isoSectorSize) * _baseSectorSize;
 
-                // Set the current sector's mode
+                // Set the current sector's mode and user data location
                 SetSectorMode(newPosition);
 
-                // Get the user data position based on the mode
-                var userData = GetUserDataLocation();
-
                 // Add the within-sector position
-                newPosition += userData.Start + (targetPosition % _isoSectorSize);
+                newPosition += _userDataStart + (targetPosition % _isoSectorSize);
 
                 if (newPosition < 0 || newPosition > _baseStream.Length)
                 {
@@ -201,27 +199,40 @@ namespace SabreTools.Data.Extensions
                 }
                 else
                     _currentMode = SectorMode.UNKNOWN;
+
+                SetUserDataLocation();
+                return;
             }
 
-            private static (int Start, int End) GetUserDataLocation()
+            private void SetUserDataLocation()
             {
                 switch (_currentMode)
                 {
                     case SectorMode.MODE1:
-                        return (16, 2064);
+                        _userDataStart = 16;
+                        _userDataEnd = 2064;
+                        return;
 
                     case SectorMode.MODE2_FORM1:
-                        return (24, 2072);
+                        _userDataStart = 24;
+                        _userDataEnd = 2072;
+                        return;
 
                     case SectorMode.MODE2_FORM2:
-                        return (24, 2348);
+                        _userDataStart = 24;
+                        _userDataEnd = 2348;
+                        return;
 
                     case SectorMode.MODE0:
                     case SectorMode.MODE2:
-                        return (16, 2352);
+                        _userDataStart = 16;
+                        _userDataEnd = 2352;
+                        return;
 
                     case SectorMode.UNKNOWN:
-                        return (16, 2064);
+                        _userDataStart = 16;
+                        _userDataEnd = 2064;
+                        return;
                 }
             }
         }

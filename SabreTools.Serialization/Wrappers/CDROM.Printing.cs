@@ -6,7 +6,7 @@ namespace SabreTools.Serialization.Wrappers
     public partial class CDROM : IPrintable
     {
         /// <inheritdoc/>
-        public new void PrintInformation(StringBuilder builder)
+        public void PrintInformation(StringBuilder builder)
         {
             builder.AppendLine("CD-ROM Data Track Information:");
             builder.AppendLine("-------------------------");
