@@ -90,7 +90,7 @@ namespace SabreTools.Data.Extensions
             public override int Read(byte[] buffer, int offset, int count)
             {
                 int totalRead = 0;
-                long remaining = count;
+                int remaining = count;
 
                 while (remaining > 0 && _position < Length)
                 {
@@ -120,7 +120,7 @@ namespace SabreTools.Data.Extensions
 
                     // Read the remaining bytes, up to max of one ISO sector (2048 bytes)
                     long withinSectorLocation = baseStreamOffset % _baseSectorSize;
-                    long bytesToRead = Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
+                    int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
 
                     // Don't overshoot end of stream
                     bytesToRead = Math.Min(bytesToRead, Length - _position);

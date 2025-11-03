@@ -5,8 +5,12 @@ namespace SabreTools.Serialization.Wrappers
         /// <inheritdoc/>
         public virtual bool Extract(string outputDirectory, bool includeDebug)
         {
-            if (iso != null)
-                iso.Extract(outputDirectory, includeDebug);
+            bool success = true;
+
+            if (FileSystem != null)
+                success &= FileSystem.Extract(outputDirectory, includeDebug);
+
+            return success;
         }
     }
 }

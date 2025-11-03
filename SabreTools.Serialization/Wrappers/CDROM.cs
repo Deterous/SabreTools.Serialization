@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.CDROM;
 using SabreTools.Data.Models.ISO9660;
 
@@ -17,8 +16,7 @@ namespace SabreTools.Serialization.Wrappers
 
         #region Sub Wrappers
 
-        /// <inheritdoc cref="ISO9660"/>
-        public ISO9660? iso;
+        public WrapperBase<T>? FileSystem;
 
         #endregion
 
@@ -44,22 +42,40 @@ namespace SabreTools.Serialization.Wrappers
         #region Constructors
 
         /// <inheritdoc/>
-        public CDROM(Volume model, byte[] data) : base(model, data) { }
+        public CDROM(DataTrack model, byte[] data, ISO9660 iso9660) : base(model, data)
+        {
+            FileSystem = iso9660;
+        }
 
         /// <inheritdoc/>
-        public CDROM(Volume model, byte[] data, int offset) : base(model, data, offset) { }
+        public CDROM(DataTrack model, byte[] data, int offset, ISO9660 iso9660) : base(model, data, offset)
+        {
+            FileSystem = iso9660;
+        }
 
         /// <inheritdoc/>
-        public CDROM(Volume model, byte[] data, int offset, int length) : base(model, data, offset, length) { }
+        public CDROM(DataTrack model, byte[] data, int offset, int length, ISO9660 iso9660) : base(model, data, offset, length)
+        {
+            FileSystem = iso9660;
+        }
 
         /// <inheritdoc/>
-        public CDROM(Volume model, Stream data) : base(model, data) { }
+        public CDROM(DataTrack model, Stream data, ISO9660 iso9660) : base(model, data)
+        {
+            FileSystem = iso9660;
+        }
 
         /// <inheritdoc/>
-        public CDROM(Volume model, Stream data, long offset) : base(model, data, offset) { }
+        public CDROM(DataTrack model, Stream data, long offset, ISO9660 iso9660) : base(model, data, offset)
+        {
+            FileSystem = iso9660;
+        }
 
         /// <inheritdoc/>
-        public CDROM(Volume model, Stream data, long offset, long length) : base(model, data, offset, length) { }
+        public CDROM(DataTrack model, Stream data, long offset, long length, ISO9660 iso9660) : base(model, data, offset, length)
+        {
+            FileSystem = iso9660;
+        }
 
         #endregion
 
@@ -104,16 +120,16 @@ namespace SabreTools.Serialization.Wrappers
 
                 // Create sub-streams
                 // TODO: CDROM sub-stream
-                var userData = CDROM.ISO9660Stream(data);
+                var userData = SabreTools.Data.Extensions.CDROM.ISO9660Stream(data);
 
                 var model = new DataTrack();
                 // TODO: Set model.Sectors using CDROM Deserializer on CDROM sub-stream
-                iso = ISO9660.Create(userData);
+                ISO9660 iso = ISO9660.Create(userData);
                 model.Volume = iso.Model;
                 if (model == null)
                     return null;
 
-                return new CDROM(model, data, currentOffset);
+                return new CDROM(model, data, currentOffset, iso);
             }
             catch
             {

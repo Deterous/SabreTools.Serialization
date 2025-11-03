@@ -12,8 +12,8 @@ namespace SabreTools.Serialization.Wrappers
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
-            if (iso != null)
-                iso.PrintInformation(builder);
+            if (FileSystem != null)
+                FileSystem.PrintInformation(builder);
         }
     }
 }
