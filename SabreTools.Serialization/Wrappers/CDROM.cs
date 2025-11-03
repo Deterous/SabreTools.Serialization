@@ -1,5 +1,5 @@
 using System.IO;
-using SabreTools.Data.Extensions
+using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.CDROM;
 using SabreTools.Data.Models.ISO9660;
 

@@ -98,7 +98,7 @@ namespace SabreTools.Data.Extensions
                     var userData = GetUserDataLocation();
 
                     // Add the within-sector position
-                    long remainder = _position % _baseSectorSize
+                    long remainder = _position % _baseSectorSize;
                     if (remainder < userData.Start)
                         baseStreamOffset += userData.Start;
                     else if (remainder >= userData.End)
