@@ -8,7 +8,7 @@ namespace SabreTools.Data.Extensions
     {
         protected class ISO9660Stream : Stream
         {
-            private readonly FileStream _baseStream;
+            private readonly Stream _baseStream;
             private const long _baseSectorSize = 2352;
             private const long _isoSectorSize = 2048;
             private long _position = 0;
@@ -87,8 +87,8 @@ namespace SabreTools.Data.Extensions
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                int totalRead = 0;
-                int remaining = count;
+                long totalRead = 0;
+                long remaining = count;
 
                 while (remaining > 0 && _position < Length)
                 {
@@ -117,18 +117,18 @@ namespace SabreTools.Data.Extensions
                     _baseStream.Seek(baseStreamOffset, SeekOrigin.Begin);
 
                     // Read the remaining bytes, up to max of one ISO sector (2048 bytes)
-                    int withinSectorLocation = baseStreamOffset % _baseSectorSize;
-                    int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
+                    long withinSectorLocation = baseStreamOffset % _baseSectorSize;
+                    long bytesToRead = Math.Min(remaining, _isoSectorSize - (withinSectorLocation - _userDataStart));
 
                     // Don't overshoot end of stream
-                    bytesToRead = (int)Math.Min(bytesToRead, Length - _position);
+                    bytesToRead = Math.Min(bytesToRead, Length - _position);
 
                     // Finish reading if no more bytes to be read
                     if (bytesToRead <= 0)
                         break;
 
                     // Read from base CDROM stream
-                    int bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
+                    long bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
 
                     // Update state
                     _position += bytesRead;
