@@ -21,14 +21,15 @@ namespace SabreTools.Data.Extensions
             private long _userDataStart = 16;
             private long _userDataEnd = 2064;
 
-
             public ISO9660Stream(Stream inputStream)
             {
+                if (!inputStream.CanSeek || !_baseStream.CanRead)
+                    throw new ArgumentException("Stream must be readable and seekable: ", nameof(inputStream));
                 _baseStream = inputStream;
             }
 
-            public override bool CanRead => _baseStream.CanRead;
-            public override bool CanSeek => _baseStream.CanSeek;
+            public override bool CanRead => true;
+            public override bool CanSeek => true;
             public override bool CanWrite => false;
 
             public override void Flush()
@@ -129,7 +130,7 @@ namespace SabreTools.Data.Extensions
                     }
 
                     // Seek to target position in base CDROM stream
-                    _baseStream.SeekIfPossible(baseStreamOffset, SeekOrigin.Begin);
+                    _baseStream.Seek(baseStreamOffset, SeekOrigin.Begin);
 
                     // Read the remaining bytes, up to max of one ISO sector (2048 bytes)
                     int bytesToRead = (int)Math.Min(remaining, _isoSectorSize - sectorOffset);
@@ -199,14 +200,14 @@ namespace SabreTools.Data.Extensions
                     throw new ArgumentOutOfRangeException(nameof(offset), "Attempted to seek outside the stream boundaries.");
                 }
 
-                _position = _baseStream.SeekIfPossible(newPosition, SeekOrigin.Begin);
+                _position = _baseStream.Seek(newPosition, SeekOrigin.Begin);
                 return Position;
             }
 
             private void SetSectorMode(long sectorLocation)
             {
                 long modePosition = sectorLocation + 15;
-                _baseStream.SeekIfPossible(modePosition, SeekOrigin.Begin);
+                _baseStream.Seek(modePosition, SeekOrigin.Begin);
                 byte modeByte = _baseStream.ReadByteValue();
                 if (modeByte == 0)
                     _currentMode = SectorMode.MODE0;
@@ -214,7 +215,7 @@ namespace SabreTools.Data.Extensions
                     _currentMode = SectorMode.MODE1;
                 else if (modeByte == 2)
                 {
-                    _baseStream.SeekIfPossible(modePosition + 3, SeekOrigin.Begin);
+                    _baseStream.Seek(modePosition + 3, SeekOrigin.Begin);
                     byte submode = _baseStream.ReadByteValue();
                     if ((submode & 0x20) == 0x20)
                         _currentMode = SectorMode.MODE2_FORM2;
