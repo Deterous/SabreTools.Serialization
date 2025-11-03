@@ -16,7 +16,7 @@ namespace SabreTools.Serialization.Wrappers
 
         #region Sub Wrappers
 
-        public WrapperBase? FileSystem;
+        public ISO9660? FileSystem;
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace SabreTools.Serialization.Wrappers
 
                 // Create sub-streams
                 // TODO: CDROM sub-stream
-                var userData = SabreTools.Data.Extensions.CDROM.ISO9660Stream(data);
+                SabreTools.Data.Extensions.CDROM.ISO9660Stream userData = new(data);
 
                 var model = new DataTrack();
                 // TODO: Set model.Sectors using CDROM Deserializer on CDROM sub-stream
@@ -140,3 +140,4 @@ namespace SabreTools.Serialization.Wrappers
         #endregion
     }
 }
+
