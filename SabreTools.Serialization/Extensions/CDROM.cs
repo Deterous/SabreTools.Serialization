@@ -25,7 +25,7 @@ namespace SabreTools.Data.Extensions
             {
                 if (inputStream == null)
                     throw new ArgumentNullException("Stream cannot be null.", nameof(inputStream));
-                else if (!inputStream.CanSeek || !_baseStream.CanRead)
+                else if (!inputStream.CanSeek || !inputStream.CanRead)
                     throw new ArgumentException("Stream must be readable and seekable.", nameof(inputStream));
                 _baseStream = inputStream;
             }
@@ -153,7 +153,7 @@ namespace SabreTools.Data.Extensions
                     int bytesRead = _baseStream.Read(buffer, offset + totalRead, bytesToRead);
 
                     // Update state for base stream
-                    _position = baseStream.Position;
+                    _position = _baseStream.Position;
                     if (readEntireSector)
                         _position += (_baseSectorSize - _userDataEnd) + _userDataStart;
 
