@@ -7,7 +7,7 @@ namespace SabreTools.Serialization.Wrappers
     {
 #if NETCOREAPP
         /// <inheritdoc/>
-        public string ExportJSON() => System.Text.Json.JsonSerializer.Serialize(Model, _jsonSerializerOptions);
+        public new string ExportJSON() => System.Text.Json.JsonSerializer.Serialize(Model, _jsonSerializerOptions);
 #endif
 
         /// <inheritdoc/>

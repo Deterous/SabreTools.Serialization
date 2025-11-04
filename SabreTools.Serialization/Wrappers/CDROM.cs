@@ -14,6 +14,13 @@ namespace SabreTools.Serialization.Wrappers
 
         #endregion
 
+        public DataTrack GetModel() => CDROMModel;
+
+        /// <summary>
+        /// Internal model
+        /// </summary>
+        public DataTrack CDROMModel { get; }
+
         #region Extension Properties
 
         /// <inheritdoc cref="DataTrack.Sectors"/>
