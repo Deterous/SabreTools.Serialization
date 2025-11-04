@@ -5,18 +5,12 @@ using SabreTools.Data.Models.ISO9660;
 
 namespace SabreTools.Serialization.Wrappers
 {
-    public partial class CDROM : WrapperBase<DataTrack>
+    public partial class CDROM : ISO9660, WrapperBase<DataTrack>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
         public override string DescriptionString => "CD-ROM Data Track";
-
-        #endregion
-
-        #region Sub Wrappers
-
-        public ISO9660? FileSystem;
 
         #endregion
 
@@ -26,56 +20,38 @@ namespace SabreTools.Serialization.Wrappers
         public Sector[] Sectors => Model.Sectors;
 
         /// <inheritdoc cref="DataTrack.Volume.SystemArea"/>
-        public byte[] SystemArea => Model.Volume.SystemArea;
+        public override byte[] SystemArea => Model.Volume.SystemArea;
 
         /// <inheritdoc cref="DataTrack.Volume.VolumeDescriptorSet"/>
-        public VolumeDescriptor[] VolumeDescriptorSet => Model.Volume.VolumeDescriptorSet;
+        public override VolumeDescriptor[] VolumeDescriptorSet => Model.Volume.VolumeDescriptorSet;
 
         /// <inheritdoc cref="DataTrack.Volume.PathTableGroups"/>
-        public PathTableGroup[] PathTableGroups => Model.Volume.PathTableGroups;
+        public override PathTableGroup[] PathTableGroups => Model.Volume.PathTableGroups;
 
         /// <inheritdoc cref="DataTrack.Volume.DirectoryDescriptors"/>
-        public Dictionary<int, FileExtent> DirectoryDescriptors => Model.Volume.DirectoryDescriptors;
+        public override Dictionary<int, FileExtent> DirectoryDescriptors => Model.Volume.DirectoryDescriptors;
 
         #endregion
 
         #region Constructors
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, byte[] data, ISO9660 iso9660) : base(model, data)
-        {
-            FileSystem = iso9660;
-        }
+        public CDROM(DataTrack model, byte[] data) : base(model, data) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, byte[] data, int offset, ISO9660 iso9660) : base(model, data, offset)
-        {
-            FileSystem = iso9660;
-        }
+        public CDROM(DataTrack model, byte[] data, int offset) : base(model, data, offset) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, byte[] data, int offset, int length, ISO9660 iso9660) : base(model, data, offset, length)
-        {
-            FileSystem = iso9660;
-        }
+        public CDROM(DataTrack model, byte[] data, int offset, int length) : base(model, data, offset, length) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, Stream data, ISO9660 iso9660) : base(model, data)
-        {
-            FileSystem = iso9660;
-        }
+        public CDROM(DataTrack model, Stream data) : base(model, data) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, Stream data, long offset, ISO9660 iso9660) : base(model, data, offset)
-        {
-            FileSystem = iso9660;
-        }
+        public CDROM(DataTrack model, Stream data, long offset) : base(model, data, offset) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, Stream data, long offset, long length, ISO9660 iso9660) : base(model, data, offset, length)
-        {
-            FileSystem = iso9660;
-        }
+        public CDROM(DataTrack model, Stream data, long offset, long length) : base(model, data, offset, length) { }
 
         #endregion
 
@@ -110,7 +86,7 @@ namespace SabreTools.Serialization.Wrappers
         public static CDROM? Create(Stream? data)
         {
             // If the data is invalid
-            if (data == null || !data.CanRead)
+            if (data == null || !data.CanRead || !data.CanSeek)
                 return null;
 
             try
@@ -124,13 +100,9 @@ namespace SabreTools.Serialization.Wrappers
 
                 var model = new DataTrack();
                 // TODO: Set model.Sectors using CDROM Deserializer on CDROM sub-stream
-                ISO9660 iso = ISO9660.Create(userData);
-                if (iso != null)
-                    model.Volume = iso.Model;
-                if (model == null)
-                    return null;
+                model.Volume = new Readers.ISO9660().Deserialize(data);
 
-                return new CDROM(model, data, currentOffset, iso);
+                return new CDROM(model, data, currentOffset);
             }
             catch
             {
