@@ -5,60 +5,50 @@ using SabreTools.Data.Models.ISO9660;
 
 namespace SabreTools.Serialization.Wrappers
 {
-    public partial class CDROM : ISO9660, IWrapper<DataTrack>
+    public partial class CDROM : ISO9660
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string DescriptionString => "CD-ROM Data Track";
+        public override string DescriptionString => "CD-ROM ISO9660 Volume";
 
         #endregion
 
-        public DataTrack GetModel() => CDROMModel;
-
-        /// <summary>
-        /// Internal model
-        /// </summary>
-        public DataTrack CDROMModel { get; }
-
         #region Extension Properties
 
-        /// <inheritdoc cref="DataTrack.Sectors"/>
-        public Sector[] Sectors => Model.Sectors;
+        /// <inheritdoc cref="Volume.SystemArea"/>
+        public override byte[] SystemArea => Model.SystemArea;
 
-        /// <inheritdoc cref="DataTrack.Volume.SystemArea"/>
-        public override byte[] SystemArea => Model.Volume.SystemArea;
+        /// <inheritdoc cref="Volume.VolumeDescriptorSet"/>
+        public override VolumeDescriptor[] VolumeDescriptorSet => Model.VolumeDescriptorSet;
 
-        /// <inheritdoc cref="DataTrack.Volume.VolumeDescriptorSet"/>
-        public override VolumeDescriptor[] VolumeDescriptorSet => Model.Volume.VolumeDescriptorSet;
+        /// <inheritdoc cref="Volume.PathTableGroups"/>
+        public override PathTableGroup[] PathTableGroups => Model.PathTableGroups;
 
-        /// <inheritdoc cref="DataTrack.Volume.PathTableGroups"/>
-        public override PathTableGroup[] PathTableGroups => Model.Volume.PathTableGroups;
-
-        /// <inheritdoc cref="DataTrack.Volume.DirectoryDescriptors"/>
-        public override Dictionary<int, FileExtent> DirectoryDescriptors => Model.Volume.DirectoryDescriptors;
+        /// <inheritdoc cref="Volume.DirectoryDescriptors"/>
+        public override Dictionary<int, FileExtent> DirectoryDescriptors => Model.DirectoryDescriptors;
 
         #endregion
 
         #region Constructors
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, byte[] data) : base(model, data) { }
+        public CDROM(Volume model, byte[] data) : base(model, data) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, byte[] data, int offset) : base(model, data, offset) { }
+        public CDROM(Volume model, byte[] data, int offset) : base(model, data, offset) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, byte[] data, int offset, int length) : base(model, data, offset, length) { }
+        public CDROM(Volume model, byte[] data, int offset, int length) : base(model, data, offset, length) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, Stream data) : base(model, data) { }
+        public CDROM(Volume model, Stream data) : base(model, data) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, Stream data, long offset) : base(model, data, offset) { }
+        public CDROM(Volume model, Stream data, long offset) : base(model, data, offset) { }
 
         /// <inheritdoc/>
-        public CDROM(DataTrack model, Stream data, long offset, long length) : base(model, data, offset, length) { }
+        public CDROM(Volume model, Stream data, long offset, long length) : base(model, data, offset, length) { }
 
         #endregion
 
@@ -101,13 +91,11 @@ namespace SabreTools.Serialization.Wrappers
                 // Cache the current offset
                 long currentOffset = data.Position;
 
-                // Create sub-streams
-                // TODO: CDROM sub-stream
+                // Create user data sub-stream
                 SabreTools.Data.Extensions.CDROM.ISO9660Stream userData = new(data);
 
-                var model = new DataTrack();
-                // TODO: Set model.Sectors using CDROM Deserializer on CDROM sub-stream
-                model.Volume = new Readers.ISO9660().Deserialize(data);
+                // Deserialize just the sub-stream
+                model = new Readers.ISO9660().Deserialize(userData);
 
                 return new CDROM(model, data, currentOffset);
             }
@@ -120,5 +108,3 @@ namespace SabreTools.Serialization.Wrappers
         #endregion
     }
 }
-
-
