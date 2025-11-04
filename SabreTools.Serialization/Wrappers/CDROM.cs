@@ -95,7 +95,7 @@ namespace SabreTools.Serialization.Wrappers
                 SabreTools.Data.Extensions.CDROM.ISO9660Stream userData = new(data);
 
                 // Deserialize just the sub-stream
-                model = new Readers.ISO9660().Deserialize(userData);
+                var model = new Readers.ISO9660().Deserialize(userData);
 
                 return new CDROM(model, data, currentOffset);
             }
