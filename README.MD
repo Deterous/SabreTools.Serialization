@@ -9,7 +9,7 @@ Find the link to the Nuget package [here](https://www.nuget.org/packages/SabreTo
 The following non-project libraries (or ports thereof) are used for file handling:
 
 - [GrindCore.SharpCompress](https://github.com/Nanook/GrindCore.SharpCompress) - Common archive format extraction
-- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Framework 2.0/3.5/4.0 and non-Windows builds due to Windows-specific libraries]
+- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in non-Windows builds due to Windows-specific libraries]
 
 The following projects have influenced this library:
 
@@ -66,7 +66,7 @@ Options:
 | InstallShield CAB | |
 | Microsoft cabinet file | Does not support LZX or Quantum compression |
 | Microsoft LZ-compressed files | KWAJ, QBasic, and SZDD variants |
-| MoPaQ game data archive (MPQ) | Windows only. .NET Framework 4.5.2 and above |
+| MoPaQ game data archive (MPQ) | Windows only |
 | New Exectuable | Embedded archives and executables in the overlay and Wise installer |
 | NovaLogic Game Archive Format (PFF) | |
 | PKZIP and derived files (ZIP, etc.) | .NET Framework 4.6.2 and greater |
