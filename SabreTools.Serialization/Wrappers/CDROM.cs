@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.Data.Models.CDROM;
 using SabreTools.Data.Models.ISO9660;
 
 namespace SabreTools.Serialization.Wrappers

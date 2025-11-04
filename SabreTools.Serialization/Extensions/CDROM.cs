@@ -13,9 +13,13 @@ namespace SabreTools.Data.Extensions
         /// </summary>
         public class ISO9660Stream : Stream
         {
+            // Constant variables
             private readonly Stream _baseStream;
             private const long _baseSectorSize = 2352;
-            private const long _isoSectorSize = 2048;
+            private long _isoSectorSize = 2048;
+            // TODO: Support flexible sector size (MODE2_FORM2)
+
+            // State variables
             private long _position = 0;
             private SectorMode _currentMode = SectorMode.UNKNOWN;
             private long _userDataStart = 16;
@@ -71,11 +75,11 @@ namespace SabreTools.Data.Extensions
                 // Get the position of the underlying ISO9660 stream
                 get
                 {
+                    // Get the user data location based on the current sector mode
+                    SetState(_position);
+
                     // Get the number of ISO sectors before current position
                     long isoPosition = (_position / _baseSectorSize) * _isoSectorSize;
-
-                    // Get the user data location based on the current sector mode
-                    SetSectorMode(_position);
 
                     // Add the within-sector position
                     long remainder = _position % _baseSectorSize;
@@ -105,7 +109,7 @@ namespace SabreTools.Data.Extensions
                     long baseStreamOffset = (_position / _baseSectorSize) * _baseSectorSize;
 
                     // Set the current sector's mode and user data location
-                    SetSectorMode(baseStreamOffset);
+                    SetState(baseStreamOffset);
 
                     // Deal with case where base position is not in ISO stream
                     long remainder = _position % _baseSectorSize;
@@ -191,7 +195,7 @@ namespace SabreTools.Data.Extensions
                 long newPosition = (targetPosition / _isoSectorSize) * _baseSectorSize;
 
                 // Set the current sector's mode and user data location
-                SetSectorMode(newPosition);
+                SetState(newPosition);
 
                 // Add the within-sector position
                 newPosition += _userDataStart + (targetPosition % _isoSectorSize);
@@ -205,7 +209,7 @@ namespace SabreTools.Data.Extensions
                 return Position;
             }
 
-            private void SetSectorMode(long sectorLocation)
+            private void SetState(long sectorLocation)
             {
                 long modePosition = (sectorLocation - sectorLocation % _baseSectorSize) + 15;
                 _baseStream.Seek(modePosition, SeekOrigin.Begin);
@@ -232,27 +236,36 @@ namespace SabreTools.Data.Extensions
                     case SectorMode.MODE1:
                         _userDataStart = 16;
                         _userDataEnd = 2064;
+                        //_isoSectorSize = 2048;
                         return;
 
                     case SectorMode.MODE2_FORM1:
                         _userDataStart = 24;
                         _userDataEnd = 2072;
+                        //_isoSectorSize = 2048;
                         return;
 
                     case SectorMode.MODE2_FORM2:
                         _userDataStart = 24;
-                        _userDataEnd = 2348;
+                        _userDataEnd = 2072;
+                        // TODO: Support flexible sector length
+                        //_userDataEnd = 2348;
+                        //_isoSectorSize = 2324;
                         return;
 
                     case SectorMode.MODE0:
                     case SectorMode.MODE2:
                         _userDataStart = 16;
-                        _userDataEnd = 2352;
+                        _userDataEnd = 2064;
+                        // TODO: Support flexible sector length
+                        //_userDataEnd = 2352;
+                        //_isoSectorSize = 2336;
                         return;
 
                     case SectorMode.UNKNOWN:
                         _userDataStart = 16;
                         _userDataEnd = 2064;
+                        //_isoSectorSize = 2048;
                         return;
                 }
 
