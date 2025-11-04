@@ -182,7 +182,7 @@ namespace SabreTools.Data.Extensions
                         targetPosition = offset;
                         break;
                     case SeekOrigin.Current:
-                        targetPosition = _position + offset;
+                        targetPosition = Position + offset;
                         break;
                     case SeekOrigin.End:
                         targetPosition = Length + offset;
