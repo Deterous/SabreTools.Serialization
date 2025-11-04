@@ -5,7 +5,7 @@ using SabreTools.Data.Models.ISO9660;
 
 namespace SabreTools.Serialization.Wrappers
 {
-    public partial class CDROM : ISO9660, WrapperBase<DataTrack>
+    public partial class CDROM : ISO9660, IWrapper<DataTrack>
     {
         #region Descriptive Properties
 
