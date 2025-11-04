@@ -14,7 +14,7 @@ namespace SabreTools.Serialization.Wrappers
 #endif
 
         /// <inheritdoc/>
-        public static void PrintInformation(StringBuilder builder)
+        public void PrintInformation(StringBuilder builder)
         {
             builder.AppendLine("ISO 9660 Information:");
             builder.AppendLine("-------------------------");
