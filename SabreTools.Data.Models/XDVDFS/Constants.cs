@@ -14,6 +14,11 @@ namespace SabreTools.Data.Models.XDVDFS
         public const int ReservedSectors = 32;
 
         /// <summary>
+        /// Minimum length of a directory record
+        /// </summary>
+        public const int MinimumRecordLength = 14;
+
+        /// <summary>
         /// Volume Descriptor signature at start of sector 32
         /// </summary>
         public const string VolumeDescriptorSignature = "MICROSOFT*XBOX*MEDIA";

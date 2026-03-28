@@ -184,7 +184,7 @@ namespace SabreTools.Serialization.Readers
         public static DirectoryDescriptor? ParseDirectoryDescriptor(Stream data, uint offset, uint size)
         {
             // Ensure descriptor size is valid
-            if (size < 14)
+            if (size < Constants.MinimumRecordLength)
                 return null;
 
             // Ensure offset is valid
@@ -198,21 +198,27 @@ namespace SabreTools.Serialization.Readers
             long curPosition = data.Position;
             while ((long)size > data.Position - ((long)offset) * Constants.SectorSize)
             {
+                curPosition = data.Position;
                 var dr = ParseDirectoryRecord(data);
-                if (dr is null)
-                    break;
-                else
+                if (dr is not null)
                     records.Add(dr);
 
-                // Exit early if stream does not advance
+                // If invalid record read or next descriptor cannot fit in the current sector, skip ahead
+                if (dr is null || data.Position % Constants.SectorSize > (Constants.SectorSize - Constants.MinimumRecordLength))
+                {
+                    data.Position += Constants.SectorSize - (int)(data.Position % Constants.SectorSize);
+                    continue;
+                }
+
+                // Exit loop if stream has not advanced
                 if (curPosition == data.Position)
                     break;
             }
 
             obj.DirectoryRecords = [.. records];
 
-            int remainder = 2048 - (int)(size % 2048);
-            if (remainder > 0 && remainder < 2048)
+            int remainder = Constants.SectorSize - (int)(size % Constants.SectorSize);
+            if (remainder > 0 && remainder < Constants.SectorSize)
                 obj.Padding = data.ReadBytes(remainder);
 
             return obj;
