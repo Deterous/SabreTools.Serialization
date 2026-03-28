@@ -9,34 +9,27 @@
 # in an unpredictable way and result in an incomplete output.
 
 # Optional parameters
-USE_ALL=false
-INCLUDE_DEBUG=false
-INCLUDE_UNPUBLISHED=false
-NO_BUILD=false
-NO_ARCHIVE=false
-while getopts "udpba" OPTION; do
-    case $OPTION in
-    u)
-        USE_ALL=true
-        ;;
-    d)
-        INCLUDE_DEBUG=true
-        ;;
-    p)
-        INCLUDE_UNPUBLISHED=true
-        ;;
-    b)
-        NO_BUILD=true
-        ;;
-    a)
-        NO_ARCHIVE=true
-        ;;
-    *)
-        echo "Invalid option provided"
-        exit 1
-        ;;
-    esac
-done
+param(
+    [Parameter(Mandatory = $false)]
+    [Alias("UseAll")]
+    [switch]$USE_ALL,
+
+    [Parameter(Mandatory = $false)]
+    [Alias("IncludeDebug")]
+    [switch]$INCLUDE_DEBUG,
+
+    [Parameter(Mandatory = $false)]
+    [Alias("IncludeUnpublished")]
+    [switch]$INCLUDE_UNPUBLISHED,
+
+    [Parameter(Mandatory = $false)]
+    [Alias("NoBuild")]
+    [switch]$NO_BUILD,
+
+    [Parameter(Mandatory = $false)]
+    [Alias("NoArchive")]
+    [switch]$NO_ARCHIVE
+)
 
 # Set the current directory as a variable
 BUILD_FOLDER=$PWD
@@ -45,13 +38,13 @@ BUILD_FOLDER=$PWD
 COMMIT=$(git log --pretty=%H -1)
 
 # Output the selected options
-echo "Selected Options:"
-echo "  Use all frameworks (-u)               $USE_ALL"
-echo "  Include debug builds (-d)             $INCLUDE_DEBUG"
-echo "  Include unpublished packages (-p)     $INCLUDE_UNPUBLISHED"
-echo "  No build (-b)                         $NO_BUILD"
-echo "  No archive (-a)                       $NO_ARCHIVE"
-echo " "
+Write-Host "Selected Options:"
+Write-Host "  Use all frameworks (-UseAll)                        $USE_ALL"
+Write-Host "  Include debug builds (-IncludeDebug)                $INCLUDE_DEBUG"
+Write-Host "  Include unpublished packages (-IncludeUnpublished)  $INCLUDE_DEBUG"
+Write-Host "  No build (-NoBuild)                                 $NO_BUILD"
+Write-Host "  No archive (-NoArchive)                             $NO_ARCHIVE"
+Write-Host " "
 
 # Create the build matrix arrays
 FRAMEWORKS=("net10.0")
@@ -78,19 +71,19 @@ if [ $NO_BUILD = false ]; then
     dotnet pack SabreTools.Serialization/SabreTools.Serialization.csproj --output $BUILD_FOLDER
 
     # Create unpublished Nuget Packages
-    if [ $INCLUDE_UNPUBLISHED = true ]; then
-        dotnet pack SabreTools.Data.Extensions/SabreTools.Data.Extensions.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Data.Models/SabreTools.Data.Models.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Metadata/SabreTools.Metadata.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Metadata.DatFiles/SabreTools.Metadata.DatFiles.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Metadata.DatItems/SabreTools.Metadata.DatItems.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Metadata.Filter/SabreTools.Metadata.Filter.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.ObjectIdentifier/SabreTools.ObjectIdentifier.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Serialization.CrossModel/SabreTools.Serialization.CrossModel.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Serialization.Readers/SabreTools.Serialization.Readers.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Serialization.Writers/SabreTools.Serialization.Writers.csproj --output $BUILD_FOLDER
-        dotnet pack SabreTools.Wrappers/SabreTools.Wrappers.csproj --output $BUILD_FOLDER
-    fi
+    if ($INCLUDE_UNPUBLISHED.IsPresent) {
+        dotnet pack SabreTools.Data.Extensions\SabreTools.Data.Extensions.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Data.Models\SabreTools.Data.Models.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Metadata\SabreTools.Metadata.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Metadata.DatFiles\SabreTools.Metadata.DatFiles.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Metadata.DatItems\SabreTools.Metadata.DatItems.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Metadata.Filter\SabreTools.Metadata.Filter.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.ObjectIdentifier\SabreTools.ObjectIdentifier.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Serialization.CrossModel\SabreTools.Serialization.CrossModel.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Serialization.Readers\SabreTools.Serialization.Readers.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Serialization.Writers\SabreTools.Serialization.Writers.csproj --output $BUILD_FOLDER
+        dotnet pack SabreTools.Wrappers\SabreTools.Wrappers.csproj --output $BUILD_FOLDER
+    }
 
     # Build ExtractionTool
     for FRAMEWORK in "${FRAMEWORKS[@]}"; do
