@@ -240,7 +240,7 @@ namespace SabreTools.Serialization.Readers
 
             obj.LeftChildOffset = data.ReadUInt16LittleEndian();
             obj.RightChildOffset = data.ReadUInt16LittleEndian();
-            if (obj.LeftChildOffset == 0xFF && obj.RightChildOffset == 0xFF)
+            if (obj.LeftChildOffset == 0xFFFF && obj.RightChildOffset == 0xFFFF)
                 return null;
 
             obj.ExtentOffset = data.ReadUInt32LittleEndian();
