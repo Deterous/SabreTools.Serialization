@@ -129,7 +129,7 @@ namespace SabreTools.Wrappers
             builder.AppendLine((dr.FileFlags & FileFlags.NORMAL) == FileFlags.NORMAL, "        Normal");
 
             builder.AppendLine(dr.FilenameLength, "      Filename Length");
-            builder.AppendLine(dr.Filename, "      Filename");
+            builder.AppendLine(Encoding.UTF8.GetString(dr.Filename), "      Filename");
 
             if (dr.Padding is null)
                 builder.AppendLine("None", "      Padding");
