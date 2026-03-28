@@ -204,7 +204,7 @@ namespace SabreTools.Serialization.Readers
             while ((long)size > data.Position - ((long)offset) * Constants.SectorSize)
             {
 
-                Console.WriteLine($"[DEBUG] size {offset} > pos {data.Position - ((long)offset) * Constants.SectorSize}");
+                Console.WriteLine($"[DEBUG] size {size} > pos {data.Position - ((long)offset) * Constants.SectorSize}");
 
                 var dr = ParseDirectoryRecord(data);
                 if (dr is not null)
@@ -217,8 +217,8 @@ namespace SabreTools.Serialization.Readers
 
             obj.DirectoryRecords = [.. records];
 
-            int remainder = (int)(size % 2048);
-            if (remainder > 0)
+            int remainder = 2048 - (int)(size % 2048);
+            if (remainder > 0 && remainder < 2048)
                 obj.Padding = data.ReadBytes(remainder);
 
             return obj;
