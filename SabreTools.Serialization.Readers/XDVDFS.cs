@@ -162,6 +162,9 @@ namespace SabreTools.Serialization.Readers
                     if (obj.ContainsKey(dr.ExtentOffset))
                         continue;
 
+                    Console.WriteLine($"[DEBUG] Directories of {dr.ExtentOffset} size {dr.ExtentSize}");
+
+
                     // Get all descriptors from child
                     var descriptors = ParseDirectoryDescriptors(data, dr.ExtentOffset, dr.ExtentSize);
                     if (descriptors is null)
@@ -203,8 +206,7 @@ namespace SabreTools.Serialization.Readers
             long curPosition = data.Position;
             while ((long)size > data.Position - ((long)offset) * Constants.SectorSize)
             {
-
-                Console.WriteLine($"[DEBUG] size {size} > pos {data.Position - ((long)offset) * Constants.SectorSize}");
+                Console.WriteLine($"[DEBUG] size {size} > pos {data.Position - ((long)offset) * Constants.SectorSize}, at {data.Position}");
 
                 var dr = ParseDirectoryRecord(data);
                 if (dr is null)
