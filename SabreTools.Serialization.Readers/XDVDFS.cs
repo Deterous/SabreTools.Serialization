@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Extensions;
@@ -143,15 +142,11 @@ namespace SabreTools.Serialization.Readers
 
             var obj = new Dictionary<uint, DirectoryDescriptor>();
 
-            Console.WriteLine($"[DEBUG] Directory {offset} size {size}");
-
             var dd = ParseDirectoryDescriptor(data, offset, size);
             if (dd is null)
                 return null;
 
             obj.Add(offset, dd);
-
-            Console.WriteLine($"[DEBUG] Children of {offset} size {size}");
 
             // Parse all child descriptors
             foreach (var dr in dd.DirectoryRecords)
@@ -161,9 +156,6 @@ namespace SabreTools.Serialization.Readers
                     // Ensure same descriptor is never parsed twice
                     if (obj.ContainsKey(dr.ExtentOffset))
                         continue;
-
-                    Console.WriteLine($"[DEBUG] Directories of {dr.ExtentOffset} size {dr.ExtentSize}");
-
 
                     // Get all descriptors from child
                     var descriptors = ParseDirectoryDescriptors(data, dr.ExtentOffset, dr.ExtentSize);
@@ -206,8 +198,6 @@ namespace SabreTools.Serialization.Readers
             long curPosition = data.Position;
             while ((long)size > data.Position - ((long)offset) * Constants.SectorSize)
             {
-                Console.WriteLine($"[DEBUG] size {size} > pos {data.Position - ((long)offset) * Constants.SectorSize}, at {data.Position}");
-
                 var dr = ParseDirectoryRecord(data);
                 if (dr is null)
                     break;
@@ -222,7 +212,6 @@ namespace SabreTools.Serialization.Readers
             obj.DirectoryRecords = [.. records];
 
             int remainder = 2048 - (int)(size % 2048);
-            Console.WriteLine($"[DEBUG] d remainder {remainder}");
             if (remainder > 0 && remainder < 2048)
                 obj.Padding = data.ReadBytes(remainder);
 
@@ -249,7 +238,6 @@ namespace SabreTools.Serialization.Readers
             obj.FilenameLength = data.ReadByteValue();
             obj.Filename = data.ReadBytes(obj.FilenameLength);
             int remainder = 4 - (int)(data.Position % 4);
-            Console.WriteLine($"[DEBUG] r remainder {remainder}");
             if (remainder > 0 && remainder < 4)
                 obj.Padding = data.ReadBytes(remainder);
 
