@@ -222,6 +222,7 @@ namespace SabreTools.Serialization.Readers
             obj.DirectoryRecords = [.. records];
 
             int remainder = 2048 - (int)(size % 2048);
+            Console.WriteLine($"[DEBUG] d remainder {remainder}");
             if (remainder > 0 && remainder < 2048)
                 obj.Padding = data.ReadBytes(remainder);
 
@@ -248,6 +249,7 @@ namespace SabreTools.Serialization.Readers
             obj.FilenameLength = data.ReadByteValue();
             obj.Filename = data.ReadBytes(obj.FilenameLength);
             int remainder = 4 - (int)(data.Position % 4);
+            Console.WriteLine($"[DEBUG] r remainder {remainder}");
             if (remainder > 0 && remainder < 4)
                 obj.Padding = data.ReadBytes(remainder);
 
