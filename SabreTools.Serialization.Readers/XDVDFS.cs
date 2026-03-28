@@ -207,7 +207,9 @@ namespace SabreTools.Serialization.Readers
                 Console.WriteLine($"[DEBUG] size {size} > pos {data.Position - ((long)offset) * Constants.SectorSize}");
 
                 var dr = ParseDirectoryRecord(data);
-                if (dr is not null)
+                if (dr is null)
+                    break;
+                else
                     records.Add(dr);
 
                 // Exit early if stream does not advance
@@ -235,6 +237,9 @@ namespace SabreTools.Serialization.Readers
 
             obj.LeftChildOffset = data.ReadUInt16LittleEndian();
             obj.RightChildOffset = data.ReadUInt16LittleEndian();
+            if (obj.LeftChildOffset == 0xFF && obj.RightChildOffset == 0xFF)
+                return null;
+
             obj.ExtentOffset = data.ReadUInt32LittleEndian();
             obj.ExtentSize = data.ReadUInt32LittleEndian();
             obj.FileFlags = (FileFlags)data.ReadByteValue();
