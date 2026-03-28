@@ -209,6 +209,7 @@ namespace SabreTools.Serialization.Readers
             long curPosition = data.Position;
             while ((long)size > ((long)offset) * Constants.SectorSize - data.Position)
             {
+                Console.WriteLine($"[DEBUG] size {(long)size} < current {((long)offset) * Constants.SectorSize - data.Position}");
                 var dr = ParseDirectoryRecord(data);
                 if (dr is not null)
                     records.Add(dr);
