@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Extensions;
@@ -40,14 +39,10 @@ namespace SabreTools.Serialization.Readers
                 // Parse the optional layout descriptor
                 volume.LayoutDescriptor = ParseLayoutDescriptor(data);
 
-                Console.WriteLine("[DEBUG] Parsing directories...");
-
                 // Parse the descriptors from the root directory descriptor
                 var dd = ParseDirectoryDescriptors(data, vd.RootOffset, vd.RootSize);
                 if (dd is null)
                     return null;
-
-                Console.WriteLine("[DEBUG] DONE!");
 
                 volume.DirectoryDescriptors = dd;
 
@@ -147,15 +142,11 @@ namespace SabreTools.Serialization.Readers
 
             var obj = new Dictionary<uint, DirectoryDescriptor>();
 
-            Console.WriteLine($"[DEBUG] Parsing directory {offset} size {size}..");
-
             var dd = ParseDirectoryDescriptor(data, offset, size);
             if (dd is null)
                 return null;
 
             obj.Add(offset, dd);
-
-            Console.WriteLine($"[DEBUG] Parsing children for directory {offset} size {size}..");
 
             // Parse all child descriptors
             foreach (var dr in dd.DirectoryRecords)
@@ -179,8 +170,6 @@ namespace SabreTools.Serialization.Readers
                     }
                 }
             }
-
-            Console.WriteLine($"[DEBUG] DONE Directory {offset} size {size}..");
 
             return obj;
         }
@@ -243,7 +232,7 @@ namespace SabreTools.Serialization.Readers
             obj.FileFlags = (FileFlags)data.ReadByteValue();
             obj.FilenameLength = data.ReadByteValue();
             obj.Filename = data.ReadBytes(obj.FilenameLength);
-            int remainder = (2 + obj.FilenameLength) % 4;
+            int remainder = obj.FilenameLength % 4;
             if (remainder > 0)
                 obj.Padding = data.ReadBytes(remainder);
 
