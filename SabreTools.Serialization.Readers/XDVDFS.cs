@@ -232,7 +232,7 @@ namespace SabreTools.Serialization.Readers
             obj.FileFlags = (FileFlags)data.ReadByteValue();
             obj.FilenameLength = data.ReadByteValue();
             obj.Filename = data.ReadBytes(obj.FilenameLength);
-            int remainder = data.Position % 4;
+            long remainder = data.Position % 4;
             if (remainder > 0)
                 obj.Padding = data.ReadBytes(remainder);
 
