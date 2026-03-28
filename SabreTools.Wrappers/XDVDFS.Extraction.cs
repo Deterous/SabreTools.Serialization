@@ -60,7 +60,7 @@ namespace SabreTools.Wrappers
                     if (!string.IsNullOrEmpty(outputPath) && !Directory.Exists(outputPath))
                         Directory.CreateDirectory(outputPath);
 
-                    allExtracted |= ExtractDescriptor(outputDirectory, includeDebug, dr.ExtentOffset);
+                    allExtracted |= ExtractDescriptor(outputPath, includeDebug, dr.ExtentOffset);
                 }
                 else
                 {
