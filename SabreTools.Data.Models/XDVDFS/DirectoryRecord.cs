@@ -57,7 +57,7 @@ namespace SabreTools.Data.Models.XDVDFS
 
         /// <summary>
         /// Padding to fill up remainder of uint32
-        /// Not present if prior data is a multiple of 4 bytes
+        /// Not present if filename ends on a byte offset multiple of 4
         /// <remarks>0-3 bytes, all 0xFF</remarks>
         public byte[]? Padding { get; set; }
     }
