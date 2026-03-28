@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Extensions;
@@ -142,11 +143,15 @@ namespace SabreTools.Serialization.Readers
 
             var obj = new Dictionary<uint, DirectoryDescriptor>();
 
+            Console.WriteLine($"[DEBUG] Directory {offset} size {size}");
+
             var dd = ParseDirectoryDescriptor(data, offset, size);
             if (dd is null)
                 return null;
 
             obj.Add(offset, dd);
+
+            Console.WriteLine($"[DEBUG] Children of {offset} size {size}");
 
             // Parse all child descriptors
             foreach (var dr in dd.DirectoryRecords)
@@ -198,6 +203,9 @@ namespace SabreTools.Serialization.Readers
             long curPosition = data.Position;
             while ((long)size > data.Position - ((long)offset) * Constants.SectorSize)
             {
+
+                Console.WriteLine($"[DEBUG] size {offset} > pos {data.Position - ((long)offset) * Constants.SectorSize}");
+
                 var dr = ParseDirectoryRecord(data);
                 if (dr is not null)
                     records.Add(dr);
@@ -232,8 +240,8 @@ namespace SabreTools.Serialization.Readers
             obj.FileFlags = (FileFlags)data.ReadByteValue();
             obj.FilenameLength = data.ReadByteValue();
             obj.Filename = data.ReadBytes(obj.FilenameLength);
-            int remainder = (4 - (int)(data.Position % 4)) % 4;
-            if (remainder > 0)
+            int remainder = 4 - (int)(data.Position % 4);
+            if (remainder > 0 && remainder < 4)
                 obj.Padding = data.ReadBytes(remainder);
 
             return obj;
