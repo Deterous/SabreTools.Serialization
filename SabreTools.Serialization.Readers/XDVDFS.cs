@@ -65,12 +65,13 @@ namespace SabreTools.Serialization.Readers
             var obj = new VolumeDescriptor();
 
             obj.StartSignature = data.ReadBytes(20);
-            if (!System.Text.Encoding.ASCII.GetString(obj.StartSignature).Equals(Constants.VolumeDescriptorSignature))
+            var signature = System.Text.Encoding.ASCII.GetString(obj.StartSignature);
+            if (!signature.Equals(Constants.VolumeDescriptorSignature))
                 return null;
 
-            obj.RootOffset = data.ReadUInt32();
-            obj.RootSize = data.ReadUInt32();
-            obj.MasteringTimestamp = data.ReadInt64();
+            obj.RootOffset = data.ReadUInt32LittleEndian();
+            obj.RootSize = data.ReadUInt32LittleEndian();
+            obj.MasteringTimestamp = data.ReadInt64LittleEndian();
             obj.UnknownByte = data.ReadByteValue();
             obj.Reserved = data.ReadBytes(1991);
             obj.EndSignature = data.ReadBytes(20);
@@ -88,7 +89,8 @@ namespace SabreTools.Serialization.Readers
             var obj = new LayoutDescriptor();
 
             obj.Signature = data.ReadBytes(24);
-            if (!System.Text.Encoding.ASCII.GetString(obj.Signature).Equals(Constants.LayoutDescriptorSignature))
+            var signature = System.Text.Encoding.ASCII.GetString(obj.Signature);
+            if (!signature.Equals(Constants.LayoutDescriptorSignature))
                 return null;
             obj.Unusued8Bytes = data.ReadBytes(8);
 
@@ -113,10 +115,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new FourPartVersionType();
 
-            obj.Major = data.ReadUInt16();
-            obj.Minor = data.ReadUInt16();
-            obj.Build = data.ReadUInt16();
-            obj.Revision = data.ReadUInt16();
+            obj.Major = data.ReadUInt16LittleEndian();
+            obj.Minor = data.ReadUInt16LittleEndian();
+            obj.Build = data.ReadUInt16LittleEndian();
+            obj.Revision = data.ReadUInt16LittleEndian();
 
             return obj;
         }
@@ -223,10 +225,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new DirectoryRecord();
 
-            obj.LeftChildOffset = data.ReadUInt16();
-            obj.RightChildOffset = data.ReadUInt16();
-            obj.ExtentOffset = data.ReadUInt32();
-            obj.ExtentSize = data.ReadUInt32();
+            obj.LeftChildOffset = data.ReadUInt16LittleEndian();
+            obj.RightChildOffset = data.ReadUInt16LittleEndian();
+            obj.ExtentOffset = data.ReadUInt32LittleEndian();
+            obj.ExtentSize = data.ReadUInt32LittleEndian();
             obj.FileFlags = (FileFlags)data.ReadByteValue();
             obj.FilenameLength = data.ReadByteValue();
             obj.Filename = data.ReadBytes(obj.FilenameLength);
