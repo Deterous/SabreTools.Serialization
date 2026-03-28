@@ -207,9 +207,8 @@ namespace SabreTools.Serialization.Readers
 
             data.SeekIfPossible(((long)offset) * Constants.SectorSize, SeekOrigin.Begin);
             long curPosition = data.Position;
-            while ((long)size > ((long)offset) * Constants.SectorSize - data.Position)
+            while ((long)size > data.Position - ((long)offset) * Constants.SectorSize)
             {
-                Console.WriteLine($"[DEBUG] size {(long)size} < current {((long)offset) * Constants.SectorSize - data.Position}");
                 var dr = ParseDirectoryRecord(data);
                 if (dr is not null)
                     records.Add(dr);
