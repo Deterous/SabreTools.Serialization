@@ -9,7 +9,7 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// SHA-256 hash of the ZArchive file prior the footer
         /// </summary>
-        public byte[] SHA256 { get; set; } = byte[32];
+        public byte[] SHA256 { get; set; } = new byte[32];
 
         /// <summary>
         /// Size of the entire ZArchive file

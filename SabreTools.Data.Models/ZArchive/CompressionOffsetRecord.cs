@@ -9,11 +9,11 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Base offset of compressed blocks
         /// </summary>
-        public ulong BaseOffset { get; set; };
+        public ulong BaseOffset { get; set; }
 
         /// <summary>
         /// Sizes of each compressed block in this record
         /// </summary>
-        public ushort[] Size { get; set; } = ushort[Constants.EntriesPerOffsetRecord];
+        public ushort[] Size { get; set; } = new ushort[Constants.EntriesPerOffsetRecord];
     }
 }
