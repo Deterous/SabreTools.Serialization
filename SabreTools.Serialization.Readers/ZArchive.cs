@@ -250,7 +250,7 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 // Check if node is file or directory
-                if ((nameOffsetAndFlag & 0x80000000)) == 0x80000000)
+                if ((nameOffsetAndFlag & 0x80000000) == 0x80000000)
                 {
                     var fileEntry = new FileEntry();
                     fileEntry.NameOffsetAndTypeFlag = nameOffsetAndFlag;
