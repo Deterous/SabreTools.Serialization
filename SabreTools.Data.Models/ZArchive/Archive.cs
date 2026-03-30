@@ -28,7 +28,7 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// UTF-8 strings, prepended by string lengths
         /// </summary>
-        public NameTable NameTable { get; set; } = []];
+        public NameTable NameTable { get; set; } = [];
 
         /// <summary>
         /// Serialized file tree structure using a queue of nodes
