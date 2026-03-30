@@ -178,6 +178,7 @@ namespace SabreTools.Serialization.Readers
                 Console.WriteLine("[DEBUG] record...");
                 var offset = data.ReadUInt64BigEndian();
                 Console.WriteLine("[DEBUG] saving...");
+                obj[i] = new OffsetRecord();
                 obj[i].Offset = offset;
                 Console.WriteLine($"[DEBUG] Offset {obj[i].Offset}");
                 for (int block = 0; block < Constants.BlocksPerOffsetRecord; block++)
