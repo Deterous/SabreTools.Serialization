@@ -246,6 +246,7 @@ namespace SabreTools.Serialization.Readers
             {
                 System.Console.WriteLine($"Entry {i}");
                 var nameOffsetAndFlag = data.ReadUInt32BigEndian();
+                System.Console.WriteLine($"Size {nameTableSize}, offset {nameOffsetAndFlag}");
 
                 // Validate name table offset value
                 if ((nameOffsetAndFlag & 0x7FFFFFFF) > nameTableSize)
