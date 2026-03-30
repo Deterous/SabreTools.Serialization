@@ -74,9 +74,6 @@ if [ $NO_BUILD = false ]; then
     echo "Restoring Nuget packages"
     dotnet restore
 
-    # Create published Nuget Package
-    dotnet pack SabreTools.Serialization/SabreTools.Serialization.csproj --output $BUILD_FOLDER
-
     # Create unpublished Nuget Packages
     if [ $INCLUDE_UNPUBLISHED = true ]; then
         dotnet pack SabreTools.Data.Extensions/SabreTools.Data.Extensions.csproj --output $BUILD_FOLDER
