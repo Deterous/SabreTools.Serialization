@@ -18,9 +18,11 @@ namespace SabreTools.Serialization.Readers
 
             try
             {
-                var archive = new Archive();
+                // var archive = new Archive();
 
-                return archive;
+                // return archive;
+
+                return null;
             }
             catch
             {
