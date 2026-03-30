@@ -9,7 +9,7 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Base offset value for the section in bytes
         /// </summary>
-		public ulong offset { get; set; }
+		public ulong Offset { get; set; }
 
         /// <summary>
         /// Total size of the section in bytes

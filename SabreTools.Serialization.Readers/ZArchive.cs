@@ -135,7 +135,7 @@ namespace SabreTools.Serialization.Readers
 
             // Read and validate archive size
             obj.Size = data.ReadUInt64BigEndian();
-            if (obj.Size != stream.Length - initialOffset)
+            if (obj.Size != data.Length - initialOffset)
                 return null;
 
             // Read and validate version bytes, only Version 1 is supported
@@ -165,7 +165,7 @@ namespace SabreTools.Serialization.Readers
 
             for (int i = 0; i < entries; i++)
             {
-                obj[i].BaseOffset = data.ReadUInt64BigEndian();
+                obj[i].Offset = data.ReadUInt64BigEndian();
                 for (int block = 0; block < Constants.BlocksPerOffsetRecord; block++)
                 {
                     obj[i].Size[block] = data.ReadUInt16BigEndian();
@@ -201,9 +201,9 @@ namespace SabreTools.Serialization.Readers
                 bytesRead += 1;
                 if ((nameLength & 0x80) == 0x80)
                 {
-                    nameLength += data.ReadByteValue() << 7;
+                    nameLength += (uint)data.ReadByteValue() << 7;
                     bytesRead += 1;
-                    nameEntry.NodeLengthLong = nameLength;
+                    nameEntry.NodeLengthLong = (ushort)nameLength;
                 }
                 else
                 {
