@@ -84,13 +84,13 @@ namespace SabreTools.Serialization.Readers
             // Read and validate section offset and size values
             obj.SectionLocalFiles.Offset = data.ReadUInt64BigEndian();
             obj.SectionLocalFiles.Size = data.ReadUInt64BigEndian();
-            if (obj.SectionLocalFiles.Offset + obj.SectionLocalFiles.Size > data.Length)
+            if (obj.SectionLocalFiles.Offset + obj.SectionLocalFiles.Size > (ulong)data.Length)
                 return null;
 
             // Read and validate section offset and size values
             obj.SectionOffsetRecords.Offset = data.ReadUInt64BigEndian();
             obj.SectionOffsetRecords.Size = data.ReadUInt64BigEndian();
-            if (obj.SectionOffsetRecords.Offset + obj.SectionOffsetRecords.Size > data.Length)
+            if (obj.SectionOffsetRecords.Offset + obj.SectionOffsetRecords.Size > (ulong)data.Length)
                 return null;
             if (obj.SectionOffsetRecords.Size > Constants.MaxOffsetRecordsSize)
                 return null;
@@ -100,7 +100,7 @@ namespace SabreTools.Serialization.Readers
             // Read and validate section offset and size values
             obj.SectionNameTable.Offset = data.ReadUInt64BigEndian();
             obj.SectionNameTable.Size = data.ReadUInt64BigEndian();
-            if (obj.SectionNameTable.Offset + obj.SectionNameTable.Size > data.Length)
+            if (obj.SectionNameTable.Offset + obj.SectionNameTable.Size > (ulong)data.Length)
                 return null;
             if (obj.SectionNameTable.Size > Constants.MaxNameTableSize)
                 return null;
@@ -108,7 +108,7 @@ namespace SabreTools.Serialization.Readers
             // Read and validate section offset and size values
             obj.SectionFileTree.Offset = data.ReadUInt64BigEndian();
             obj.SectionFileTree.Size = data.ReadUInt64BigEndian();
-            if (obj.SectionFileTree.Offset + obj.SectionFileTree.Size > data.Length)
+            if (obj.SectionFileTree.Offset + obj.SectionFileTree.Size > (ulong)data.Length)
                 return null;
             if (obj.SectionFileTree.Size > Constants.MaxFileTreeSize)
                 return null;
@@ -118,13 +118,13 @@ namespace SabreTools.Serialization.Readers
             // Read and validate section offset and size values
             obj.SectionMetaDirectory.Offset = data.ReadUInt64BigEndian();
             obj.SectionMetaDirectory.Size = data.ReadUInt64BigEndian();
-            if (obj.SectionMetaDirectory.Offset + obj.SectionMetaDirectory.Size > data.Length)
+            if (obj.SectionMetaDirectory.Offset + obj.SectionMetaDirectory.Size > (ulong)data.Length)
                 return null;
 
             // Read and validate section offset and size values
             obj.SectionMetaData.Offset = data.ReadUInt64BigEndian();
             obj.SectionMetaData.Size = data.ReadUInt64BigEndian();
-            if (obj.SectionMetaData.Offset + obj.SectionMetaData.Size > data.Length)
+            if (obj.SectionMetaData.Offset + obj.SectionMetaData.Size > (ulong)data.Length)
                 return null;
 
             // Read and validate archive integrity hash
@@ -232,7 +232,7 @@ namespace SabreTools.Serialization.Readers
         /// <param name="data">Stream to parse</param>
         /// <param name="size">Size of FileTree section</param>
         /// <returns>Filled ZArchive FileTree section on success, null on error</returns>
-        public static FileDirectoryEntry[]? ParseFileTree(Stream data, ulong size, uint nameTableSize)
+        public static FileDirectoryEntry[]? ParseFileTree(Stream data, ulong size, ulong nameTableSize)
         {
             int entries = (int)(size / Constants.FileDirectoryEntrySize);
 
