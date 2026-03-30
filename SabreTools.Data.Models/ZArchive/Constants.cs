@@ -27,12 +27,12 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// NameOffsetAndTypeFlag value for the root node in the FileTree
         /// </summary>
-        public const ulong RootNode = 0x7FFFFFFF;
+        public const uint RootNode = 0x7FFFFFFF;
 
         /// <summary>
         /// Mask for the NameOffsetAndTypeFlag value when checking if it is a file
         /// </summary>
-        public const ulong FileFlag = 0x80000000;
+        public const uint FileFlag = 0x80000000;
 
         /// <summary>
         /// Maximum size of the Offset Records section
