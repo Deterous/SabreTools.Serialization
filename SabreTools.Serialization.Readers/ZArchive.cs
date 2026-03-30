@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Extensions;
@@ -30,6 +31,8 @@ namespace SabreTools.Serialization.Readers
 
                 var archive = new Archive();
 
+                Console.WriteLine("[DEBUG] Starting to read ZArchive...");
+
                 // Parse the footer first
                 data.SeekIfPossible(-Constants.FooterSize, SeekOrigin.End);
                 var footer = ParseFooter(data, initialOffset);
@@ -37,6 +40,7 @@ namespace SabreTools.Serialization.Readers
                     archive.Footer = footer;
                 else
                     return null;
+                Console.WriteLine("[DEBUG] Finished Footer");
 
                 // Seek to and then read the compression offset records
                 data.SeekIfPossible((long)archive.Footer.SectionOffsetRecords.Offset, SeekOrigin.Begin);
@@ -45,6 +49,7 @@ namespace SabreTools.Serialization.Readers
                     archive.OffsetRecords = offsetRecords;
                 else
                     return null;
+                Console.WriteLine("[DEBUG] Finished OffsetRecords");
 
                 // Seek to and then read the name table entries
                 data.SeekIfPossible((long)archive.Footer.SectionNameTable.Offset, SeekOrigin.Begin);
@@ -53,6 +58,7 @@ namespace SabreTools.Serialization.Readers
                     archive.NameTable = nameTable;
                 else
                     return null;
+                Console.WriteLine("[DEBUG] Finished NameTable");
 
                 // Seek to and then read the file tree entries
                 data.SeekIfPossible((long)archive.Footer.SectionFileTree.Offset, SeekOrigin.Begin);
@@ -61,6 +67,7 @@ namespace SabreTools.Serialization.Readers
                     archive.FileTree = fileTree;
                 else
                     return null;
+                Console.WriteLine("[DEBUG] Finished FileTree");
 
                 // Do not attempt to read compressed data into memory
 
@@ -87,46 +94,57 @@ namespace SabreTools.Serialization.Readers
             obj.SectionLocalFiles.Size = data.ReadUInt64BigEndian();
             if (obj.SectionLocalFiles.Offset + obj.SectionLocalFiles.Size > (ulong)data.Length)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 1");
 
             // Read and validate section offset and size values
             obj.SectionOffsetRecords.Offset = data.ReadUInt64BigEndian();
             obj.SectionOffsetRecords.Size = data.ReadUInt64BigEndian();
             if (obj.SectionOffsetRecords.Offset + obj.SectionOffsetRecords.Size > (ulong)data.Length)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 2");
             if (obj.SectionOffsetRecords.Size > Constants.MaxOffsetRecordsSize)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 3");
             if (obj.SectionOffsetRecords.Size % Constants.OffsetRecordSize != 0)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 4");
 
             // Read and validate section offset and size values
             obj.SectionNameTable.Offset = data.ReadUInt64BigEndian();
             obj.SectionNameTable.Size = data.ReadUInt64BigEndian();
             if (obj.SectionNameTable.Offset + obj.SectionNameTable.Size > (ulong)data.Length)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 5");
             if (obj.SectionNameTable.Size > Constants.MaxNameTableSize)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 6");
 
             // Read and validate section offset and size values
             obj.SectionFileTree.Offset = data.ReadUInt64BigEndian();
             obj.SectionFileTree.Size = data.ReadUInt64BigEndian();
             if (obj.SectionFileTree.Offset + obj.SectionFileTree.Size > (ulong)data.Length)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 7");
             if (obj.SectionFileTree.Size > Constants.MaxFileTreeSize)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 8");
             if (obj.SectionFileTree.Size % Constants.FileDirectoryEntrySize != 0)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 9");
 
             // Read and validate section offset and size values
             obj.SectionMetaDirectory.Offset = data.ReadUInt64BigEndian();
             obj.SectionMetaDirectory.Size = data.ReadUInt64BigEndian();
             if (obj.SectionMetaDirectory.Offset + obj.SectionMetaDirectory.Size > (ulong)data.Length)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 10");
 
             // Read and validate section offset and size values
             obj.SectionMetaData.Offset = data.ReadUInt64BigEndian();
             obj.SectionMetaData.Size = data.ReadUInt64BigEndian();
             if (obj.SectionMetaData.Offset + obj.SectionMetaData.Size > (ulong)data.Length)
                 return null;
+            Console.WriteLine("[DEBUG] Finished 11");
 
             // Read and validate archive integrity hash
             obj.IntegrityHash = data.ReadBytes(32);
@@ -138,16 +156,19 @@ namespace SabreTools.Serialization.Readers
             obj.Size = data.ReadUInt64BigEndian();
             if (obj.Size != (ulong)(data.Length - initialOffset))
                 return null;
+            Console.WriteLine("[DEBUG] Finished 12");
 
             // Read and validate version bytes, only Version 1 is supported
             obj.Version = data.ReadBytes(4);
             if (!obj.Version.EqualsExactly(Constants.Version1Bytes))
                 return null;
+            Console.WriteLine("[DEBUG] Finished 13");
 
             // Read and validate magic bytes
             obj.Magic = data.ReadBytes(4);
             if (!obj.Magic.EqualsExactly(Constants.MagicBytes))
                 return null;
+            Console.WriteLine("[DEBUG] Finished 14");
 
             return obj;
         }
@@ -166,6 +187,7 @@ namespace SabreTools.Serialization.Readers
 
             for (int i = 0; i < entries; i++)
             {
+                Console.WriteLine("[DEBUG] record...");
                 obj[i].Offset = data.ReadUInt64BigEndian();
                 for (int block = 0; block < Constants.BlocksPerOffsetRecord; block++)
                 {
@@ -192,6 +214,7 @@ namespace SabreTools.Serialization.Readers
 
             while (bytesRead < (uint)size)
             {
+                Console.WriteLine("[DEBUG] name...");
                 var nameEntry = new NameEntry();
 
                 // Cache the offset into the NameEntry table
@@ -241,6 +264,7 @@ namespace SabreTools.Serialization.Readers
 
             for (int i = 0; i < entries; i++)
             {
+                Console.WriteLine("[DEBUG] node...");
                 obj[i].NameOffsetAndTypeFlag = data.ReadUInt32BigEndian();
 
                 // Validate name table offset value
@@ -275,6 +299,7 @@ namespace SabreTools.Serialization.Readers
                     }
                 }
             }
+            Console.WriteLine("[DEBUG] done...");
 
             // First entry of file tree must be root directory
             if ((obj[0].NameOffsetAndTypeFlag & 0x7FFFFFFF) != 0x7FFFFFFF)
