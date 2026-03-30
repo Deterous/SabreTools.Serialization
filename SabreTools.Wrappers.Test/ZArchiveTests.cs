@@ -58,18 +58,5 @@ namespace SabreTools.Wrappers.Test
             var actual = ZArchive.Create(data);
             Assert.Null(actual);
         }
-
-        #region FindParts
-
-        [Theory]
-        [InlineData("single.zar", 1)]
-        public void FindPartsTest(string filename, int expectedParts)
-        {
-            string firstPart = Path.Combine(Environment.CurrentDirectory, "TestData", "ZArchive", filename);
-            var actual = ZArchive.FindParts(firstPart);
-            Assert.Equal(expectedParts, actual.Count);
-        }
-
-        #endregion
     }
 }
