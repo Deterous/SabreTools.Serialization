@@ -76,7 +76,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled ZArchive footer on success, null on error</returns>
-        public static ArchiveExtraDataRecord? ParseFooter(Stream data)
+        public static Footer? ParseFooter(Stream data)
         {
             var obj = new Footer();
 

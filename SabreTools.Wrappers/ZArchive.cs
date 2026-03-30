@@ -14,8 +14,17 @@ namespace SabreTools.Wrappers
 
         #region Extension Properties
 
-        /// <inheritdoc cref="Archive.LocalFiles"/>
-        public LocalFile[]? LocalFiles => Model.LocalFiles;
+        /// <inheritdoc cref="Archive.OffsetRecords"/>
+        public OffsetRecord[] OffsetRecords => Model.OffsetRecords;
+
+        /// <inheritdoc cref="Archive.NameTable"/>
+        public NameTable NameTable => Model.NameTable;
+
+        /// <inheritdoc cref="Archive.FileTree"/>
+        public FileDirectoryEntry[] FileTree => Model.FileTree;
+
+        /// <inheritdoc cref="Archive.Footer"/>
+        public Footer Footer => Model.Footer;
 
         #endregion
 
