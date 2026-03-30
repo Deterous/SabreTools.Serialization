@@ -28,7 +28,7 @@ namespace SabreTools.Data.Extensions
         /// <returns>True if the node is a file</returns>
         public static bool IsFile(this FileDirectoryEntry node)
         {
-            return (node.NameOffsetAndTypeFlag >> 31) == 1;
+            return (node.NameOffsetAndTypeFlag & Constants.FileFlag) == Constants.FileFlag;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace SabreTools.Data.Extensions
         /// <returns>True if the node is a directory</returns>
         public static bool IsDirectory(this FileDirectoryEntry node)
         {
-            return (node.NameOffsetAndTypeFlag >> 31) == 0;
+            return (node.NameOffsetAndTypeFlag & Constants.FileFlag) == 0;
         }
 
         /// <summary>
@@ -50,8 +50,8 @@ namespace SabreTools.Data.Extensions
         public static string? GetName(this FileDirectoryEntry node, NameTable nameTable)
         {
             // Check for a valid offset into the NameTable
-            uint nameOffset = node.NameOffsetAndTypeFlag & 0x7FFFFFFF;
-            if (nameOffset == 0x7FFFFFFF)
+            uint nameOffset = node.NameOffsetAndTypeFlag & Constants.RootNode;
+            if (nameOffset == Constants.RootNode)
                 return null;
 
             // Get the name entry for the requested offset
