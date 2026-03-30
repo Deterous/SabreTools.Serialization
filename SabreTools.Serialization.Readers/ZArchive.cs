@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.ZArchive;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
@@ -215,7 +216,7 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 // Add valid name entry to the table
-                nameEntry.NodeName = data.ReadBytes(nameLength);
+                nameEntry.NodeName = data.ReadBytes((int)nameLength);
                 bytesRead += nameLength;
                 nameEntries.Add(nameEntry);
             }
