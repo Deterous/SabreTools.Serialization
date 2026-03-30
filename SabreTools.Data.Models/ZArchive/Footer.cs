@@ -6,10 +6,37 @@ namespace SabreTools.Data.Models.ZArchive
     /// <see href="https://github.com/Exzap/ZArchive/"/>
     public class Footer
     {
+		public  OffsetInfo SectionLocalFiles { get; set; } = new();
+
+        /// <summary>
+        /// Size and offset values for the OffsetRecords section
+        /// </summary>
+		public OffsetInfo SectionOffsetRecords { get; set; } = new();
+
+        /// <summary>
+        /// Size and offset values for the NameTable section
+        /// </summary>
+		public OffsetInfo SectionNameTable { get; set; } = new();
+
+        /// <summary>
+        /// Size and offset values for the FileFree section
+        /// </summary>
+		public OffsetInfo SectionFileTree { get; set; } = new();
+
+        /// <summary>
+        /// Size and offset values for the MetaDirectory section
+        /// </summary>
+		public OffsetInfo SectionMetaDirectory { get; set; } = new();
+
+        /// <summary>
+        /// Size and offset values for the MetaData section
+        /// </summary>
+		public OffsetInfo SectionMetaData { get; set; } = new();
+
         /// <summary>
         /// SHA-256 hash of the ZArchive file prior the footer
         /// </summary>
-        public byte[] SHA256 { get; set; } = new byte[32];
+        public byte[] IntegrityHash { get; set; } = new byte[32];
 
         /// <summary>
         /// Size of the entire ZArchive file
@@ -20,11 +47,11 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Version indicator, also acts as extended magic
         /// </summary>
-        public ulong Version { get; set; }
+        public byte[] Version { get; set; } = new byte[4];
 
         /// <summary>
         /// Magic bytes to indicate ZArchive file
         /// </summary>
-        public ulong Magic { get; set; }
+        public byte[] Magic { get; set; } = new byte[4];
     }
 }

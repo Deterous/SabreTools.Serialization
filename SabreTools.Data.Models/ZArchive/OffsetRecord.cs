@@ -4,7 +4,7 @@ namespace SabreTools.Data.Models.ZArchive
     /// Location and size properties of compressed blocks of the file data
     /// </summary>
     /// <see href="https://github.com/Exzap/ZArchive/"/>
-    public class CompressionOffsetRecord
+    public class OffsetRecord
     {
         /// <summary>
         /// Base offset of compressed blocks
@@ -14,6 +14,6 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Sizes of each compressed block in this record
         /// </summary>
-        public ushort[] Size { get; set; } = new ushort[Constants.EntriesPerOffsetRecord];
+        public ushort[] Size { get; set; } = new ushort[Constants.BlocksPerOffsetRecord];
     }
 }

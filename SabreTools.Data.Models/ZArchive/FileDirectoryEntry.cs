@@ -2,49 +2,16 @@ namespace SabreTools.Data.Models.ZArchive
 {
     /// <summary>
     /// Node in the FileTree
+    /// Represents either a file or a directory
     /// </summary>
     /// <see href="https://github.com/Exzap/ZArchive/"/>
-    public class FileDirectoryEntry
+    public abstract class FileDirectoryEntry
     {
         /// <summary>
         /// MSB is the type flag, 0 is Directory, 1 is File
         /// Remaining 31 bits are the offset in the NameTable
         /// </summary>
+        /// <remarks>Big-endian</remarks>
         public uint NameOffsetAndTypeFlag { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public uint FileOffsetLow { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public uint FileSizeLow { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ushort FileSizeHigh { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ushort FileOffsetHigh { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public uint NodeStartIndex { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public uint Count { get; set; }
-
-        /// <summary>
-        /// Reserved field
-        /// </summary>
-        public uint Reserved { get; set; }
     }
 }
