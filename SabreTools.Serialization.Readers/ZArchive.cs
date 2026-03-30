@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Extensions;
@@ -38,19 +37,14 @@ namespace SabreTools.Serialization.Readers
                     archive.Footer = footer;
                 else
                     return null;
-                Console.WriteLine("[DEBUG] Finished Footer");
 
                 // Seek to and then read the compression offset records
-                Console.WriteLine($"[DEBUG] Currently at {data.Position}");
-                Console.WriteLine($"[DEBUG] Seeking to {(long)archive.Footer.SectionOffsetRecords.Offset}");
                 data.SeekIfPossible((long)archive.Footer.SectionOffsetRecords.Offset, SeekOrigin.Begin);
-                Console.WriteLine($"[DEBUG] Currently at {data.Position}");
                 var offsetRecords = ParseOffsetRecords(data, archive.Footer.SectionOffsetRecords.Size);
                 if (offsetRecords is not null)
                     archive.OffsetRecords = offsetRecords;
                 else
                     return null;
-                Console.WriteLine("[DEBUG] Finished OffsetRecords");
 
                 // Seek to and then read the name table entries
                 data.SeekIfPossible((long)archive.Footer.SectionNameTable.Offset, SeekOrigin.Begin);
@@ -59,7 +53,6 @@ namespace SabreTools.Serialization.Readers
                     archive.NameTable = nameTable;
                 else
                     return null;
-                Console.WriteLine("[DEBUG] Finished NameTable");
 
                 // Seek to and then read the file tree entries
                 data.SeekIfPossible((long)archive.Footer.SectionFileTree.Offset, SeekOrigin.Begin);
@@ -68,7 +61,6 @@ namespace SabreTools.Serialization.Readers
                     archive.FileTree = fileTree;
                 else
                     return null;
-                Console.WriteLine("[DEBUG] Finished FileTree");
 
                 // Do not attempt to read compressed data into memory
 
@@ -169,22 +161,17 @@ namespace SabreTools.Serialization.Readers
         public static OffsetRecord[]? ParseOffsetRecords(Stream data, ulong size)
         {
             int entries = (int)(size / Constants.OffsetRecordSize);
-            Console.WriteLine($"[DEBUG] Entries: {entries}");
 
             var obj = new OffsetRecord[entries];
 
             for (int i = 0; i < entries; i++)
             {
-                Console.WriteLine("[DEBUG] record...");
                 var offset = data.ReadUInt64BigEndian();
-                Console.WriteLine("[DEBUG] saving...");
                 obj[i] = new OffsetRecord();
                 obj[i].Offset = offset;
-                Console.WriteLine($"[DEBUG] Offset {obj[i].Offset}");
                 for (int block = 0; block < Constants.BlocksPerOffsetRecord; block++)
                 {
                     obj[i].Size[block] = data.ReadUInt16BigEndian();
-                    Console.WriteLine($"[DEBUG] Offset {obj[i].Size[block]}");
                 }
             }
 
@@ -207,7 +194,6 @@ namespace SabreTools.Serialization.Readers
 
             while (bytesRead < (uint)size)
             {
-                Console.WriteLine("[DEBUG] name...");
                 var nameEntry = new NameEntry();
 
                 // Cache the offset into the NameEntry table
@@ -257,7 +243,7 @@ namespace SabreTools.Serialization.Readers
 
             for (int i = 0; i < entries; i++)
             {
-                Console.WriteLine("[DEBUG] node...");
+                obj[i] = new FileDirectoryEntry();
                 obj[i].NameOffsetAndTypeFlag = data.ReadUInt32BigEndian();
 
                 // Validate name table offset value
@@ -292,7 +278,6 @@ namespace SabreTools.Serialization.Readers
                     }
                 }
             }
-            Console.WriteLine("[DEBUG] done...");
 
             // First entry of file tree must be root directory
             if ((obj[0].NameOffsetAndTypeFlag & 0x7FFFFFFF) != 0x7FFFFFFF)
