@@ -243,39 +243,31 @@ namespace SabreTools.Serialization.Readers
 
             for (int i = 0; i < entries; i++)
             {
-                obj[i] = new FileDirectoryEntry();
-                obj[i].NameOffsetAndTypeFlag = data.ReadUInt32BigEndian();
+                var nameOffsetAndFlag = data.ReadUInt32BigEndian();
 
                 // Validate name table offset value
-                if ((obj[i].NameOffsetAndTypeFlag & 0x7FFFFFFF) > nameTableSize)
+                if ((nameOffsetAndFlag & 0x7FFFFFFF) > nameTableSize)
                     return null;
 
-                if (obj[i].IsFile())
+                // Check if node is file or directory
+                if ((nameOffsetAndFlag & 0x80000000)) == 0x80000000)
                 {
-                    if (obj[i] is FileEntry fileEntry)
-                    {
-                        fileEntry.FileOffsetLow = data.ReadUInt32BigEndian();
-                        fileEntry.FileSizeLow = data.ReadUInt32BigEndian();
-                        fileEntry.FileOffsetHigh = data.ReadUInt16BigEndian();
-                        fileEntry.FileSizeHigh = data.ReadUInt16BigEndian();
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    var fileEntry = new FileEntry();
+                    fileEntry.NameOffsetAndTypeFlag = nameOffsetAndFlag;
+                    fileEntry.FileOffsetLow = data.ReadUInt32BigEndian();
+                    fileEntry.FileSizeLow = data.ReadUInt32BigEndian();
+                    fileEntry.FileOffsetHigh = data.ReadUInt16BigEndian();
+                    fileEntry.FileSizeHigh = data.ReadUInt16BigEndian();
+                    obj[i] = fileEntry;
                 }
                 else
                 {
-                    if (obj[i] is DirectoryEntry directoryEntry)
-                    {
-                        directoryEntry.NodeStartIndex = data.ReadUInt32BigEndian();
-                        directoryEntry.Count = data.ReadUInt32BigEndian();
-                        directoryEntry.Reserved = data.ReadUInt32BigEndian();
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    var directoryEntry = new DirectoryEntry();
+                    directoryEntry.NameOffsetAndTypeFlag = nameOffsetAndFlag;
+                    directoryEntry.NodeStartIndex = data.ReadUInt32BigEndian();
+                    directoryEntry.Count = data.ReadUInt32BigEndian();
+                    directoryEntry.Reserved = data.ReadUInt32BigEndian();
+                    obj[i] = directoryEntry;
                 }
             }
 
