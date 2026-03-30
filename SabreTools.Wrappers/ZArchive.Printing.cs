@@ -27,7 +27,7 @@ namespace SabreTools.Wrappers
             builder.AppendLine(  "-------------------------");
             builder.AppendLine();
 
-            builder.AppendLine(footer.SHA256, "    Integrity Hash");
+            builder.AppendLine(footer.IntegrityHash, "    Integrity Hash");
             builder.AppendLine(footer.Size, "    Size");
             builder.AppendLine(footer.Version, "    Version");
             builder.AppendLine(footer.Magic, "    Magic");

@@ -3,6 +3,7 @@ using System.IO;
 using SabreTools.Data.Models.ZArchive;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
+using SabreTools.Matching;
 using SabreTools.Numerics.Extensions;
 
 #pragma warning disable IDE0017 // Simplify object initialization
@@ -30,7 +31,7 @@ namespace SabreTools.Serialization.Readers
 
                 // Parse the footer first
                 data.SeekIfPossible(-Constants.FooterSize, SeekOrigin.End);
-                var footer = ParseFooter(data);
+                var footer = ParseFooter(data, initialOffset);
                 if (footer is not null)
                     archive.Footer = footer;
                 else
@@ -48,15 +49,15 @@ namespace SabreTools.Serialization.Readers
                 data.SeekIfPossible(archive.Footer.SectionNameTable.Offset, SeekOrigin.Begin);
                 var nameTable = ParseNameTable(data, archive.Footer.SectionNameTable.Size);
                 if (nameTable is not null)
-                    archive.nameTable = nameTable;
+                    archive.NameTable = nameTable;
                 else
                     return null;
 
                 // Seek to and then read the file tree entries
                 data.SeekIfPossible(archive.Footer.SectionFileTree.Offset, SeekOrigin.Begin);
-                var fileTree = ParseFileTree(data, archive.Footer.SectionFileTree.Size);
+                var fileTree = ParseFileTree(data, archive.Footer.SectionFileTree.Size, archive.Footer.SectionNameTable.Size);
                 if (fileTree is not null)
-                    archive.fileTree = fileTree;
+                    archive.FileTree = fileTree;
                 else
                     return null;
 
@@ -76,7 +77,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled ZArchive footer on success, null on error</returns>
-        public static Footer? ParseFooter(Stream data)
+        public static Footer? ParseFooter(Stream data, long initialOffset)
         {
             var obj = new Footer();
 
@@ -133,7 +134,7 @@ namespace SabreTools.Serialization.Readers
             // TODO: Compare obj.Integrity with calculated hash
 
             // Read and validate archive size
-            obj.Size = data.ReadUInt64BigEndian(32);
+            obj.Size = data.ReadUInt64BigEndian();
             if (obj.Size != stream.Length - initialOffset)
                 return null;
 
@@ -186,10 +187,9 @@ namespace SabreTools.Serialization.Readers
             var nameEntries = new List<NameEntry>();
             var nameOffsets = new List<uint>();
 
-            long bytesRead = 0;
-            long currentEntry = 0;
+            uint bytesRead = 0;
 
-            while (bytesRead < size)
+            while (bytesRead < (uint)size)
             {
                 var nameEntry = new NameEntry();
 
@@ -197,11 +197,11 @@ namespace SabreTools.Serialization.Readers
                 nameOffsets.Add(bytesRead);                
 
                 // Read length of name
-                int nameLength = data.ReadByteValue();
+                uint nameLength = (uint)data.ReadByteValue();
                 bytesRead += 1;
-                if ((nameLengthShort & 0x80) == 0x80)
+                if ((nameLength & 0x80) == 0x80)
                 {
-                    nameLength += (ushort)data.ReadByteValue() << 7;
+                    nameLength += data.ReadByteValue() << 7;
                     bytesRead += 1;
                     nameEntry.NodeLengthLong = nameLength;
                 }
@@ -211,14 +211,17 @@ namespace SabreTools.Serialization.Readers
                 }
 
                 // Validate name length
-                if (bytesRead + nameLength > size)
+                if (bytesRead + nameLength > (uint)size)
                     return null;
 
                 // Add valid name entry to the table
-                nameEntry.NodeName = ReadBytes(nameLength);
+                nameEntry.NodeName = data.ReadBytes(nameLength);
                 bytesRead += nameLength;
                 nameEntries.Add(nameEntry);
             }
+
+            obj.NameEntries = [..nameEntries];
+            obj.NameOffsets = [..nameOffsets];
 
             return obj;
         }
@@ -240,36 +243,40 @@ namespace SabreTools.Serialization.Readers
                 obj[i].NameOffsetAndTypeFlag = data.ReadUInt32BigEndian();
 
                 // Validate name table offset value
-                if (obj[i].NameOffsetAndTypeFlag & 0x7FFFFFFF > nameTableSize)
+                if ((obj[i].NameOffsetAndTypeFlag & 0x7FFFFFFF) > nameTableSize)
                     return null;
 
-                if (obj.IsFile)
+                if (obj[i].IsFile)
                 {
-                    using (var fileEntry = (FileEntry)obj[i])
+                    if (obj[i] is FileEntry fileEntry)
                     {
                         fileEntry.FileOffsetLow = data.ReadUInt32BigEndian();
                         fileEntry.FileSizeLow = data.ReadUInt32BigEndian();
                         fileEntry.FileOffsetHigh = data.ReadUInt16BigEndian();
                         fileEntry.FileSizeHigh = data.ReadUInt16BigEndian();
                     }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    using (var directoryEntry = (DirectoryEntry)obj[i])
+                    if (obj[i] is DirectoryEntry directoryEntry)
                     {
                         directoryEntry.NodeStartIndex = data.ReadUInt32BigEndian();
                         directoryEntry.Count = data.ReadUInt32BigEndian();
                         directoryEntry.Reserved = data.ReadUInt32BigEndian();
                     }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
 
             // First entry of file tree must be root directory
-            if (!obj[0].IsDirectory())
-                return null;
-
-            // Root node must not have a name
-            if (!string.IsNullOrEmpty(obj[0].GetName()))
+            if (obj[0].NameOffsetAndTypeFlag & 0x7FFFFFFF) != 0x7FFFFFFF)
                 return null;
 
             return obj;
