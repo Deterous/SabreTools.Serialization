@@ -15,6 +15,6 @@ namespace SabreTools.Data.Models.ZArchive
         /// Virtual field, to cache the offsets of each name entry in the name table
         /// Used for referencing the name entry from an offset into the name table
         /// </summary>
-        public uint[] NodeTableOffsets { get; set; } = [];
+        public uint[] NameTableOffsets { get; set; } = [];
     }
 }
