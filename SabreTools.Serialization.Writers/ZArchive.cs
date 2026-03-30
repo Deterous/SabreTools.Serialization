@@ -1,4 +1,6 @@
+using System.IO;
 using SabreTools.Data.Models.ZArchive;
+using SabreTools.IO.Extensions;
 
 namespace SabreTools.Serialization.Writers
 {

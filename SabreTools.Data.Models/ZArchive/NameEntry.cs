@@ -16,13 +16,12 @@ namespace SabreTools.Data.Models.ZArchive
         /// Filename length, with prefix byte's MSB set to 1 for filenames greater than 127 long
         /// NodeLengthShort and NodeLengthLong fields are exclusive, and one must be present 
         /// </summary>
-        /// <remarks>File names are trimmed to 2^15 - 1 bytes long</remarks>
         public ushort? NodeLengthLong { get; set; }
 
         /// <summary>
         /// UTF-8 encoded file name
         /// </summary>
         /// <remarks>Maximum length of 2^15 - 1 bytes</remarks>
-        public byte[] NodeLengthLong { get; set; } = [];
+        public byte[] NodeName { get; set; } = [];
     }
 }

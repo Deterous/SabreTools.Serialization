@@ -1,4 +1,6 @@
+using System.Text;
 using SabreTools.Data.Models.ZArchive;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.Wrappers
 {
