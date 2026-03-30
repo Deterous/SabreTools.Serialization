@@ -276,7 +276,7 @@ namespace SabreTools.Serialization.Readers
             }
 
             // First entry of file tree must be root directory
-            if (obj[0].NameOffsetAndTypeFlag & 0x7FFFFFFF) != 0x7FFFFFFF)
+            if ((obj[0].NameOffsetAndTypeFlag & 0x7FFFFFFF) != 0x7FFFFFFF)
                 return null;
 
             return obj;
