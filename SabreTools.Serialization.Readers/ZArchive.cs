@@ -38,7 +38,7 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 // Seek to and then read the compression offset records
-                data.SeekIfPossible(archive.Footer.SectionOffsetRecords.Offset, SeekOrigin.Begin);
+                data.SeekIfPossible((long)archive.Footer.SectionOffsetRecords.Offset, SeekOrigin.Begin);
                 var offsetRecords = ParseOffsetRecords(data, archive.Footer.SectionOffsetRecords.Size);
                 if (offsetRecords is not null)
                     archive.OffsetRecords = offsetRecords;
@@ -46,7 +46,7 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 // Seek to and then read the name table entries
-                data.SeekIfPossible(archive.Footer.SectionNameTable.Offset, SeekOrigin.Begin);
+                data.SeekIfPossible((long)archive.Footer.SectionNameTable.Offset, SeekOrigin.Begin);
                 var nameTable = ParseNameTable(data, archive.Footer.SectionNameTable.Size);
                 if (nameTable is not null)
                     archive.NameTable = nameTable;
@@ -54,7 +54,7 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 // Seek to and then read the file tree entries
-                data.SeekIfPossible(archive.Footer.SectionFileTree.Offset, SeekOrigin.Begin);
+                data.SeekIfPossible((long)archive.Footer.SectionFileTree.Offset, SeekOrigin.Begin);
                 var fileTree = ParseFileTree(data, archive.Footer.SectionFileTree.Size, archive.Footer.SectionNameTable.Size);
                 if (fileTree is not null)
                     archive.FileTree = fileTree;
@@ -135,7 +135,7 @@ namespace SabreTools.Serialization.Readers
 
             // Read and validate archive size
             obj.Size = data.ReadUInt64BigEndian();
-            if (obj.Size != data.Length - initialOffset)
+            if (obj.Size != (ulong)(data.Length - initialOffset))
                 return null;
 
             // Read and validate version bytes, only Version 1 is supported
@@ -221,7 +221,7 @@ namespace SabreTools.Serialization.Readers
             }
 
             obj.NameEntries = [..nameEntries];
-            obj.NameOffsets = [..nameOffsets];
+            obj.NameTableOffsets = [..nameOffsets];
 
             return obj;
         }
@@ -246,7 +246,7 @@ namespace SabreTools.Serialization.Readers
                 if ((obj[i].NameOffsetAndTypeFlag & 0x7FFFFFFF) > nameTableSize)
                     return null;
 
-                if (obj[i].IsFile)
+                if (obj[i].IsFile())
                 {
                     if (obj[i] is FileEntry fileEntry)
                     {
