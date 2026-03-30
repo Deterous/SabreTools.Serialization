@@ -14,7 +14,7 @@ namespace SabreTools.Data.Extensions
         /// <returns>True if the node is a directory</returns>
         public static NameEntry? EntryAtOffset(this NameTable nameTable, uint offset)
         {
-            var index = Array.IndexOf(nameTable.NodeTableOffsets, offset);
+            var index = Array.IndexOf(nameTable.NameTableOffsets, offset);
             if (index < 0)
                 return null;
 
