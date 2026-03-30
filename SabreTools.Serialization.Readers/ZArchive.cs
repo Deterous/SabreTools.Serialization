@@ -61,6 +61,7 @@ namespace SabreTools.Serialization.Readers
                     archive.FileTree = fileTree;
                 else
                     return null;
+                System.Console.WriteLine($"done");
 
                 // Do not attempt to read compressed data into memory
 
@@ -243,6 +244,7 @@ namespace SabreTools.Serialization.Readers
 
             for (int i = 0; i < entries; i++)
             {
+                System.Console.WriteLine($"Entry {i}");
                 var nameOffsetAndFlag = data.ReadUInt32BigEndian();
 
                 // Validate name table offset value
@@ -252,26 +254,33 @@ namespace SabreTools.Serialization.Readers
                 // Check if node is file or directory
                 if ((nameOffsetAndFlag & 0x80000000) == 0x80000000)
                 {
+                    System.Console.WriteLine($"1");
                     var fileEntry = new FileEntry();
                     fileEntry.NameOffsetAndTypeFlag = nameOffsetAndFlag;
                     fileEntry.FileOffsetLow = data.ReadUInt32BigEndian();
                     fileEntry.FileSizeLow = data.ReadUInt32BigEndian();
                     fileEntry.FileOffsetHigh = data.ReadUInt16BigEndian();
                     fileEntry.FileSizeHigh = data.ReadUInt16BigEndian();
+                    System.Console.WriteLine($"1.2");
                     obj[i] = fileEntry;
+                    System.Console.WriteLine($"1.3");
                 }
                 else
                 {
+                    System.Console.WriteLine($"2");
                     var directoryEntry = new DirectoryEntry();
                     directoryEntry.NameOffsetAndTypeFlag = nameOffsetAndFlag;
                     directoryEntry.NodeStartIndex = data.ReadUInt32BigEndian();
                     directoryEntry.Count = data.ReadUInt32BigEndian();
                     directoryEntry.Reserved = data.ReadUInt32BigEndian();
+                    System.Console.WriteLine($"2.2");
                     obj[i] = directoryEntry;
+                    System.Console.WriteLine($"2.3");
                 }
             }
 
             // First entry of file tree must be root directory
+            System.Console.WriteLine($"done");
             if ((obj[0].NameOffsetAndTypeFlag & 0x7FFFFFFF) != 0x7FFFFFFF)
                 return null;
 
