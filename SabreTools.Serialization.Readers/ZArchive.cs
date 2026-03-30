@@ -42,7 +42,7 @@ namespace SabreTools.Serialization.Readers
 
                 // Seek to and then read the compression offset records
                 Console.WriteLine($"[DEBUG] Currently at {data.Position}");
-                Console.WriteLine("[DEBUG] Seeking to {(long)archive.Footer.SectionOffsetRecords.Offset}");
+                Console.WriteLine($"[DEBUG] Seeking to {(long)archive.Footer.SectionOffsetRecords.Offset}");
                 data.SeekIfPossible((long)archive.Footer.SectionOffsetRecords.Offset, SeekOrigin.Begin);
                 Console.WriteLine($"[DEBUG] Currently at {data.Position}");
                 var offsetRecords = ParseOffsetRecords(data, archive.Footer.SectionOffsetRecords.Size);
@@ -176,7 +176,9 @@ namespace SabreTools.Serialization.Readers
             for (int i = 0; i < entries; i++)
             {
                 Console.WriteLine("[DEBUG] record...");
-                obj[i].Offset = data.ReadUInt64BigEndian();
+                var offset = data.ReadUInt64BigEndian();
+                Console.WriteLine("[DEBUG] saving...");
+                obj[i].Offset = offset;
                 Console.WriteLine($"[DEBUG] Offset {obj[i].Offset}");
                 for (int block = 0; block < Constants.BlocksPerOffsetRecord; block++)
                 {
