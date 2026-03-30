@@ -41,7 +41,10 @@ namespace SabreTools.Serialization.Readers
                 Console.WriteLine("[DEBUG] Finished Footer");
 
                 // Seek to and then read the compression offset records
+                Console.WriteLine($"[DEBUG] Currently at {data.Position}");
+                Console.WriteLine("[DEBUG] Seeking to {(long)archive.Footer.SectionOffsetRecords.Offset}");
                 data.SeekIfPossible((long)archive.Footer.SectionOffsetRecords.Offset, SeekOrigin.Begin);
+                Console.WriteLine($"[DEBUG] Currently at {data.Position}");
                 var offsetRecords = ParseOffsetRecords(data, archive.Footer.SectionOffsetRecords.Size);
                 if (offsetRecords is not null)
                     archive.OffsetRecords = offsetRecords;
