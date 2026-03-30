@@ -6,6 +6,6 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Number of compressed blocks referred to by a record 
         /// </summary>
-        public static readonly string EntriesPerOffsetRecord = 16;
+        public const int EntriesPerOffsetRecord = 16;
     }
 }

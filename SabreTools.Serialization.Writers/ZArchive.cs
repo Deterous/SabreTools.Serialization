@@ -15,10 +15,9 @@ namespace SabreTools.Serialization.Writers
 
             // Setup the writer and output
             var stream = new MemoryStream();
-            var writer = new Writer(stream, Encoding.UTF8);
 
             // Write out the file contents
-            // WriteLocalFiles(obj.LocalFiles, writer);
+            // WriteLocalFiles(obj.LocalFiles, stream);
 
             // Return the stream
             stream.SeekIfPossible(0, SeekOrigin.Begin);

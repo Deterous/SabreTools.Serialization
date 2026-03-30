@@ -10,41 +10,41 @@ namespace SabreTools.Data.Models.ZArchive
         /// MSB is the type flag, 0 is Directory, 1 is File
         /// Remaining 31 bits are the offset in the NameTable
         /// </summary>
-        public uint NameOffsetAndTypeFlag { get; set; } = [];
+        public uint NameOffsetAndTypeFlag { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public uint FileOffsetLow { get; set; } = [];
+        public uint FileOffsetLow { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public uint FileSizeLow { get; set; } = [];
+        public uint FileSizeLow { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public ushort FileSizeHigh { get; set; } = [];
+        public ushort FileSizeHigh { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public ushort FileOffsetHigh { get; set; } = [];
+        public ushort FileOffsetHigh { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public uint NodeStartIndex { get; set; } = [];
+        public uint NodeStartIndex { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public uint Count { get; set; } = [];
+        public uint Count { get; set; }
 
         /// <summary>
         /// Reserved field
         /// </summary>
-        public uint Reserved { get; set; } = [];
+        public uint Reserved { get; set; }
     }
 }
