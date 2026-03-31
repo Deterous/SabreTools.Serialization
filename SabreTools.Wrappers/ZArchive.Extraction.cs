@@ -125,6 +125,15 @@ namespace SabreTools.Wrappers
 
                         var buffer = _dataSource.ReadBytes(bytesToRead);
 
+                        if (bytesToRead == Constants.BlockSize)
+                        {
+                            // Block is stored uncompressed
+                            fs.Write(buffer, 0, bytesToRead);
+                            fs.Flush();
+                            readOffset += (ulong)bytesToRead;
+                            continue;
+                        }
+
                         // Decompress buffer
                         byte[] decompressedBuffer;
                         using var inputStream = new MemoryStream(buffer);
