@@ -129,11 +129,10 @@ namespace SabreTools.Wrappers
                         byte[] decompressedBuffer;
                         using var inputStream = new MemoryStream(buffer);
                         using var zstdStream = new ZStandardStream(inputStream);
-                        using (var outputStream = new MemoryStream())
-                        {
-                            zstdStream.CopyTo(outputStream);
-                            decompressedBuffer = outputStream.ToArray();
-                        }
+                        using var outputStream = new MemoryStream();
+                        zstdStream.CopyTo(outputStream);
+                        Console.WriteLine($"Output stream length {outputStream.Length}");
+                        decompressedBuffer = outputStream.ToArray();
                         if (decompressedBuffer.Length != expectedSize)
                         {
                             if (includeDebug) Console.WriteLine($"Invalid decompressed block size {decompressedBuffer.Length}");
