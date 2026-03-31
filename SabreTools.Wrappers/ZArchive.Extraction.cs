@@ -128,7 +128,7 @@ namespace SabreTools.Wrappers
 
                         // Decompress buffer
                         using (var inputStream = new MemoryStream(buffer))
-                        using (var zstdStream = new ZstandardStream(inputStream))
+                        using (var zstdStream = new DecompressionStream(inputStream))
                         using (var outputStream = new MemoryStream())
                         {
                             zstdStream.CopyTo(outputStream);
