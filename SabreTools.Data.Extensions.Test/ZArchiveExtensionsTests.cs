@@ -37,10 +37,10 @@ namespace SabreTools.Data.Extensions.Test
         [Fact]
         public void GetName_Invalid()
         {
-            FileDirectoryEntry fde = new FileDirectoryEntry();
+            var de = new DirectoryEntry();
             NameTable nt = new NameTable();
             string? expected = null;
-            bool actual = fde.GetName(nt);
+            string? actual = de.GetName(nt);
             Assert.Equal(expected, actual);
         }
     }
