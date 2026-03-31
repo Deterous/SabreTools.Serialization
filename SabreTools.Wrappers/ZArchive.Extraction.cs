@@ -152,7 +152,6 @@ namespace SabreTools.Wrappers
                         using var zstdStream = new ZStandardStream(inputStream);
                         using var outputStream = new MemoryStream();
                         zstdStream.CopyTo(outputStream);
-                        Console.WriteLine($"Output stream length {outputStream.Length}");
                         decompressedBuffer = outputStream.ToArray();
                         if (decompressedBuffer.Length != expectedSize)
                         {
