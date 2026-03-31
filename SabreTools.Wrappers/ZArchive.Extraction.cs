@@ -128,7 +128,7 @@ namespace SabreTools.Wrappers
 
                         // Decompress buffer
                         using (var inputStream = new MemoryStream(buffer))
-                        using (var zstdStream = new ZstandardStream(inputStream, CompressionMode.Decompress))
+                        using (var zstdStream = new ZstandardStream(inputStream))
                         using (var outputStream = new MemoryStream())
                         {
                             zstdStream.CopyTo(outputStream);
@@ -136,7 +136,7 @@ namespace SabreTools.Wrappers
                             if (originalData.Length != expectedSize)
                             {
                                 if (includeDebug) Console.WriteLine("Invalid decompressed block size");
-                                return null;
+                                return false;
                             }
 
                             // Write decompressed block to file
