@@ -126,23 +126,24 @@ namespace SabreTools.Wrappers
                         var buffer = _dataSource.ReadBytes(bytesToRead);
 
                         // Decompress buffer
-                        using (var inputStream = new MemoryStream(buffer))
-                        using (var zstdStream = new DecompressionStream(inputStream))
+                        byte[] decompressedBuffer;
+                        using var inputStream = new MemoryStream(buffer);
+                        using var zstdStream = new DecompressionStream(inputStream);
                         using (var outputStream = new MemoryStream())
                         {
                             zstdStream.CopyTo(outputStream);
-                            byte[] decompressedBuffer = outputStream.ToArray();
-                            if (decompressedBuffer.Length != expectedSize)
-                            {
-                                if (includeDebug) Console.WriteLine($"Invalid decompressed block size {decompressedBuffer.Length}");
-                                return false;
-                            }
-
-                            // Write decompressed buffer to output file
-                            fs.Write(decompressedBuffer, 0, expectedSize);
-                            fs.Flush();
-                            readOffset += (ulong)bytesToRead;
+                            decompressedBuffer = outputStream.ToArray();
                         }
+                        if (decompressedBuffer.Length != expectedSize)
+                        {
+                            if (includeDebug) Console.WriteLine($"Invalid decompressed block size {decompressedBuffer.Length}");
+                            return false;
+                        }
+
+                        // Write decompressed buffer to output file
+                        fs.Write(decompressedBuffer, 0, expectedSize);
+                        fs.Flush();
+                        readOffset += (ulong)bytesToRead;
                     }
                 }
 
