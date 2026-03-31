@@ -101,8 +101,10 @@ namespace SabreTools.Wrappers
                     while (readOffset < fileSize)
                     {
                         // Determine which block to read
-                        int blockIndex = (int)((fileOffset + readOffset) / (ulong)Constants.BlockSize);
-                        int recordIndex = blockIndex / Constants.BlocksPerOffsetRecord;
+                        ulong absoluteOffset = fileOffset + readOffset;
+                        int blockIndex = (int)(absoluteOffset / (ulong)Constants.BlockSize);
+                        int intraBlockOffset = (int)(absoluteOffset % (ulong)Constants.BlockSize);
+                        int recordIndex = (int)(blockIndex / (ulong)Constants.BlocksPerOffsetRecord);
                         if (recordIndex >= OffsetRecords.Length)
                         {
                             if (includeDebug) Console.WriteLine($"File offset : {outputPath}");
@@ -111,10 +113,10 @@ namespace SabreTools.Wrappers
                         var offsetRecord = OffsetRecords[recordIndex];
 
                         int withinRecordIndex = blockIndex % Constants.BlocksPerOffsetRecord;
-                        int bytesToRead = Math.Min((int)(offsetRecord.Size[withinRecordIndex]) + 1, Constants.BlockSize);
-                        int expectedSize = Math.Min((int)(fileSize - readOffset), Constants.BlockSize);
+                        int bytesToRead = (int)(offsetRecord.Size[withinRecordIndex]) + 1;
+                        int expectedSize = Math.Min((int)(fileSize - readOffset), Constants.BlockSize - intraBlockOffset);
 
-                        ulong blockOffset = offsetRecord.Offset;
+                        ulong blockOffset = rawOffset + offsetRecord.Offset;
                         for (int i = 0; i < withinRecordIndex; i++)
                         {
                             blockOffset += (ulong)offsetRecord.Size[i] + 1;
@@ -141,8 +143,8 @@ namespace SabreTools.Wrappers
                         if (bytesToRead == Constants.BlockSize)
                         {
                             // Block is stored uncompressed
-                            fs.Write(buffer, 0, bytesToRead);
-                            readOffset += (ulong)bytesToRead;
+                            fs.Write(buffer, intraBlockOffset, expectedSize);
+                            readOffset += (ulong)expectedSize;
                             continue;
                         }
 
@@ -153,14 +155,14 @@ namespace SabreTools.Wrappers
                         using var outputStream = new MemoryStream();
                         zstdStream.CopyTo(outputStream);
                         decompressedBuffer = outputStream.ToArray();
-                        if (decompressedBuffer.Length != expectedSize)
+                        if (decompressedBuffer.Length != Constants.BlockSize)
                         {
                             if (includeDebug) Console.WriteLine($"Invalid decompressed block size {decompressedBuffer.Length}");
                             return false;
                         }
 
                         // Write decompressed buffer to output file
-                        fs.Write(decompressedBuffer, 0, expectedSize);
+                        fs.Write(decompressedBuffer, intraBlockOffset, expectedSize);
                         readOffset += (ulong)expectedSize;
                     }
                 }
