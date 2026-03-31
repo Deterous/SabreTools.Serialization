@@ -53,7 +53,13 @@ namespace SabreTools.Wrappers
                 {
                     uint childIndex = dir.NodeStartIndex + i;
                     var child = Model.FileTree[childIndex];
-                    string name = child.GetName(Model.NameTable);
+                    string? name = child.GetName(Model.NameTable);
+                    if (string.IsNullOrEmpty(name))
+                    {
+                        if (includeDebug) Console.WriteLine("Invalid node name");
+                        return false;
+                    }
+
                     string outputPath = Path.Combine(outputDirectory, name);
                     if (child.IsDirectory())
                         success |= ExtractDirectory(outputPath, includeDebug, childIndex);
@@ -115,7 +121,7 @@ namespace SabreTools.Wrappers
                         }
 
                         _dataSource.SeekIfPossible((long)blockOffset, SeekOrigin.Begin);
-                        byte[] buffer = _dataSource.ReadBytes(bytesToRead);
+                        var buffer = _dataSource.ReadBytes(bytesToRead);
 
                         // Decompress buffer
                         // Check decompressed size == expectedBytes
