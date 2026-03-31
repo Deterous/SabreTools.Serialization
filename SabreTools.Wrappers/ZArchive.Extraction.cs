@@ -89,23 +89,14 @@ namespace SabreTools.Wrappers
             {
                 var fileOffset = ((ulong)file.FileOffsetHigh << 32) | (ulong)file.FileOffsetLow;
                 var fileSize = ((ulong)file.FileSizeHigh << 32) | (ulong)file.FileSizeLow;
+
+                // Write the output file
+                if (includeDebug) Console.WriteLine($"Extracting: {outputPath}");
+                using var fs = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                ulong readOffset = 0;
+
                 lock (_dataSourceLock)
                 {
-                    /*
-                    _dataSource.SeekIfPossible(rawOffset + fileOffset, SeekOrigin.Begin);
-
-                    // Make sure it won't EOF
-                    if (fileSize > _dataSource.Length - _dataSource.Position)
-                    {
-                        if (includeDebug) Console.WriteLine($"File out of bounds: {outputPath}");
-                        return false;
-                    }
-                    */
-
-                    // Write the output file
-                    if (includeDebug) Console.WriteLine($"Extracting: {outputPath}");
-                    using var fs = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                    ulong readOffset = 0;
                     while (readOffset < fileSize)
                     {
                         // Determine which block to read
@@ -124,6 +115,14 @@ namespace SabreTools.Wrappers
                         }
 
                         _dataSource.SeekIfPossible((long)blockOffset, SeekOrigin.Begin);
+
+                        // Make sure it won't EOF
+                        if (bytesToRead > _dataSource.Length - _dataSource.Position)
+                        {
+                            if (includeDebug) Console.WriteLine($"File out of bounds: {outputPath}");
+                            return false;
+                        }
+
                         var buffer = _dataSource.ReadBytes(bytesToRead);
 
                         // Decompress buffer
@@ -132,19 +131,18 @@ namespace SabreTools.Wrappers
                         using (var outputStream = new MemoryStream())
                         {
                             zstdStream.CopyTo(outputStream);
-                            byte[] originalData = outputStream.ToArray();
-                            if (originalData.Length != expectedSize)
+                            byte[] decompressedBuffer = outputStream.ToArray();
+                            if (decompressedBuffer.Length != expectedSize)
                             {
-                                if (includeDebug) Console.WriteLine("Invalid decompressed block size");
+                                if (includeDebug) Console.WriteLine($"Invalid decompressed block size {decompressedBuffer.Length}");
                                 return false;
                             }
 
-                            // Write decompressed block to file
-                            fs.Write(originalData, 0, bytesToRead);
+                            // Write decompressed buffer to output file
+                            fs.Write(decompressedBuffer, 0, expectedSize);
                             fs.Flush();
+                            readOffset += (ulong)bytesToRead;
                         }
-
-                        readOffset += (ulong)expectedSize;
                     }
                 }
 
