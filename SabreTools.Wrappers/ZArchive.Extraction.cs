@@ -1,9 +1,12 @@
 using System;
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.ZArchive;
 using SabreTools.IO.Extensions;
+using SabreTools.Numerics.Extensions;
 using SharpCompress.Compressors.ZStandard;
 #endif
 
