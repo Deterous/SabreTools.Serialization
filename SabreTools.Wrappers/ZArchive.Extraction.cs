@@ -1,6 +1,7 @@
 using System;
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.IO;
+using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.ZArchive;
 using SabreTools.IO.Extensions;
 using SharpCompress.Compressors.ZStandard;
@@ -50,7 +51,8 @@ namespace SabreTools.Wrappers
             {
                 for (uint i = 0; i < dir.Count; i++)
                 {
-                    var child = Model.FileTree[dir.NodeStartIndex + i];
+                    uint childIndex = dir.NodeStartIndex + i;
+                    var child = Model.FileTree[childIndex];
                     string name = child.GetName(Model.NameTable);
                     string outputPath = Path.Combine(outputDirectory, name);
                     if (child.IsDirectory())
@@ -74,10 +76,10 @@ namespace SabreTools.Wrappers
             // Decompress each chunk to output
             var node = Model.FileTree[index];
             var rawOffset = Model.Footer.SectionCompressedData.Offset;
-            var fileOffset = ((ulong)fe.FileOffsetHigh << 32) | (ulong)fe.FileOffsetLow;
-            var fileSize = ((ulong)fe.FileSizeHigh << 32) | (ulong)fe.FileSizeLow;
             if (node is FileEntry file)
             {
+                var fileOffset = ((ulong)file.FileOffsetHigh << 32) | (ulong)file.FileOffsetLow;
+                var fileSize = ((ulong)file.FileSizeHigh << 32) | (ulong)file.FileSizeLow;
                 lock (_dataSourceLock)
                 {
                     /*
@@ -112,7 +114,7 @@ namespace SabreTools.Wrappers
                             blockOffset += Model.OffsetRecords[recordIndex].Size[i];
                         }
 
-                        _dataSource.SeekIfPossible(blockOffset, SeekOrigin.Begin);
+                        _dataSource.SeekIfPossible((long)blockOffset, SeekOrigin.Begin);
                         byte[] buffer = _dataSource.ReadBytes(bytesToRead);
 
                         // Decompress buffer
