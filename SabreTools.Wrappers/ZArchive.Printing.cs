@@ -66,9 +66,9 @@ namespace SabreTools.Wrappers
 
                 builder.AppendLine(nameTable.NameTableOffsets[i], "    Name Table Offset");
                 if (entry.NodeLengthShort is not null)
-                    builder.AppendLine(entry.NodeLengthShort, "    Node Length");
+                    builder.AppendLine(entry.NodeLengthShort, "    Name Length");
                 else if (entry.NodeLengthLong is not null)
-                    builder.AppendLine(entry.NodeLengthLong, "    Node Length");
+                    builder.AppendLine(entry.NodeLengthLong, "    Name Length");
                 builder.AppendLine(Encoding.UTF8.GetString(entry.NodeName), "    Name");
                 builder.AppendLine();
             }

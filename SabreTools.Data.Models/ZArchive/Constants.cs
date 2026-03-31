@@ -6,6 +6,11 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Number of compressed blocks referred to by a record 
         /// </summary>
+        public const int BlockSize = 64 * 1024;
+
+        /// <summary>
+        /// Number of compressed blocks referred to by a record 
+        /// </summary>
         public const int BlocksPerOffsetRecord = 16;
 
         /// <summary>

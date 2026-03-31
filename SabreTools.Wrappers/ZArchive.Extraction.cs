@@ -1,4 +1,10 @@
 using System;
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+using System.IO;
+using SabreTools.Data.Models.ZArchive;
+using SabreTools.IO.Extensions;
+using SharpCompress.Compressors.ZStandard;
+#endif
 
 namespace SabreTools.Wrappers
 {
@@ -10,8 +16,123 @@ namespace SabreTools.Wrappers
             if (_dataSource is null || !_dataSource.CanRead)
                 return false;
             
-            // Not yet implemented
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+            try
+            {
+                // Extract all files and directories from root (index 0)
+                return ExtractDirectory(outputDirectory, includeDebug, 0);
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.Error.WriteLine(ex);
+                return false;
+            }
+#else
+            Console.WriteLine("Extraction is not supported for this framework!");
+            Console.WriteLine();
             return false;
+#endif
         }
+
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+        /// <inheritdoc/>
+        public bool ExtractDirectory(string outputDirectory, bool includeDebug, uint index)
+        {
+            bool success = true;
+
+            // Create directory
+            if (!string.IsNullOrEmpty(outputDirectory) && !Directory.Exists(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+
+            // Extract all children of current node
+            FileDirectoryEntry node = Model.FileTree[index];
+            if (node is DirectoryEntry dir)
+            {
+                for (uint i = 0; i < dir.Count; i++)
+                {
+                    var child = Model.FileTree[dir.NodeStartIndex + i];
+                    string name = child.GetName(Model.NameTable);
+                    string outputPath = Path.Combine(outputDirectory, name);
+                    if (child.IsDirectory())
+                        success |= ExtractDirectory(outputPath, includeDebug, childIndex);
+                    else
+                        success |= ExtractFile(outputPath, includeDebug, childIndex);
+                }
+
+                return success;
+            }
+            else
+            {
+                if (includeDebug) Console.WriteLine("Invalid directory node");
+                return false;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool ExtractFile(string outputPath, bool includeDebug, uint index)
+        {
+            // Decompress each chunk to output
+            var node = Model.FileTree[index];
+            var rawOffset = Model.Footer.SectionCompressedData.Offset;
+            var fileOffset = ((ulong)fe.FileOffsetHigh << 32) | (ulong)fe.FileOffsetLow;
+            var fileSize = ((ulong)fe.FileSizeHigh << 32) | (ulong)fe.FileSizeLow;
+            if (node is FileEntry file)
+            {
+                lock (_dataSourceLock)
+                {
+                    /*
+                    _dataSource.SeekIfPossible(rawOffset + fileOffset, SeekOrigin.Begin);
+
+                    // Make sure it won't EOF
+                    if (fileSize > _dataSource.Length - _dataSource.Position)
+                    {
+                        if (includeDebug) Console.WriteLine($"File out of bounds: {outputPath}");
+                        return false;
+                    }
+                    */
+
+                    // Write the output file
+                    if (includeDebug) Console.WriteLine($"Extracting: {outputPath}");
+                    using var fs = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                    ulong readOffset = 0;
+                    while (readOffset < fileSize)
+                    {
+                        // Determine which block to read
+                        int blockIndex = (int)((fileOffset + readOffset) / (ulong)Constants.BlockSize);
+                        int recordIndex = blockIndex / Constants.BlocksPerOffsetRecord;
+                        int withinRecordIndex = blockIndex % Constants.BlocksPerOffsetRecord;
+
+                        int expectedBytes = Math.Min((int)(fileSize - readOffset), Constants.BlockSize);
+                        int bytesToRead = Math.Min((int)(Model.OffsetRecords[recordIndex].Size[withinRecordIndex]), Constants.BlockSize);
+
+                        ulong recordOffset = Model.OffsetRecords[recordIndex].Offset;
+                        ulong blockOffset = recordOffset;
+                        for (int i = 0; i < withinRecordIndex; i++)
+                        {
+                            blockOffset += Model.OffsetRecords[recordIndex].Size[i];
+                        }
+
+                        _dataSource.SeekIfPossible(blockOffset, SeekOrigin.Begin);
+                        byte[] buffer = _dataSource.ReadBytes(bytesToRead);
+
+                        // Decompress buffer
+                        // Check decompressed size == expectedBytes
+
+                        fs.Write(buffer, 0, bytesToRead);
+                        fs.Flush();
+
+                        readOffset += (ulong)expectedBytes;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                if (includeDebug) Console.WriteLine("Invalid file node");
+                return false;
+            }
+        }
+#endif
     }
 }
