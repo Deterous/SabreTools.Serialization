@@ -12,25 +12,25 @@ namespace SabreTools.Data.Extensions.Test
             NameTable nt = new NameTable();
             uint offset = 0;
             NameEntry? expected = null;
-            short actual = nt.EntryAtOffset(sectorLength);
+            var actual = nt.EntryAtOffset(offset);
             Assert.Equal(expected, actual);
         }
 
         [Fact]
         public void IsFile_False()
         {
-            FileDirectoryEntry fde = new FileDirectoryEntry();
+            var de = new DirectoryEntry();
             bool expected = false;
-            short actual = fde.IsFile();
+            bool actual = de.IsFile();
             Assert.Equal(expected, actual);
         }
 
         [Fact]
         public void IsDirectory_True()
         {
-            FileDirectoryEntry fde = new FileDirectoryEntry();
+            var de = new DirectoryEntry();
             bool expected = true;
-            short actual = fde.IsDirectory();
+            bool actual = de.IsDirectory();
             Assert.Equal(expected, actual);
         }
 
@@ -40,7 +40,7 @@ namespace SabreTools.Data.Extensions.Test
             FileDirectoryEntry fde = new FileDirectoryEntry();
             NameTable nt = new NameTable();
             string? expected = null;
-            short actual = fde.GetName(nt);
+            bool actual = fde.GetName(nt);
             Assert.Equal(expected, actual);
         }
     }
