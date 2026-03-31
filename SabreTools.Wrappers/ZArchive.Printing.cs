@@ -26,8 +26,8 @@ namespace SabreTools.Wrappers
 
         public void Print(StringBuilder builder, OffsetRecord[] records)
         {
-            builder.AppendLine(  "Compression Offset Records:");
-            builder.AppendLine(  "-------------------------");
+            builder.AppendLine("  Compression Offset Records:");
+            builder.AppendLine("  -------------------------");
             builder.AppendLine();
             if (records.Length == 0)
             {
@@ -42,13 +42,16 @@ namespace SabreTools.Wrappers
 
                 builder.AppendLine(record.Offset, "    Base Offset");
                 builder.AppendLine(record.Size, "    Block Sizes");
+                builder.AppendLine();
             }
+
+            builder.AppendLine();
         }
 
         public void Print(StringBuilder builder, NameTable nameTable)
         {
-            builder.AppendLine(  "Name Table:");
-            builder.AppendLine(  "-------------------------");
+            builder.AppendLine("  Name Table:");
+            builder.AppendLine("  -------------------------");
             builder.AppendLine();
             if (nameTable.NameEntries.Length != nameTable.NameTableOffsets.Length)
             {
@@ -68,12 +71,14 @@ namespace SabreTools.Wrappers
                     builder.AppendLine(entry.NodeLengthLong, "    Node Length");
                 builder.AppendLine(Encoding.UTF8.GetString(entry.NodeName), "    Name");
             }
+
+            builder.AppendLine();
         }
 
         public void Print(StringBuilder builder, FileDirectoryEntry[] fileTree)
         {
-            builder.AppendLine(  "File Tree:");
-            builder.AppendLine(  "-------------------------");
+            builder.AppendLine("  File Tree:");
+            builder.AppendLine("  -------------------------");
             builder.AppendLine();
             if (fileTree.Length == 0)
             {
@@ -109,18 +114,35 @@ namespace SabreTools.Wrappers
                     builder.AppendLine("    Unknown Node");
                 }
             }
+
+            builder.AppendLine();
         }
 
         public void Print(StringBuilder builder, Footer footer)
         {
-            builder.AppendLine(  "Footer:");
-            builder.AppendLine(  "-------------------------");
+            builder.AppendLine("  Footer:");
+            builder.AppendLine("  -------------------------");
             builder.AppendLine();
 
-            builder.AppendLine(footer.IntegrityHash, "  Integrity Hash");
-            builder.AppendLine(footer.Size, "  Size");
-            builder.AppendLine(footer.Version, "  Version");
-            builder.AppendLine(footer.Magic, "  Magic");
+
+            builder.AppendLine(footer.SectionCompressedData.Offset, "    Compressed Data Base Offset");
+            builder.AppendLine(footer.SectionCompressedData.Size, "    Compressed Data Length");
+            builder.AppendLine(footer.SectionOffsetRecords.Offset, "    Compression Offset Records Base Offset");
+            builder.AppendLine(footer.SectionOffsetRecords.Size, "    Compression Offset Records Length");
+            builder.AppendLine(footer.SectionNameTable.Offset, "    Name Table Base Offset");
+            builder.AppendLine(footer.SectionNameTable.Size, "    Name Table Length");
+            builder.AppendLine(footer.SectionFileTree.Offset, "    File Tree Base Offset");
+            builder.AppendLine(footer.SectionFileTree.Size, "    File Tree Length");
+            builder.AppendLine(footer.SectionMetaDirectory.Offset, "    Meta Directory Base Offset");
+            builder.AppendLine(footer.SectionMetaDirectory.Size, "    Meta Directory Length");
+            builder.AppendLine(footer.SectionMetaData.Offset, "    Meta Data Base Offset");
+            builder.AppendLine(footer.SectionMetaData.Size, "    Meta Data Length");
+            builder.AppendLine(footer.IntegrityHash, "    Integrity Hash");
+            builder.AppendLine(footer.Size, "    Size");
+            builder.AppendLine(footer.Version, "    Version");
+            builder.AppendLine(footer.Magic, "    Magic");
+
+            builder.AppendLine();
         }
     }
 }

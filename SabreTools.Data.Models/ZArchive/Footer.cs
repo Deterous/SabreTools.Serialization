@@ -6,7 +6,10 @@ namespace SabreTools.Data.Models.ZArchive
     /// <see href="https://github.com/Exzap/ZArchive/"/>
     public class Footer
     {
-		public  OffsetInfo SectionLocalFiles { get; set; } = new();
+        /// <summary>
+        /// Size and offset values for the CompressedData section
+        /// </summary>
+		public OffsetInfo SectionCompressedData { get; set; } = new();
 
         /// <summary>
         /// Size and offset values for the OffsetRecords section
