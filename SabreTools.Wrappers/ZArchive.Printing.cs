@@ -87,22 +87,22 @@ namespace SabreTools.Wrappers
                 var node = fileTree[i];
 
                 builder.AppendLine(node.NameOffsetAndTypeFlag, "    Base Offset");
-                bool fileFlag = (record.NameOffsetAndTypeFlag & Constants.FileFlag) == Constants.FileFlag;
+                bool fileFlag = (node.NameOffsetAndTypeFlag & Constants.FileFlag) == Constants.FileFlag;
                 builder.AppendLine(fileFlag, "    File Flag");
-                builder.AppendLine(record.NameOffsetAndTypeFlag & Constants.RootNode, "    Name Table Offset");
+                builder.AppendLine(node.NameOffsetAndTypeFlag & Constants.RootNode, "    Name Table Offset");
 
                 if (node is FileEntry fe)
                 {
-                    var fileOffset = ((ulong)node.FileOffsetHigh << 32) | (ulong)node.FileOffsetLow;
+                    var fileOffset = ((ulong)fe.FileOffsetHigh << 32) | (ulong)fe.FileOffsetLow;
                     builder.AppendLine(fileOffset, "    File Offset");
-                    var fileSize = ((ulong)node.FileSizeHigh << 32) | (ulong)node.FileSizeLow;
+                    var fileSize = ((ulong)fe.FileSizeHigh << 32) | (ulong)fe.FileSizeLow;
                     builder.AppendLine(fileSize, "    File Size");
                 }
                 else if (node is DirectoryEntry de)
                 {
-                    builder.AppendLine(node.NodeStartIndex, "    Node Start Index");
-                    builder.AppendLine(node.Count, "    Count");
-                    builder.AppendLine(node.Reserved, "    Reserved");
+                    builder.AppendLine(de.NodeStartIndex, "    Node Start Index");
+                    builder.AppendLine(de.Count, "    Count");
+                    builder.AppendLine(de.Reserved, "    Reserved");
                 }
                 else
                 {
