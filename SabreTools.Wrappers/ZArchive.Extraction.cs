@@ -142,7 +142,7 @@ namespace SabreTools.Wrappers
                         // Write decompressed buffer to output file
                         fs.Write(decompressedBuffer, 0, expectedSize);
                         fs.Flush();
-                        readOffset += (ulong)bytesToRead;
+                        readOffset += (ulong)expectedSize;
                     }
                 }
 
