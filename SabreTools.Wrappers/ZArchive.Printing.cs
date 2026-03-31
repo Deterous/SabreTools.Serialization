@@ -18,10 +18,10 @@ namespace SabreTools.Wrappers
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
-            Print(builder, Model.OffsetRecords);
-            Print(builder, Model.NameTable);
-            Print(builder, Model.FileTree);
-            Print(builder, Model.Footer);
+            Print(builder, OffsetRecords);
+            Print(builder, NameTable);
+            Print(builder, FileTree);
+            Print(builder, Footer);
         }
 
         public void Print(StringBuilder builder, OffsetRecord[] records)
@@ -44,8 +44,6 @@ namespace SabreTools.Wrappers
                 builder.AppendLine(record.Size, "    Block Sizes");
                 builder.AppendLine();
             }
-
-            builder.AppendLine();
         }
 
         public void Print(StringBuilder builder, NameTable nameTable)
@@ -72,8 +70,6 @@ namespace SabreTools.Wrappers
                 builder.AppendLine(Encoding.UTF8.GetString(entry.NodeName), "    Name");
                 builder.AppendLine();
             }
-
-            builder.AppendLine();
         }
 
         public void Print(StringBuilder builder, FileDirectoryEntry[] fileTree)
@@ -117,8 +113,6 @@ namespace SabreTools.Wrappers
 
                 builder.AppendLine();
             }
-
-            builder.AppendLine();
         }
 
         public void Print(StringBuilder builder, Footer footer)
@@ -126,7 +120,6 @@ namespace SabreTools.Wrappers
             builder.AppendLine("  Footer:");
             builder.AppendLine("  -------------------------");
             builder.AppendLine();
-
 
             builder.AppendLine(footer.SectionCompressedData.Offset, "    Compressed Data Base Offset");
             builder.AppendLine(footer.SectionCompressedData.Size, "    Compressed Data Length");

@@ -49,14 +49,14 @@ namespace SabreTools.Wrappers
                 Directory.CreateDirectory(outputDirectory);
 
             // Extract all children of current node
-            FileDirectoryEntry node = Model.FileTree[index];
+            FileDirectoryEntry node = FileTree[index];
             if (node is DirectoryEntry dir)
             {
                 for (uint i = 0; i < dir.Count; i++)
                 {
                     uint childIndex = dir.NodeStartIndex + i;
-                    var child = Model.FileTree[childIndex];
-                    string? name = child.GetName(Model.NameTable);
+                    var child = FileTree[childIndex];
+                    string? name = child.GetName(NameTable);
                     if (string.IsNullOrEmpty(name))
                     {
                         if (includeDebug) Console.WriteLine("Invalid node name");
@@ -83,8 +83,8 @@ namespace SabreTools.Wrappers
         public bool ExtractFile(string outputPath, bool includeDebug, uint index)
         {
             // Decompress each chunk to output
-            var node = Model.FileTree[index];
-            var rawOffset = Model.Footer.SectionCompressedData.Offset;
+            var node = FileTree[index];
+            var rawOffset = Footer.SectionCompressedData.Offset;
             if (node is FileEntry file)
             {
                 var fileOffset = ((ulong)file.FileOffsetHigh << 32) | (ulong)file.FileOffsetLow;
@@ -113,28 +113,38 @@ namespace SabreTools.Wrappers
                         int recordIndex = blockIndex / Constants.BlocksPerOffsetRecord;
                         int withinRecordIndex = blockIndex % Constants.BlocksPerOffsetRecord;
 
-                        int expectedBytes = Math.Min((int)(fileSize - readOffset), Constants.BlockSize);
-                        int bytesToRead = Math.Min((int)(Model.OffsetRecords[recordIndex].Size[withinRecordIndex]), Constants.BlockSize);
+                        int expectedSize = Math.Min((int)(fileSize - readOffset), Constants.BlockSize);
+                        int bytesToRead = Math.Min((int)(OffsetRecords[recordIndex].Size[withinRecordIndex]), Constants.BlockSize);
 
-                        ulong recordOffset = Model.OffsetRecords[recordIndex].Offset;
+                        ulong recordOffset = OffsetRecords[recordIndex].Offset;
                         ulong blockOffset = recordOffset;
                         for (int i = 0; i < withinRecordIndex; i++)
                         {
-                            blockOffset += Model.OffsetRecords[recordIndex].Size[i];
+                            blockOffset += OffsetRecords[recordIndex].Size[i];
                         }
 
                         _dataSource.SeekIfPossible((long)blockOffset, SeekOrigin.Begin);
                         var buffer = _dataSource.ReadBytes(bytesToRead);
 
                         // Decompress buffer
-                        // Check decompressed size == expectedBytes
-                        // fs.Write(decompressedBuffer, 0, expectedBytes);
+                        using (var inputStream = new MemoryStream(buffer))
+                        using (var zstdStream = new ZstandardStream(inputStream, CompressionMode.Decompress))
+                        using (var outputStream = new MemoryStream())
+                        {
+                            zstdStream.CopyTo(outputStream);
+                            byte[] originalData = outputStream.ToArray();
+                            if (originalData.Length != expectedSize)
+                            {
+                                if (includeDebug) Console.WriteLine("Invalid decompressed block size");
+                                return null;
+                            }
 
-                        fs.Write(buffer, 0, bytesToRead);
-                        fs.Flush();
+                            // Write decompressed block to file
+                            fs.Write(originalData, 0, bytesToRead);
+                            fs.Flush();
+                        }
 
-                        // readOffset += (ulong)expectedBytes;
-                        readOffset += (ulong)bytesToRead;
+                        readOffset += (ulong)expectedSize;
                     }
                 }
 
