@@ -70,6 +70,7 @@ namespace SabreTools.Wrappers
                 else if (entry.NodeLengthLong is not null)
                     builder.AppendLine(entry.NodeLengthLong, "    Node Length");
                 builder.AppendLine(Encoding.UTF8.GetString(entry.NodeName), "    Name");
+                builder.AppendLine();
             }
 
             builder.AppendLine();
@@ -113,6 +114,8 @@ namespace SabreTools.Wrappers
                 {
                     builder.AppendLine("    Unknown Node");
                 }
+
+                builder.AppendLine();
             }
 
             builder.AppendLine();

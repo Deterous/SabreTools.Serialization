@@ -10,6 +10,7 @@ namespace SabreTools.Data.Models.ZArchive
         /// <summary>
         /// Zstd compressed file data, from 65536-byte blocks of the original files
         /// Blocks are stored uncompressed if ZStd does not decrease the size
+        /// Due to the file size, this field is not usually filled in but remains here for completeness
         /// </summary>
         public byte[]? CompressedData { get; set; }
 
