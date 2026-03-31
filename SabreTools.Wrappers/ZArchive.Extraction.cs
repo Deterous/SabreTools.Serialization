@@ -117,7 +117,7 @@ namespace SabreTools.Wrappers
                         ulong blockOffset = offsetRecord.Offset;
                         for (int i = 0; i < withinRecordIndex; i++)
                         {
-                            blockOffset += offsetRecord.Size[i] + 1;
+                            blockOffset += (ulong)offsetRecord.Size[i] + 1;
                         }
 
                         _dataSource.SeekIfPossible((long)blockOffset, SeekOrigin.Begin);
