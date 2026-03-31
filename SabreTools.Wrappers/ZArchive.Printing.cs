@@ -18,7 +18,97 @@ namespace SabreTools.Wrappers
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
+            Print(builder, Model.OffsetRecords);
+            Print(builder, Model.NameTable);
+            Print(builder, Model.FileTree);
             Print(builder, Model.Footer);
+        }
+
+        public void Print(StringBuilder builder, OffsetRecord[] records)
+        {
+            builder.AppendLine(  "Compression Offset Records:");
+            builder.AppendLine(  "-------------------------");
+            builder.AppendLine();
+            if (records.Length == 0)
+            {
+                builder.AppendLine("  No compression offset records");
+                builder.AppendLine();
+                return;
+            }
+
+            for (int i = 0; i < records.Length; i++)
+            {
+                var record = records[i];
+
+                builder.AppendLine(record.Offset, "    Base Offset");
+                builder.AppendLine(record.Size, "    Block Sizes");
+            }
+        }
+
+        public void Print(StringBuilder builder, NameTable nameTable)
+        {
+            builder.AppendLine(  "Name Table:");
+            builder.AppendLine(  "-------------------------");
+            builder.AppendLine();
+            if (nameTable.NameEntries.Length != nameTable.NameTableOffsets.Length)
+            {
+                builder.AppendLine("  Mismatched Name Table entry count");
+                builder.AppendLine();
+                return;
+            }
+
+            for (int i = 0; i < nameTable.NameEntries.Length; i++)
+            {
+                var entry = nameTable.NameEntries[i];
+
+                builder.AppendLine(nameTable.NameTableOffsets[i], "    Name Table Offset");
+                if (entry.NodeLengthShort is not null)
+                    builder.AppendLine(entry.NodeLengthShort, "    Node Length");
+                else if (entry.NodeLengthLong is not null)
+                    builder.AppendLine(entry.NodeLengthLong, "    Node Length");
+                builder.AppendLine(Encoding.UTF8.GetString(entry.NodeName), "    Name");
+            }
+        }
+
+        public void Print(StringBuilder builder, FileDirectoryEntry[] fileTree)
+        {
+            builder.AppendLine(  "File Tree:");
+            builder.AppendLine(  "-------------------------");
+            builder.AppendLine();
+            if (fileTree.Length == 0)
+            {
+                builder.AppendLine("  No nodes in file tree");
+                builder.AppendLine();
+                return;
+            }
+
+            for (int i = 0; i < fileTree.Length; i++)
+            {
+                var node = fileTree[i];
+
+                builder.AppendLine(node.NameOffsetAndTypeFlag, "    Base Offset");
+                bool fileFlag = (record.NameOffsetAndTypeFlag & Constants.FileFlag) == Constants.FileFlag;
+                builder.AppendLine(fileFlag, "    File Flag");
+                builder.AppendLine(record.NameOffsetAndTypeFlag & Constants.RootNode, "    Name Table Offset");
+
+                if (node is FileEntry fe)
+                {
+                    var fileOffset = ((ulong)node.FileOffsetHigh << 32) | (ulong)node.FileOffsetLow;
+                    builder.AppendLine(fileOffset, "    File Offset");
+                    var fileSize = ((ulong)node.FileSizeHigh << 32) | (ulong)node.FileSizeLow;
+                    builder.AppendLine(fileSize, "    File Size");
+                }
+                else if (node is DirectoryEntry de)
+                {
+                    builder.AppendLine(node.NodeStartIndex, "    Node Start Index");
+                    builder.AppendLine(node.Count, "    Count");
+                    builder.AppendLine(node.Reserved, "    Reserved");
+                }
+                else
+                {
+                    builder.AppendLine("    Unknown Node");
+                }
+            }
         }
 
         public void Print(StringBuilder builder, Footer footer)
@@ -27,10 +117,10 @@ namespace SabreTools.Wrappers
             builder.AppendLine(  "-------------------------");
             builder.AppendLine();
 
-            builder.AppendLine(footer.IntegrityHash, "    Integrity Hash");
-            builder.AppendLine(footer.Size, "    Size");
-            builder.AppendLine(footer.Version, "    Version");
-            builder.AppendLine(footer.Magic, "    Magic");
+            builder.AppendLine(footer.IntegrityHash, "  Integrity Hash");
+            builder.AppendLine(footer.Size, "  Size");
+            builder.AppendLine(footer.Version, "  Version");
+            builder.AppendLine(footer.Magic, "  Magic");
         }
     }
 }
