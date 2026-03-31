@@ -104,7 +104,7 @@ namespace SabreTools.Wrappers
                         ulong absoluteOffset = fileOffset + readOffset;
                         int blockIndex = (int)(absoluteOffset / (ulong)Constants.BlockSize);
                         int intraBlockOffset = (int)(absoluteOffset % (ulong)Constants.BlockSize);
-                        int recordIndex = (int)(blockIndex / (ulong)Constants.BlocksPerOffsetRecord);
+                        int recordIndex = blockIndex / Constants.BlocksPerOffsetRecord;
                         if (recordIndex >= OffsetRecords.Length)
                         {
                             if (includeDebug) Console.WriteLine($"File offset : {outputPath}");
