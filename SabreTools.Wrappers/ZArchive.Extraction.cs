@@ -128,11 +128,13 @@ namespace SabreTools.Wrappers
 
                         // Decompress buffer
                         // Check decompressed size == expectedBytes
+                        // fs.Write(decompressedBuffer, 0, expectedBytes);
 
                         fs.Write(buffer, 0, bytesToRead);
                         fs.Flush();
 
-                        readOffset += (ulong)expectedBytes;
+                        // readOffset += (ulong)expectedBytes;
+                        readOffset += (ulong)bytesToRead;
                     }
                 }
 
