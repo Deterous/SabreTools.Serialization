@@ -85,6 +85,7 @@ namespace SabreTools.Wrappers
             // Decompress each chunk to output
             var node = FileTree[index];
             var rawOffset = Footer.SectionCompressedData.Offset;
+            var rawLength = Footer.SectionCompressedData.Size;
             if (node is FileEntry file)
             {
                 var fileOffset = ((ulong)file.FileOffsetHigh << 32) | (ulong)file.FileOffsetLow;
@@ -102,21 +103,33 @@ namespace SabreTools.Wrappers
                         // Determine which block to read
                         int blockIndex = (int)((fileOffset + readOffset) / (ulong)Constants.BlockSize);
                         int recordIndex = blockIndex / Constants.BlocksPerOffsetRecord;
+                        if (recordIndex >= OffsetRecords.Length)
+                        {
+                            if (includeDebug) Console.WriteLine($"File offset : {outputPath}");
+                            return false;
+                        }
+                        var offsetRecord = OffsetRecords[recordIndex];
+
                         int withinRecordIndex = blockIndex % Constants.BlocksPerOffsetRecord;
-
+                        int bytesToRead = Math.Min((int)(offsetRecord.Size[withinRecordIndex]) + 1, Constants.BlockSize);
                         int expectedSize = Math.Min((int)(fileSize - readOffset), Constants.BlockSize);
-                        int bytesToRead = Math.Min((int)(OffsetRecords[recordIndex].Size[withinRecordIndex]), Constants.BlockSize);
 
-                        ulong recordOffset = OffsetRecords[recordIndex].Offset;
-                        ulong blockOffset = recordOffset;
+                        ulong blockOffset = offsetRecord.Offset;
                         for (int i = 0; i < withinRecordIndex; i++)
                         {
-                            blockOffset += OffsetRecords[recordIndex].Size[i];
+                            blockOffset += offsetRecord.Size[i] + 1;
                         }
 
                         _dataSource.SeekIfPossible((long)blockOffset, SeekOrigin.Begin);
 
-                        // Make sure it won't EOF
+                        // Ensure it won't exceed compressed section
+                        if (blockOffset + (ulong)bytesToRead > rawOffset + rawLength)
+                        {
+                            if (includeDebug) Console.WriteLine("Block exceeds compressed section");
+                            return false;
+                        }
+
+                        // Ensure reader won't EOF
                         if (bytesToRead > _dataSource.Length - _dataSource.Position)
                         {
                             if (includeDebug) Console.WriteLine($"File out of bounds: {outputPath}");
@@ -129,7 +142,6 @@ namespace SabreTools.Wrappers
                         {
                             // Block is stored uncompressed
                             fs.Write(buffer, 0, bytesToRead);
-                            fs.Flush();
                             readOffset += (ulong)bytesToRead;
                             continue;
                         }
@@ -150,7 +162,6 @@ namespace SabreTools.Wrappers
 
                         // Write decompressed buffer to output file
                         fs.Write(decompressedBuffer, 0, expectedSize);
-                        fs.Flush();
                         readOffset += (ulong)expectedSize;
                     }
                 }
