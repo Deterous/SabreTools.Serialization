@@ -88,8 +88,8 @@ namespace SabreTools.Wrappers
             var rawLength = Footer.SectionCompressedData.Size;
             if (node is FileEntry file)
             {
-                var fileOffset = ((ulong)file.FileOffsetHigh << 32) | (ulong)file.FileOffsetLow;
-                var fileSize = ((ulong)file.FileSizeHigh << 32) | (ulong)file.FileSizeLow;
+                ulong fileOffset = ((ulong)file.FileOffsetHigh << 32) | (ulong)file.FileOffsetLow;
+                ulong fileSize = ((ulong)file.FileSizeHigh << 32) | (ulong)file.FileSizeLow;
 
                 // Write the output file
                 if (includeDebug) Console.WriteLine($"Extracting: {outputPath}");
@@ -102,9 +102,8 @@ namespace SabreTools.Wrappers
                     {
                         // Determine which block to read
                         ulong absoluteOffset = fileOffset + readOffset;
-                        int blockIndex = (int)(absoluteOffset / (ulong)Constants.BlockSize);
-                        int intraBlockOffset = (int)(absoluteOffset % (ulong)Constants.BlockSize);
-                        int recordIndex = blockIndex / Constants.BlocksPerOffsetRecord;
+                        ulong blockIndex = absoluteOffset / (ulong)Constants.BlockSize;
+                        int recordIndex = (int)(blockIndex / (ulong)Constants.BlocksPerOffsetRecord);
                         if (recordIndex >= OffsetRecords.Length)
                         {
                             if (includeDebug) Console.WriteLine($"File offset : {outputPath}");
@@ -114,6 +113,7 @@ namespace SabreTools.Wrappers
 
                         int withinRecordIndex = blockIndex % Constants.BlocksPerOffsetRecord;
                         int bytesToRead = (int)(offsetRecord.Size[withinRecordIndex]) + 1;
+                        int intraBlockOffset = (int)(absoluteOffset % (ulong)Constants.BlockSize);
                         int expectedSize = Math.Min((int)(fileSize - readOffset), Constants.BlockSize - intraBlockOffset);
 
                         ulong blockOffset = rawOffset + offsetRecord.Offset;
