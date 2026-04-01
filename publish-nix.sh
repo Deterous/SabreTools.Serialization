@@ -55,7 +55,7 @@ echo " "
 
 # Create the build matrix arrays
 FRAMEWORKS=("net10.0")
-RUNTIMES=("win-x64")
+RUNTIMES=("win-x86" "win-x64" "win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
 
 # Use expanded lists, if requested
 if [ $USE_ALL = true ]; then
@@ -73,6 +73,9 @@ if [ $NO_BUILD = false ]; then
     # Restore Nuget packages for all builds
     echo "Restoring Nuget packages"
     dotnet restore
+
+    # Create published Nuget Package
+    dotnet pack SabreTools.Serialization/SabreTools.Serialization.csproj --output $BUILD_FOLDER
 
     # Create unpublished Nuget Packages
     if [ $INCLUDE_UNPUBLISHED = true ]; then
