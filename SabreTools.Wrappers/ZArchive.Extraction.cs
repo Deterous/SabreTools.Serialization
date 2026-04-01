@@ -100,6 +100,7 @@ namespace SabreTools.Wrappers
                 {
                     while (readOffset < fileSize)
                     {
+                        if (includeDebug) Console.WriteLine($"Read Offset: {readOffset}");
                         // Determine which block to read
                         ulong absoluteOffset = fileOffset + readOffset;
                         ulong blockIndex = absoluteOffset / (ulong)Constants.BlockSize;
