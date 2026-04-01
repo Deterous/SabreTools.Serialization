@@ -100,7 +100,6 @@ namespace SabreTools.Wrappers
                 {
                     while (readOffset < fileSize)
                     {
-                        if (includeDebug) Console.WriteLine($"Read Offset: {readOffset}");
                         // Determine which block to read
                         ulong absoluteOffset = fileOffset + readOffset;
                         ulong blockIndex = absoluteOffset / (ulong)Constants.BlockSize;
@@ -116,6 +115,7 @@ namespace SabreTools.Wrappers
                         int bytesToRead = (int)(offsetRecord.Size[withinRecordIndex]) + 1;
                         int intraBlockOffset = (int)(absoluteOffset % (ulong)Constants.BlockSize);
                         int expectedSize = Math.Min((int)(fileSize - readOffset), Constants.BlockSize - intraBlockOffset);
+                        if (includeDebug) Console.WriteLine($"Read Offset: {readOffset} / {fileSize}, reading {bytesToRead} / {expectedSize}");
 
                         ulong blockOffset = rawOffset + offsetRecord.Offset;
                         for (int i = 0; i < withinRecordIndex; i++)
