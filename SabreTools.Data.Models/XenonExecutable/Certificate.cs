@@ -7,6 +7,10 @@ namespace SabreTools.Data.Models.XenonExecutable
     /// <see href="https://free60.org/System-Software/Formats/XEX/"/>
     public class Certificate
     {
-        // 
+        /// <summary>
+        /// Length of the certificate structure in bytes
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint Length { get; set; }
     }
 }

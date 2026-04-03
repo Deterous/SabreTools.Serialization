@@ -21,6 +21,7 @@ namespace SabreTools.Wrappers
 
             Print(builder, Model.Header);
             Print(builder, Model.Header.OptionalHeaders);
+            Print(builder, Model.Certificate);
         }
 
         private static void Print(StringBuilder builder, Header? header)
@@ -40,8 +41,8 @@ namespace SabreTools.Wrappers
             builder.AppendLine(header.Reserved, "  Reserved");
             builder.AppendLine(header.CertificateOffset, "  Certificate Offset");
             builder.AppendLine(header.OptionalHeaderCount, "  Optional Header Count");
-            builder.AppendLine();
 
+            builder.AppendLine();
         }
 
         private static void Print(StringBuilder builder, OptionalHeader[]? optionalHeaders)
@@ -61,11 +62,36 @@ namespace SabreTools.Wrappers
                 if (Constants.OptionalHeaderTypes.TryGetValue(optionalHeader.HeaderID, out string? headerType))
                     builder.AppendLine(headerType, "  Header Type (Parsed)");
                 else
-                    builder.AppendLine("[Unknown]", "  Header Type (Parsed)");
+                    builder.AppendLine("[UNKNOWN]", "  Header Type (Parsed)");
 
-                builder.AppendLine(optionalHeader.HeaderData, "  Header Data");
+                if (optionalHeader.HeaderDataBytes is not null)
+                {
+                    builder.AppendLine(optionalHeader.HeaderData, "  Header Offset");
+                    builder.AppendLine(optionalHeader.HeaderDataBytes, "  Header Data");
+                }
+                else
+                {
+                    builder.AppendLine(optionalHeader.HeaderData, "  Header Data");
+                }
+
                 builder.AppendLine();
             }
+
+            builder.AppendLine();
+        }
+
+        private static void Print(StringBuilder builder, Certificate? certificate)
+        {
+            builder.AppendLine("  Certificate Information:");
+            builder.AppendLine("  -------------------------");
+            if (certificate is null)
+            {
+                builder.AppendLine("  No certificate");
+                builder.AppendLine();
+                return;
+            }
+
+            builder.AppendLine(certificate.Length, "  Length");
 
             builder.AppendLine();
         }

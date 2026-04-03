@@ -23,6 +23,7 @@ namespace SabreTools.Data.Models.XenonExecutable
             [0x0002FF] = "Resource Info",
             [0x0003FF] = "Base File Format",
             [0x000405] = "Base Reference",
+            [0x004304] = "[UNKNOWN]", // Found on NM211001W02F11 (Ridge Racer Unbounded)
             [0x0005FF] = "Delta Patch Descriptor",
             [0x0080FF] = "Bounding Path",
             [0x008105] = "Device ID",
@@ -51,6 +52,48 @@ namespace SabreTools.Data.Models.XenonExecutable
             [0x0407FF] = "Alternate Title IDs",
             [0x040801] = "Additional Title Memory",
             [0xE10402] = "Exports by Name"
+        };
+
+        /// <summary>
+        /// Xenon (Xbox 360) Optional Header data length to read from the given offset
+        /// 0 implies that the offset value (HeaderData) is the data itself
+        /// 1 implies more research needed, but it's non-zero
+        /// 4 implies a variable length data with the first value is a uint defining the length 
+        /// </summary>
+        public static readonly Dictionary<uint, uint> OptionalHeaderDataLength = new()
+        {
+            [0x0002FF] = 1,
+            [0x0003FF] = 1,
+            [0x000405] = 1,
+            [0x004304] = 16,
+            [0x0005FF] = 1,
+            [0x0080FF] = 1,
+            [0x008105] = 1,
+            [0x010001] = 0,
+            [0x010100] = 0,
+            [0x010201] = 0,
+            [0x0103FF] = 1,
+            [0x018002] = 1,
+            [0x018102] = 1,
+            [0x018200] = 0,
+            [0x0183FF] = 1,
+            [0x0200FF] = 1,
+            [0x020104] = 1,
+            [0x020200] = 0,
+            [0x020301] = 0,
+            [0x020401] = 0,
+            [0x028002] = 1,
+            [0x030000] = 0,
+            [0x040006] = 1,
+            [0x0401FF] = 1,
+            [0x040201] = 0,
+            [0x040310] = 1,
+            [0x040404] = 1,
+            [0x0405FF] = 1,
+            [0x0406FF] = 1,
+            [0x0407FF] = 1,
+            [0x040801] = 0,
+            [0xE10402] = 1,
         };
     }
 }
