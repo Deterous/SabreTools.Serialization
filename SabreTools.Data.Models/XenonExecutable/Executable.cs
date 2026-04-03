@@ -12,5 +12,12 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// XEX header
         /// </summary>
         public Header Header { get; set; } = new();
+
+        /// <summary>
+        /// XEX certificate structure
+        /// </summary>
+        public Certificate Certificate { get; set; } = new();
+
+        // PE data goes here, is an encrypted/compressed blob on most XEX files
     }
 }
