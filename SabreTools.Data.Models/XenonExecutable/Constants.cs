@@ -56,6 +56,7 @@ namespace SabreTools.Data.Models.XenonExecutable
 
         /// <summary>
         /// Xenon (Xbox 360) Optional Header data length to read from the given offset
+        /// Note that these values are original research, and may not be correct
         /// 0 implies that the offset value (HeaderData) is the data itself
         /// 1 implies more research needed, but it's non-zero
         /// 4 implies a variable length data with the first value is a uint defining the length 

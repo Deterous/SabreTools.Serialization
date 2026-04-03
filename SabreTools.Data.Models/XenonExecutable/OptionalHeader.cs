@@ -24,7 +24,7 @@ namespace SabreTools.Data.Models.XenonExecutable
 
         /// <summary>
         /// If HeaderData is a data offset, then HeaderDataBytes is variable-length data it points to
-        /// the meaning and structure of these bytes is dependent on the HeaderID value
+        /// The meaning and structure of these bytes is dependent on the HeaderID value
         /// If HeaderData is the data itself, then this field is null
         /// </summary>
         public byte[]? HeaderDataBytes { get; set; } = [];
