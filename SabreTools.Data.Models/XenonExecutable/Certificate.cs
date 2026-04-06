@@ -64,12 +64,13 @@ namespace SabreTools.Data.Models.XenonExecutable
         public byte[] UnknownHash2 { get; set; } = new byte[20];
 
         /// <summary>
-        /// Full XEX Media ID
+        /// Full Media ID, probably a GUID
+        /// Last (LSB) four bytes in hexadecimal are the unique ringcode of the disc being pressed
         /// </summary>
         public byte[] MediaID { get; set; } = new byte[16];
 
         /// <summary>
-        /// Unknown 16 bytes
+        /// Unknown 16 bytes, probably a GUID
         /// </summary>
         public byte[] Unknown0150 { get; set; } = new byte[16];
 
