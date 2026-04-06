@@ -64,9 +64,9 @@ namespace SabreTools.Data.Models.XenonExecutable
         public byte[] UnknownHash2 { get; set; } = new byte[20];
 
         /// <summary>
-        /// Unknown 16 bytes, are zeroed on some application XEX filess
+        /// Full XEX Media ID
         /// </summary>
-        public byte[] Unknown0140 { get; set; } = new byte[16];
+        public byte[] MediaID { get; set; } = new byte[16];
 
         /// <summary>
         /// Unknown 16 bytes

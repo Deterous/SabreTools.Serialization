@@ -99,23 +99,23 @@ namespace SabreTools.Wrappers
             builder.AppendLine(certificate.UnknownHash1, "  Unknown Hash 1");
             builder.AppendLine(certificate.Unknown0128, "  Unknown0128");
             builder.AppendLine(certificate.UnknownHash2, "  Unknown Hash 2");
-            builder.AppendLine(certificate.Unknown0140, "  Unknown0140");
+            builder.AppendLine(certificate.MediaID, "  Media ID");
             builder.AppendLine(certificate.Unknown0150, "  Unknown0150");
             builder.AppendLine(certificate.Unknown0160, "  Unknown0160");
             builder.AppendLine(certificate.UnknownHash3, "  Unknown Hash 3");
             builder.AppendLine(certificate.RegionFlags, "  Region Flags");
             builder.AppendLine(certificate.Unknown0164, "  Unknown0164");
-            builder.AppendLine(certificate.TableCount, "  Table Count");
+            builder.AppendLine(certificate.TableCount, "  Certificate Table Count");
 
             if (certificate.Table.Length == 0)
-                builder.AppendLine("  Empty Table");
+                builder.AppendLine("  Empty Certificate Table");
             else
-                builder.AppendLine("  Table:");
+                builder.AppendLine("  Certificate Table:");
 
             for (int i = 0; i < certificate.Table.Length; i++)
             {
-                builder.AppendLine(certificate.Table[i].ID, $"    Table Entry {i} ID");
-                builder.AppendLine(certificate.Table[i].Data, $"    Table Entry {i} Data");
+                builder.AppendLine(certificate.Table[i].ID, $"    Entry {i} ID");
+                builder.AppendLine(certificate.Table[i].Data, $"    Entry {i} Data");
             }
 
             builder.AppendLine();
