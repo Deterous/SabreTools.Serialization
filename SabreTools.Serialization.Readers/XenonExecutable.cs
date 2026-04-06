@@ -104,7 +104,7 @@ namespace SabreTools.Serialization.Readers
                     continue;
                 }
 
-                long optionalHeaderLength = (optionalHeader.HeaderID & 0xFF);
+                int optionalHeaderLength = (optionalHeader.HeaderID & 0xFF);
                 if (optionalHeaderLength == 0xFF)
                     optionalHeaderLength = 4;
                 else
