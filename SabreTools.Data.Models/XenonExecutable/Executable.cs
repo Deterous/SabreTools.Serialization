@@ -23,6 +23,6 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// Encrypted/compressed blob on most XEX files
         /// Occassionally padded with zeroes at the end
         /// </summary>
-        public byte[]? CompressedData { get; set; };
+        public byte[]? CompressedData { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// Public signature for XEX file
         /// Signed by Microsoft for XEX authenticity
         /// </summary>
-        public byte[] Signature { get; set; } = new[256];
+        public byte[] Signature { get; set; } = new byte[256];
 
         /// <summary>
         /// Unknown field, always(?) 0x00000174
@@ -49,7 +49,7 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// <summary>
         /// Unknown hash, likely SHA-1 integrity hash for portion of image
         /// </summary>
-        public byte[] UnknownHash1 { get; set; } = byte[20];
+        public byte[] UnknownHash1 { get; set; } = new byte[20];
 
         /// <summary>
         /// Unknown field
@@ -61,17 +61,17 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// <summary>
         /// Unknown hash, likely SHA-1 integrity hash for portion of image
         /// </summary>
-        public byte[] UnknownHash2 { get; set; } = byte[20];
+        public byte[] UnknownHash2 { get; set; } = new byte[20];
 
         /// <summary>
         /// Unknown 16 bytes, are zeroed on some application XEX filess
         /// </summary>
-        public byte[] Unknown0140 { get; set; } = byte[16];
+        public byte[] Unknown0140 { get; set; } = new byte[16];
 
         /// <summary>
         /// Unknown 16 bytes
         /// </summary>
-        public byte[] Unknown0150 { get; set; } = byte[16];
+        public byte[] Unknown0150 { get; set; } = new byte[16];
 
         /// <summary>
         /// Unknown field, often zeroed
@@ -82,7 +82,7 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// <summary>
         /// Unknown hash, likely SHA-1 integrity hash for portion of image
         /// </summary>
-        public byte[] UnknownHash3 { get; set; } = byte[20];
+        public byte[] UnknownHash3 { get; set; } = new byte[20];
 
         /// <summary>
         /// Flags for console region locking, known values in Constants.RegionFlags
