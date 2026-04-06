@@ -38,13 +38,23 @@ namespace SabreTools.Serialization.Readers
 
                 #region ParseCertificate
 
-                // Parse the file header
-                var certificate = ParseCertificate(data);
-                if (certificate is null)
-                    return null;
+                // Get the certificate address
+                long certificateOffset = initialOffset + header.CertificateOffset;
+                if (certificateOffset >= initialOffset && certificateOffset < data.Length)
+                {
+                    // Seek to the certificate
+                    data.SeekIfPossible(certificateOffset, SeekOrigin.Begin);
 
-                // Set the XEX certificate
-                xex.Certificate = certificate;
+                    System.Console.WriteLine("[DEBUG] reading cert");
+
+                    // Parse the certificate
+                    var certificate = ParseCertificate(data);
+                    if (certificate is null)
+                        return null;
+
+                    // Set the XEX certificate
+                    xex.Certificate = certificate;
+                }
 
                 #endregion
 
@@ -132,6 +142,7 @@ namespace SabreTools.Serialization.Readers
             var table = new TableEntry[obj.TableCount];
             for (int i = 0; i < obj.TableCount; i++)
             {
+                System.Console.WriteLine("[DEBUG] reading table");
                 var row = new TableEntry();
                 row.ID = data.ReadUInt32BigEndian();
                 row.Data = data.ReadBytes(20);
