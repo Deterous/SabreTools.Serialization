@@ -16,17 +16,19 @@ namespace SabreTools.Data.Models.XenonExecutable
         public uint HeaderID { get; set; }
 
         /// <summary>
-        /// If lowest byte of HeaderID is 0x00/0x01, then HeaderData is the data itself
-        /// Otherwise, HeaderData is the data offset into XEX file
+        /// If lowest byte of HeaderID is 0x00/0x01, then HeaderOffset is the data itself
+        /// If the lowest byte is 0xFF, then HeaderOffset is the base offset into XEX file
+        ///     and the first DWORD read is the total size to read
+        /// Otherwise, the lowest byte is the number of uint to read from HeaderOffset
         /// </summary>
         /// <remarks>Big-endian</remarks>
-        public uint HeaderData { get; set; }
+        public uint HeaderOffset { get; set; }
 
         /// <summary>
         /// If HeaderData is a data offset, then HeaderDataBytes is variable-length data it points to
         /// The meaning and structure of these bytes is dependent on the HeaderID value
         /// If HeaderData is the data itself, then this field is null
         /// </summary>
-        public byte[]? HeaderDataBytes { get; set; }
+        public byte[]? HeaderData { get; set; }
     }
 }

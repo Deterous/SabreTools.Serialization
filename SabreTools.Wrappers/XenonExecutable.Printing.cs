@@ -64,14 +64,14 @@ namespace SabreTools.Wrappers
                 else
                     builder.AppendLine("[UNKNOWN]", "  Header Type (Parsed)");
 
-                if (optionalHeader.HeaderDataBytes is not null)
+                if (optionalHeader.HeaderData is not null)
                 {
-                    builder.AppendLine(optionalHeader.HeaderData, "  Header Offset");
-                    builder.AppendLine(optionalHeader.HeaderDataBytes, "  Header Data");
+                    builder.AppendLine(optionalHeader.HeaderOffset, "  Header Offset");
+                    builder.AppendLine(optionalHeader.HeaderData, "  Header Data");
                 }
                 else
                 {
-                    builder.AppendLine(optionalHeader.HeaderData, "  Header Data");
+                    builder.AppendLine(optionalHeader.HeaderOffset, "  Header Data");
                 }
 
                 builder.AppendLine();

@@ -95,19 +95,23 @@ namespace SabreTools.Serialization.Readers
             {
                 var optionalHeader = new OptionalHeader();
                 optionalHeader.HeaderID = data.ReadUInt32BigEndian();
-                optionalHeader.HeaderData = data.ReadUInt32BigEndian();
+                optionalHeader.HeaderOffset = data.ReadUInt32BigEndian();
 
-                // If HeaderID LSB is 0x00 or 0x01
-                // TODO: Check Constants.OptionalHeaderTypes instead
+                // If HeaderID LSB is 0x00 or 0x01, HeaderOffset is the data itself
                 if ((optionalHeader.HeaderID & 0xFE) == 0x00)
                 {
                     optionalHeaders[i] = optionalHeader;
                     continue;
                 }
 
+                long optionalHeaderLength = (optionalHeader.HeaderID & 0xFF);
+                if (optionalHeaderLength == 0xFF)
+                    optionalHeaderLength = 4;
+                else
+                    optionalHeaderLength *= 4;
+
                 // Ignore invalid offset
-                // TODO: Change "4" to length from Constants.OptionalHeaderDataLength
-                if (optionalHeader.HeaderData < initialOffset || optionalHeader.HeaderData + 4 > data.Length)
+                if (optionalHeader.HeaderOffset < initialOffset || optionalHeader.HeaderOffset + optionalHeaderLength > data.Length)
                 {
                     optionalHeaders[i] = optionalHeader;
                     continue;
@@ -115,11 +119,25 @@ namespace SabreTools.Serialization.Readers
 
                 // Read the optional header data
                 long currentPosition = data.Position;
-                data.SeekIfPossible(optionalHeader.HeaderData, SeekOrigin.Begin);
-                var length = data.ReadBytes(4);
+                data.SeekIfPossible(optionalHeader.HeaderOffset, SeekOrigin.Begin);
+
+                // Deal with variable length optional header data
+                if ((optionalHeader.HeaderID & 0xFF) == 0xFF)
+                {
+                    var length = data.ReadUInt32BigEndian();
+                    optionalHeaderLength = length - 4;
+
+                    // Ignore invalid length
+                    if (optionalHeaderLength <= 0 || data.Position + optionalHeaderLength > data.Length)
+                    {
+                        data.SeekIfPossible(currentPosition, SeekOrigin.Begin);
+                        optionalHeaders[i] = optionalHeader;
+                        continue;
+                    }
+                }
 
                 // Save the optional header data in model
-                optionalHeader.HeaderDataBytes = length;
+                optionalHeader.HeaderData = data.ReadBytes(optionalHeaderLength);
                 optionalHeaders[i] = optionalHeader;
 
                 // Return to position in header
