@@ -95,29 +95,27 @@ namespace SabreTools.Serialization.Readers
             {
                 var optionalHeader = new OptionalHeader();
                 optionalHeader.HeaderID = data.ReadUInt32BigEndian();
-                var headerData = data.ReadUInt32BigEndian();
+                optionalHeader.HeaderData = data.ReadUInt32BigEndian();
 
                 // If HeaderID LSB is 0x00 or 0x01
                 // TODO: Check Constants.OptionalHeaderTypes instead
                 if ((optionalHeader.HeaderID & 0xFE) == 0x00)
                 {
-                    optionalHeader.HeaderData = headerData;
                     optionalHeaders[i] = optionalHeader;
                     continue;
                 }
 
                 // Ignore invalid offset
                 // TODO: Change "4" to length from Constants.OptionalHeaderDataLength
-                if (headerData < initialOffset || headerData + 4 > data.Length)
+                if (optionalHeader.HeaderData < initialOffset || optionalHeader.HeaderData + 4 > data.Length)
                 {
-                    optionalHeader.HeaderData = headerData;
                     optionalHeaders[i] = optionalHeader;
                     continue;
                 }
 
                 // Read the optional header data
                 long currentPosition = data.Position;
-                data.SeekIfPossible(headerData, SeekOrigin.Begin);
+                data.SeekIfPossible(optionalHeader.HeaderData, SeekOrigin.Begin);
                 var length = data.ReadBytes(4);
 
                 // Save the optional header data in model
