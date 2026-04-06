@@ -5,7 +5,7 @@ namespace SabreTools.Data.Models.XenonExecutable
     /// </summary>
     /// <see href="http://oskarsapps.mine.nu/xexdump"/>
     /// <see href="https://free60.org/System-Software/Formats/XEX/"/>
-    public class Executable
+    public class TableEntry
     {
         /// <summary>
         /// Table entry ID
