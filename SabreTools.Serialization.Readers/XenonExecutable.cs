@@ -108,7 +108,7 @@ namespace SabreTools.Serialization.Readers
 
                 // Ignore invalid offset
                 // TODO: Change "4" to length from Constants.OptionalHeaderDataLength
-                if (headerData <>=> initialOffset && headerData + 4 > data.Length)
+                if (headerData < initialOffset || headerData + 4 > data.Length)
                 {
                     optionalHeader.HeaderData = headerData;
                     optionalHeaders[i] = optionalHeader;
