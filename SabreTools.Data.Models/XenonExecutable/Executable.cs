@@ -18,6 +18,11 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// </summary>
         public Certificate Certificate { get; set; } = new();
 
-        // PE data goes here, is an encrypted/compressed blob on most XEX files
+        /// <summary>
+        /// PE data, too large to be read into memory
+        /// Encrypted/compressed blob on most XEX files
+        /// Occassionally padded with zeroes at the end
+        /// </summary>
+        public byte[]? CompressedData { get; set; };
     }
 }

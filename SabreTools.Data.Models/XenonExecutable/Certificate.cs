@@ -12,5 +12,100 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// </summary>
         /// <remarks>Big-endian</remarks>
         public uint Length { get; set; }
+
+        /// <summary>
+        /// Size of the entire image in bytes
+        /// Uncompressed size (not the raw XEX file size)
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint ImageSize { get; set; }
+
+        /// <summary>
+        /// Public signature for XEX file
+        /// Signed by Microsoft for XEX authenticity
+        /// </summary>
+        public byte[] Signature { get; set; } = new[256];
+
+        /// <summary>
+        /// Unknown field, always(?) 0x00000174
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint Unknown0108 { get; set; }
+
+        /// <summary>
+        /// Unknown field
+        /// Known values: 0x00000008 (retail games), 0x10000000 (applications)
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint Unknown010C { get; set; }
+
+        /// <summary>
+        /// Base address for the image to be placed in memory
+        /// Known values: 0x82000000 (retail games), 0x92000000 (applications)
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint ImageBaseAddress { get; set; }
+
+        /// <summary>
+        /// Unknown hash, likely SHA-1 integrity hash for portion of image
+        /// </summary>
+        public byte[] UnknownHash1 { get; set; } = byte[20];
+
+        /// <summary>
+        /// Unknown field
+        /// Known values: 0x00000002 (retail games, some applications), 0x00000003 (applications)
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint Unknown0128 { get; set; }
+
+        /// <summary>
+        /// Unknown hash, likely SHA-1 integrity hash for portion of image
+        /// </summary>
+        public byte[] UnknownHash2 { get; set; } = byte[20];
+
+        /// <summary>
+        /// Unknown 16 bytes, are zeroed on some application XEX filess
+        /// </summary>
+        public byte[] Unknown0140 { get; set; } = byte[16];
+
+        /// <summary>
+        /// Unknown 16 bytes
+        /// </summary>
+        public byte[] Unknown0150 { get; set; } = byte[16];
+
+        /// <summary>
+        /// Unknown field, often zeroed
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint Unknown0160 { get; set; }
+
+        /// <summary>
+        /// Unknown hash, likely SHA-1 integrity hash for portion of image
+        /// </summary>
+        public byte[] UnknownHash3 { get; set; } = byte[20];
+
+        /// <summary>
+        /// Flags for console region locking, known values in Constants.RegionFlags
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint RegionFlags { get; set; }
+
+        /// <summary>
+        /// Unknown field
+        /// Known values: 0x00000004, 0x00000400, 0x00000401
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint Unknown0164 { get; set; }
+
+        /// <summary>
+        /// Number of entries in the following table
+        /// </summary>
+        /// <remarks>Big-endian</remarks>
+        public uint TableCount { get; set; }
+
+        /// <summary>
+        /// Table, 24-bytes per entry
+        /// </summary>
+        public TableEntry[] Table { get; set; }
     }
 }

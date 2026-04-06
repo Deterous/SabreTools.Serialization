@@ -88,6 +88,7 @@ namespace SabreTools.Serialization.Readers
                 optionalHeader.HeaderData = data.ReadUInt32BigEndian();
 
                 // TODO: Fill in HeaderDataBytes
+                // Use Constants.OptionalHeaderTypes and Constants.OptionalHeaderDataLength
 
                 optionalHeaders[i] = optionalHeader;
             }
@@ -107,6 +108,37 @@ namespace SabreTools.Serialization.Readers
             var obj = new Certificate();
 
             obj.Length = data.ReadUInt32BigEndian();
+
+            // TODO: Check data stream is long enough for all certificate fields
+
+            obj.ImageSize = data.ReadUInt32BigEndian();
+            obj.Signature = data.ReadBytes(256);
+            obj.Unknown0108 = data.ReadUInt32BigEndian();
+            obj.Unknown010C = data.ReadUInt32BigEndian();
+            obj.ImageBaseAddress = data.ReadUInt32BigEndian();
+            obj.UnknownHash1 = data.ReadBytes(20);
+            obj.Unknown0128 = data.ReadUInt32BigEndian();
+            obj.UnknownHash2 = data.ReadBytes(20);
+            obj.Unknown0140 = data.ReadBytes(16);
+            obj.Unknown0150 = data.ReadBytes(16);
+            obj.Unknown0160 = data.ReadUInt32BigEndian();
+            obj.UnknownHash3 = data.ReadBytes(20);
+            obj.RegionFlags = data.ReadUInt32BigEndian();
+            obj.Unknown0164 = data.ReadUInt32BigEndian();
+            obj.TableCount = data.ReadUInt32BigEndian();
+
+            // TODO: Check data stream is long enough for all certificate fields
+
+            var table = new TableEntry[obj.TableCount];
+            for (int i = 0; i < obj.TableCount; i++)
+            {
+                var row = new TableEntry();
+                row.ID = data.ReadUInt32BigEndian;
+                row.Data = data.ReadBytes(20);
+                table[i] = row;
+            }
+
+            obj.Table = table;
 
             return obj;
         }
