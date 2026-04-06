@@ -106,6 +106,6 @@ namespace SabreTools.Data.Models.XenonExecutable
         /// <summary>
         /// Table, 24-bytes per entry
         /// </summary>
-        public TableEntry[] Table { get; set; }
+        public TableEntry[] Table { get; set; } = [];
     }
 }
