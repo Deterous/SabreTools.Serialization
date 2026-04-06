@@ -133,7 +133,7 @@ namespace SabreTools.Serialization.Readers
             for (int i = 0; i < obj.TableCount; i++)
             {
                 var row = new TableEntry();
-                row.ID = data.ReadUInt32BigEndian;
+                row.ID = data.ReadUInt32BigEndian();
                 row.Data = data.ReadBytes(20);
                 table[i] = row;
             }
