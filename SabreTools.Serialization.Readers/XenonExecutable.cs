@@ -45,8 +45,6 @@ namespace SabreTools.Serialization.Readers
                     // Seek to the certificate
                     data.SeekIfPossible(certificateOffset, SeekOrigin.Begin);
 
-                    System.Console.WriteLine("[DEBUG] reading cert");
-
                     // Parse the certificate
                     var certificate = ParseCertificate(data);
                     if (certificate is null)
@@ -142,7 +140,6 @@ namespace SabreTools.Serialization.Readers
             var table = new TableEntry[obj.TableCount];
             for (int i = 0; i < obj.TableCount; i++)
             {
-                System.Console.WriteLine("[DEBUG] reading table");
                 var row = new TableEntry();
                 row.ID = data.ReadUInt32BigEndian();
                 row.Data = data.ReadBytes(20);
