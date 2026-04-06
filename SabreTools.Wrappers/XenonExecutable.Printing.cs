@@ -109,8 +109,8 @@ namespace SabreTools.Wrappers
 
             for (int i = 0; i < certificate.TableCount; i++)
             {
-                builder.AppendLine(certificate.Table.ID, $"  Table Entry {i} ID");
-                builder.AppendLine(certificate.Table.Data, $"  Table Entry {i} Data");
+                builder.AppendLine(certificate.Table[i].ID, $"  Table Entry {i} ID");
+                builder.AppendLine(certificate.Table[i].Data, $"  Table Entry {i} Data");
             }
 
             builder.AppendLine();
