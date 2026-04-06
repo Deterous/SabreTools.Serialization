@@ -107,7 +107,10 @@ namespace SabreTools.Wrappers
             builder.AppendLine(certificate.Unknown0164, "  Unknown0164");
             builder.AppendLine(certificate.TableCount, "  Table Count");
 
-            for (int i = 0; i < certificate.TableCount; i++)
+            if (certificate.Table.Length == 0)
+                builder.AppendLine("  Empty Table");
+
+            for (int i = 0; i < certificate.Table.Length; i++)
             {
                 builder.AppendLine(certificate.Table[i].ID, $"  Table Entry {i} ID");
                 builder.AppendLine(certificate.Table[i].Data, $"  Table Entry {i} Data");
