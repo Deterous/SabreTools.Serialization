@@ -104,7 +104,7 @@ namespace SabreTools.Serialization.Readers
                     continue;
                 }
 
-                int optionalHeaderLength = (optionalHeader.HeaderID & 0xFF);
+                uint optionalHeaderLength = (optionalHeader.HeaderID & 0xFF);
                 if (optionalHeaderLength == 0xFF)
                     optionalHeaderLength = 4;
                 else
@@ -137,7 +137,7 @@ namespace SabreTools.Serialization.Readers
                 }
 
                 // Save the optional header data in model
-                optionalHeader.HeaderData = data.ReadBytes(optionalHeaderLength);
+                optionalHeader.HeaderData = data.ReadBytes((int)optionalHeaderLength);
                 optionalHeaders[i] = optionalHeader;
 
                 // Return to position in header
