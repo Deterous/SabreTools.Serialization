@@ -171,7 +171,7 @@ namespace SabreTools.Serialization.Readers
             obj.UnknownHash1 = data.ReadBytes(20);
             obj.Unknown0128 = data.ReadUInt32BigEndian();
             obj.UnknownHash2 = data.ReadBytes(20);
-            obj.Unknown0140 = data.ReadBytes(16);
+            obj.MediaID = data.ReadBytes(16);
             obj.Unknown0150 = data.ReadBytes(16);
             obj.Unknown0160 = data.ReadUInt32BigEndian();
             obj.UnknownHash3 = data.ReadBytes(20);
