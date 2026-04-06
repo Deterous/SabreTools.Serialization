@@ -9,7 +9,7 @@ namespace SabreTools.Data.Models.XenonExecutable
     {
         /// <summary>
         /// "XEX2" is the only supported magic identifier string
-        /// "XEX1" is not supported, and not found outside of early pre-production files
+        /// "XEX0", "XEX-", "XEX?", and "XEX1" files are not supported, and are only found in early pre-production builds
         /// </summary>
         public byte[] MagicNumber { get; set; } = new byte[4];
 

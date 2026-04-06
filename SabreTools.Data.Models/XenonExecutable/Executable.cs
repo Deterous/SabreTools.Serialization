@@ -1,8 +1,11 @@
 namespace SabreTools.Data.Models.XenonExecutable
 {
     /// <summary>
-    /// Xenon (Xbox 360) Executable format
-    /// It is based on PPC PE format, and therefore Big-endian
+    /// Xenon (Xbox 360) Executable format (XEX2)
+    /// It is based on PE format and is PPC architecutre (therefore Big-Endian)
+    /// During alpha stage, Xenon was a slightly modified Apple Power Mac G5
+    /// Early (Before March 2005) builds used pure PE-formatted executables, June 2005 XDK began requiring XEX-format
+    /// Early (August 2005 and earlier) XEX-format images (XEX0, XEX?, XEX-, XEX1) are not supported.
     /// </summary>
     /// <see href="http://oskarsapps.mine.nu/xexdump"/>
     /// <see href="https://free60.org/System-Software/Formats/XEX/"/>

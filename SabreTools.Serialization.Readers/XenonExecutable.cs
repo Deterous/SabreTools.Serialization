@@ -27,7 +27,7 @@ namespace SabreTools.Serialization.Readers
                 #region ParseHeader
 
                 // Parse the file header
-                var header = ParseHeader(data);
+                var header = ParseHeader(data, initialOffset);
                 if (header is null)
                     return null;
 
@@ -70,7 +70,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled XEX Header on success, null on error</returns>
-        public static Header? ParseHeader(Stream data)
+        public static Header? ParseHeader(Stream data, long initialOffset)
         {
             var obj = new Header();
 
@@ -78,7 +78,7 @@ namespace SabreTools.Serialization.Readers
             if (!magicNumber.EqualsExactly(Constants.MagicBytes))
                 return null;
 
-            obj.MagicNumber = magicNumber; 
+            obj.MagicNumber = magicNumber;
 
             obj.ModuleFlags = data.ReadUInt32BigEndian();
             obj.PEDataOffset = data.ReadUInt32BigEndian();
@@ -86,19 +86,46 @@ namespace SabreTools.Serialization.Readers
             obj.CertificateOffset = data.ReadUInt32BigEndian();
             obj.OptionalHeaderCount = data.ReadUInt32BigEndian();
 
-            // TODO: Check data stream is long enough for all optional headers
+            // Ensure optional headers fit within stream
+            if (data.Position + 8 * obj.OptionalHeaderCount > data.Length)
+                return null;
 
             var optionalHeaders = new OptionalHeader[obj.OptionalHeaderCount];
             for (int i = 0; i < obj.OptionalHeaderCount; i++)
             {
                 var optionalHeader = new OptionalHeader();
                 optionalHeader.HeaderID = data.ReadUInt32BigEndian();
-                optionalHeader.HeaderData = data.ReadUInt32BigEndian();
+                var headerData = data.ReadUInt32BigEndian();
 
-                // TODO: Fill in HeaderDataBytes
-                // Use Constants.OptionalHeaderTypes and Constants.OptionalHeaderDataLength
+                // If HeaderID LSB is 0x00 or 0x01
+                // TODO: Check Constants.OptionalHeaderTypes instead
+                if ((optionalHeader.HeaderID & 0xFE) == 0x00)
+                {
+                    optionalHeader.HeaderData = headerData;
+                    optionalHeaders[i] = optionalHeader;
+                    continue;
+                }
 
+                // Ignore invalid offset
+                // TODO: Change "4" to length from Constants.OptionalHeaderDataLength
+                if (headerData <>=> initialOffset && headerData + 4 > data.Length)
+                {
+                    optionalHeader.HeaderData = headerData;
+                    optionalHeaders[i] = optionalHeader;
+                    continue;
+                }
+
+                // Read the optional header data
+                long currentPosition = data.Position;
+                data.SeekIfPossible(headerData, SeekOrigin.Begin);
+                var length = data.ReadBytes(4);
+
+                // Save the optional header data in model
+                optionalHeader.HeaderDataBytes = length;
                 optionalHeaders[i] = optionalHeader;
+
+                // Return to position in header
+                data.SeekIfPossible(currentPosition, SeekOrigin.Begin);
             }
 
             obj.OptionalHeaders = optionalHeaders;
@@ -115,10 +142,11 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Certificate();
 
+            // Ensure certificate fits within stream
+            if (data.Position + 388 > data.Length)
+                return null;
+
             obj.Length = data.ReadUInt32BigEndian();
-
-            // TODO: Check data stream is long enough for all certificate fields
-
             obj.ImageSize = data.ReadUInt32BigEndian();
             obj.Signature = data.ReadBytes(256);
             obj.Unknown0108 = data.ReadUInt32BigEndian();
@@ -135,7 +163,9 @@ namespace SabreTools.Serialization.Readers
             obj.Unknown0164 = data.ReadUInt32BigEndian();
             obj.TableCount = data.ReadUInt32BigEndian();
 
-            // TODO: Check data stream is long enough for all certificate fields
+            // Ensure table fits within stream
+            if (data.Position + 24 * obj.TableCount > data.Length)
+                return obj;
 
             var table = new TableEntry[obj.TableCount];
             for (int i = 0; i < obj.TableCount; i++)
