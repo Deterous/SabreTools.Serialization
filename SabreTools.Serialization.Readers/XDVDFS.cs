@@ -134,13 +134,16 @@ namespace SabreTools.Serialization.Readers
         /// <returns>Filled Dictionary of int to DirectoryDescriptors on success, null on error</returns>
         public static Dictionary<uint, DirectoryDescriptor>? ParseDirectoryDescriptors(Stream data, long initialOffset, uint offset, uint size)
         {
+            Console.WriteLine("1");
             // Ensure descriptor size is valid
             if (size < 14)
                 return null;
+            Console.WriteLine("2");
 
             // Ensure offset is valid
             if ((offset * Constants.SectorSize) + size > data.Length)
                 return null;
+            Console.WriteLine("3");
 
             var obj = new Dictionary<uint, DirectoryDescriptor>();
 
@@ -148,30 +151,37 @@ namespace SabreTools.Serialization.Readers
             if (dd is null)
                 return null;
 
+            Console.WriteLine("4");
             obj.Add(offset, dd);
 
             // Parse all child descriptors
             foreach (var dr in dd.DirectoryRecords)
             {
+                Console.WriteLine("5");
                 if ((dr.FileFlags & FileFlags.DIRECTORY) == FileFlags.DIRECTORY)
                 {
+                    Console.WriteLine("6");
                     // Ensure same descriptor is never parsed twice
                     if (obj.ContainsKey(dr.ExtentOffset))
                         continue;
 
                     // Get all descriptors from child
+                    Console.WriteLine("7");
                     var descriptors = ParseDirectoryDescriptors(data, initialOffset, dr.ExtentOffset, dr.ExtentSize);
                     if (descriptors is null)
                         continue;
 
                     // Merge dictionaries
+                    Console.WriteLine("8");
                     foreach (var kvp in descriptors)
                     {
+                        Console.WriteLine("9");
                         if (!obj.ContainsKey(kvp.Key))
                             obj.Add(kvp.Key, kvp.Value);
                     }
                 }
             }
+            Console.WriteLine("10");
 
             return obj;
         }
@@ -185,23 +195,29 @@ namespace SabreTools.Serialization.Readers
         /// <returns>Filled DirectoryDescriptor on success, null on error</returns>
         public static DirectoryDescriptor? ParseDirectoryDescriptor(Stream data, long initialOffset, uint offset, uint size)
         {
+            Console.WriteLine("a");
             // Ensure descriptor size is valid
             if (size < Constants.MinimumRecordLength)
                 return null;
+            Console.WriteLine("b");
 
             // Ensure offset is valid
             if ((((long)offset) * Constants.SectorSize) + size > data.Length)
                 return null;
+            Console.WriteLine("c");
 
             var obj = new DirectoryDescriptor();
             var records = new List<DirectoryRecord>();
 
             data.SeekIfPossible(initialOffset + (((long)offset) * Constants.SectorSize), SeekOrigin.Begin);
             long curPosition;
+            Console.WriteLine("d");
             while (size > data.Position - (((long)offset) * Constants.SectorSize))
             {
+                Console.WriteLine("e");
                 curPosition = data.Position;
                 var dr = ParseDirectoryRecord(data);
+                Console.WriteLine("f");
                 if (dr is not null)
                     records.Add(dr);
 
@@ -211,17 +227,20 @@ namespace SabreTools.Serialization.Readers
                     data.Position += Constants.SectorSize - (int)(data.Position % Constants.SectorSize);
                     continue;
                 }
+                Console.WriteLine("g");
 
                 // Exit loop if stream has not advanced
                 if (curPosition == data.Position)
                     break;
             }
+            Console.WriteLine("h");
 
             obj.DirectoryRecords = [.. records];
 
             int remainder = Constants.SectorSize - (int)(size % Constants.SectorSize);
             if (remainder > 0 && remainder < Constants.SectorSize)
                 obj.Padding = data.ReadBytes(remainder);
+            Console.WriteLine("i");
 
             return obj;
         }
@@ -233,6 +252,7 @@ namespace SabreTools.Serialization.Readers
         /// <returns>Filled DirectoryRecord on success, null on error</returns>
         public static DirectoryRecord? ParseDirectoryRecord(Stream data)
         {
+            Console.WriteLine("z");
             var obj = new DirectoryRecord();
 
             obj.LeftChildOffset = data.ReadUInt16LittleEndian();
@@ -249,6 +269,7 @@ namespace SabreTools.Serialization.Readers
             if (remainder > 0 && remainder < 4)
                 obj.Padding = data.ReadBytes(remainder);
 
+            Console.WriteLine("zz");
             return obj;
         }
     }

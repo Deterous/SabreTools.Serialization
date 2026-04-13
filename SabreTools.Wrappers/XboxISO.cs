@@ -117,14 +117,11 @@ namespace SabreTools.Wrappers
                 data.SeekIfPossible(currentOffset + magicOffset, SeekOrigin.Begin);
 
                 var magic = data.ReadBytes(20);
-                Console.WriteLine($"magic: {magic}");
 
                 if (magic is null)
                     return null;
                 if (!magic.EqualsExactly(Data.Models.XDVDFS.Constants.VolumeDescriptorMagic))
                     return null;
-
-                Console.WriteLine("1");
 
                 data.SeekIfPossible(currentOffset + Constants.XisoOffsets[model.XGDType], SeekOrigin.Begin);
                 var gamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
@@ -142,8 +139,6 @@ namespace SabreTools.Wrappers
                     return null;
 
                 model.VideoPartition = videoPartition;
-
-                Console.WriteLine("done creating");
 
                 return new XboxISO(model, data, currentOffset);
             }
