@@ -13,10 +13,10 @@ namespace SabreTools.Wrappers
         {
             long initialOffset = _dataSource.Position;
 
-            var videoWrapper = SabreTools.Wrappers.ISO9660.Create(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
+            var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
             bool success = videoWrapper.Extract(outputDirectory, includeDebug);
 
-            var gameWrapper = SabreTools.Wrappers.XDVDFS.Create(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
+            var gameWrapper = new SabreTools.Wrappers.XDVDFS(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
             success |= gameWrapper.Extract(outputDirectory, includeDebug);
 
             return success;
