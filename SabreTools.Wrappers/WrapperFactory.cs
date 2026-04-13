@@ -106,7 +106,7 @@ namespace SabreTools.Wrappers
 
             // Fallback to standard ISO9660 wrapper
             var isoWrapper = ISO9660.Create(stream);
-            if (wrapper is null || wrapper is not ISO9660 iso)
+            if (isoWrapper is null || isoWrapper is not ISO9660 iso)
                 return null;
 
             return wrapper;
