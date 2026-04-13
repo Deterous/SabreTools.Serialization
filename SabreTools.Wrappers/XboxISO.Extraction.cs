@@ -11,6 +11,9 @@ namespace SabreTools.Wrappers
         /// <inheritdoc/>
         public virtual bool Extract(string outputDirectory, bool includeDebug)
         {
+            if (VideoPartition is null || GamePartition is null)
+                return false;
+
             long initialOffset = _dataSource.Position;
 
             var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
