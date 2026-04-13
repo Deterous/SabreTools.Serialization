@@ -223,9 +223,9 @@ namespace SabreTools.Serialization.Readers
                     records.Add(dr);
 
                 // If invalid record read or next descriptor cannot fit in the current sector, skip ahead
-                if (dr is null || data.Position % Constants.SectorSize > (Constants.SectorSize - Constants.MinimumRecordLength))
+                if (dr is null || (data.Position - initialOffset) % Constants.SectorSize > (Constants.SectorSize - Constants.MinimumRecordLength))
                 {
-                    data.Position += Constants.SectorSize - (int)(data.Position % Constants.SectorSize);
+                    data.Position += Constants.SectorSize - (int)((data.Position - initialOffset) % Constants.SectorSize);
                     continue;
                 }
                 Console.WriteLine("g");
