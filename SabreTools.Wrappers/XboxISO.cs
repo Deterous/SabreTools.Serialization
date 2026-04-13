@@ -23,14 +23,11 @@ namespace SabreTools.Wrappers
         /// <inheritdoc cref="DiscImage.VideoPartition"/>
         public SabreTools.Data.Models.ISO9660.Volume? VideoPartition => Model.VideoPartition;
 
+        /// <inheritdoc cref="DiscImage.XGDType"/>
+        public int XGDType => Model.XGDType;
+
         /// <inheritdoc cref="DiscImage.GamePartition"/>
         public SabreTools.Data.Models.XDVDFS.Volume? GamePartition => Model.GamePartition;
-
-        #endregion
-
-        #region Helper Properties
-
-        public int XGDType = 0;
 
         #endregion
 
@@ -103,14 +100,18 @@ namespace SabreTools.Wrappers
                 if (redumpType < 0)
                     return null;
                 
-                int xgdType = redumpType switch
+                model.XGDType = redumpType switch
                 {
                     0 => 0, // XGD1
                     1 or 2 or 3 or 4 => 1, // XGD2
                     5 => 2, // XGD2 (Hybrid)
                     6 or 7 => 3, // XGD3
-                    _ => 0,
+                    _ => -1,
                 };
+
+                // Validate XGDType
+                if (model.XGDType < 0)
+                    return null;
 
                 long magicOffset = Data.Models.XDVDFS.Constants.SectorSize * Data.Models.XDVDFS.Constants.ReservedSectors;
                 data.SeekIfPossible(currentOffset + magicOffset, SeekOrigin.Begin);
@@ -132,7 +133,6 @@ namespace SabreTools.Wrappers
                     return null;
 
                 var wrapper = new XboxISO(model, data, currentOffset);
-                wrapper.XGDType = xgdType;
 
                 return wrapper;
             }

@@ -12,6 +12,15 @@ namespace SabreTools.Data.Models.XboxISO
         public SabreTools.Data.Models.ISO9660.Volume? VideoPartition { get; set; }
 
         /// <summary>
+        /// XGD type present in game partition
+        /// 0 = XGD1
+        /// 1 = XGD2
+        /// 2 = XGD2-Hybrid
+        /// 3 = XGD3
+        /// </summary>
+        public int XGDType { get; set; }
+
+        /// <summary>
         /// XDVDFS Game partition, present in middle of Disc Image
         /// </summary>
         public SabreTools.Data.Models.XDVDFS.Volume? GamePartition { get; set; }
