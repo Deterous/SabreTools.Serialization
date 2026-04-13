@@ -32,33 +32,33 @@ namespace SabreTools.Wrappers
         #region Constructors
 
         /// <inheritdoc/>
-        public XboxISO(Volume model, byte[] data) : base(model, data) { }
+        public XboxISO(DiscImage model, byte[] data) : base(model, data) { }
 
         /// <inheritdoc/>
-        public XboxISO(Volume model, byte[] data, int offset) : base(model, data, offset) { }
+        public XboxISO(DiscImage model, byte[] data, int offset) : base(model, data, offset) { }
 
         /// <inheritdoc/>
-        public XboxISO(Volume model, byte[] data, int offset, int length) : base(model, data, offset, length) { }
+        public XboxISO(DiscImage model, byte[] data, int offset, int length) : base(model, data, offset, length) { }
 
         /// <inheritdoc/>
-        public XboxISO(Volume model, Stream data) : base(model, data) { }
+        public XboxISO(DiscImage model, Stream data) : base(model, data) { }
 
         /// <inheritdoc/>
-        public XboxISO(Volume model, Stream data, long offset) : base(model, data, offset) { }
+        public XboxISO(DiscImage model, Stream data, long offset) : base(model, data, offset) { }
 
         /// <inheritdoc/>
-        public XboxISO(Volume model, Stream data, long offset, long length) : base(model, data, offset, length) { }
+        public XboxISO(DiscImage model, Stream data, long offset, long length) : base(model, data, offset, length) { }
 
         #endregion
 
         #region Static Constructors
 
         /// <summary>
-        /// Create an XboxISO wrapper from a byte array and offset
+        /// Create an XboxISO DiscImage from a byte array and offset
         /// </summary>
-        /// <param name="data">Byte array representing the XboxISO wrapper</param>
+        /// <param name="data">Byte array representing the XboxISO DiscImage</param>
         /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>An XboxISO wrapper on success, null on failure</returns>
+        /// <returns>An XboxISO DiscImage on success, null on failure</returns>
         public static XboxISO? Create(byte[]? data, int offset)
         {
             // If the data is invalid
@@ -75,10 +75,10 @@ namespace SabreTools.Wrappers
         }
 
         /// <summary>
-        /// Create an XDVDFS Volume from a Stream
+        /// Create an XboxISO DiscImage from a Stream
         /// </summary>
-        /// <param name="data">Stream representing the XDVDFS Volume</param>
-        /// <returns>An XDVDFS Volume wrapper on success, null on failure</returns>
+        /// <param name="data">Stream representing the XboxISO DiscImage</param>
+        /// <returns>An XboxISO DiscImage DiscImage on success, null on failure</returns>
         public static XboxISO? Create(Stream? data)
         {
             // If the data is invalid

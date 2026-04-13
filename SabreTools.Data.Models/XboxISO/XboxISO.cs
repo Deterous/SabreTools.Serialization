@@ -14,6 +14,6 @@ namespace SabreTools.Data.Models.XboxISO
         /// <summary>
         /// XDVDFS Game partition, present in middle of Disc Image
         /// </summary>
-        public SabreTools.Data.Models.ISO9660.XDVDFS? GamePartition { get; set; }
+        public SabreTools.Data.Models.XDVDFS.Volume? GamePartition { get; set; }
     }
 }
