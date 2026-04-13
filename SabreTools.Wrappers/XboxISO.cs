@@ -122,7 +122,7 @@ namespace SabreTools.Wrappers
                 if (!magic.StartsWith(Data.Models.XDVDFS.Constants.VolumeDescriptorMagic))
                     return null;
 
-                data.SeekIfPossible(currentOffset + Constants.XisoOffsets[xgdType], SeekOrigin.Begin);
+                data.SeekIfPossible(currentOffset + Constants.XisoOffsets[model.XGDType], SeekOrigin.Begin);
                 model.GamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
                 if (model.GamePartition is null)
                     return null;
