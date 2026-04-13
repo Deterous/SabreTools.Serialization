@@ -105,7 +105,7 @@ namespace SabreTools.Wrappers
                 return xboxWrapper;
 
             // Reset position in stream
-            data.SeekIfPossible(initialOffset, SeekOrigin.Begin);
+            stream.SeekIfPossible(initialOffset, SeekOrigin.Begin);
 
             // Fallback to standard ISO9660 wrapper
             var isoWrapper = ISO9660.Create(stream);
