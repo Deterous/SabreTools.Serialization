@@ -102,7 +102,7 @@ namespace SabreTools.Wrappers
                     return null;
             
                 // Try to detect XDVDFS partition
-                int redumpType = Array.IndexOf(Data.Models.XboxISO.Constants.RedumpISOLengths, data.Length);
+                int redumpType = Array.IndexOf(Constants.RedumpIsoLengths, data.Length);
                 if (redumpType < 0)
                     return null;
                 
