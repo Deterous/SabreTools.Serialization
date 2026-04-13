@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Data.Models.XboxISO;
 
 namespace SabreTools.Wrappers
@@ -16,10 +18,10 @@ namespace SabreTools.Wrappers
         #region Extension Properties
 
         /// <inheritdoc cref="DiscImage.VideoPartition"/>
-        public SabreTools.Data.Models.ISO9660.Volume VideoPartition => Model.VideoPartition;
+        public SabreTools.Data.Models.ISO9660.Volume? VideoPartition => Model.VideoPartition;
 
         /// <inheritdoc cref="DiscImage.GamePartition"/>
-        public SabreTools.Data.Models.XDVDFS.Volume GamePartition => Model.GamePartition;
+        public SabreTools.Data.Models.XDVDFS.Volume? GamePartition => Model.GamePartition;
 
         #endregion
 
@@ -95,7 +97,7 @@ namespace SabreTools.Wrappers
 
                 // Parse the Video partition
                 model.VideoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
-                if (videoPartition is null)
+                if (model.VideoPartition is null)
                     return null;
             
                 // Try to detect XDVDFS partition
@@ -103,7 +105,7 @@ namespace SabreTools.Wrappers
                 if (redumpType < 0)
                     return null;
                 
-                XGDType = redumpType switch
+                model.XGDType = redumpType switch
                 {
                     0 => 0, // XGD1
                     1 or 2 or 3 or 4 => 1, // XGD2
@@ -121,7 +123,7 @@ namespace SabreTools.Wrappers
                 if (!magic.StartsWith(Data.Models.XDVDFS.Constants.VolumeDescriptorSignature))
                     return null;
 
-                data.SeekIfPossible(currentOffset + XisoOffsets[xgdType], SeekOrigin.Begin);
+                data.SeekIfPossible(currentOffset + Constants.XisoOffsets[model.XGDType], SeekOrigin.Begin);
                 model.GamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
                 if (model.GamePartition is null)
                     return null;
