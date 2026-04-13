@@ -109,6 +109,8 @@ namespace SabreTools.Wrappers
                     _ => -1,
                 };
 
+                Console.WriteLine($"XGDType: {model.XGDType}");
+
                 // Validate XGDType
                 if (model.XGDType < 0)
                     return null;
@@ -136,9 +138,9 @@ namespace SabreTools.Wrappers
 
                 model.VideoPartition = videoPartition;
 
-                var wrapper = new XboxISO(model, data, currentOffset);
+                Console.WriteLine("done creating");
 
-                return wrapper;
+                return new XboxISO(model, data, currentOffset);
             }
             catch
             {

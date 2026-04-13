@@ -13,6 +13,8 @@ namespace SabreTools.Wrappers
         {
             long initialOffset = _dataSource.Position;
 
+            Console.WriteLine("Test");
+
             var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
             bool success = videoWrapper?.Extract(outputDirectory, includeDebug) ?? false;
 
