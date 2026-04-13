@@ -115,6 +115,8 @@ namespace SabreTools.Wrappers
 
                 long magicOffset = Data.Models.XDVDFS.Constants.SectorSize * Data.Models.XDVDFS.Constants.ReservedSectors;
                 data.SeekIfPossible(currentOffset + magicOffset, SeekOrigin.Begin);
+
+                Console.WriteLine($"magic offset: {currentOffset + magicOffset}");
                 var magic = data.ReadBytes(20);
 
                 if (magic is null)
