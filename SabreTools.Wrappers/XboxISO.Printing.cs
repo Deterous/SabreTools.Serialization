@@ -22,11 +22,11 @@ namespace SabreTools.Wrappers
             long initialOffset = _dataSource.Position;
 
             var ISO9660 = SabreTools.Wrappers.ISO9660.Create(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
-            ISO9660.Print(builder);
+            ISO9660.PrintInformation(builder);
             builder.AppendLine();
 
             var XDVDFS = SabreTools.Wrappers.XDVDFS.Create(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
-            XDVDFS.Print(builder);
+            XDVDFS.PrintInformation(builder);
         }
     }
 }
