@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.IO.Extensions;
 using SabreTools.Data.Models.XboxISO;
+using SabreTools.IO;
+using SabreTools.IO.Extensions;
 
 namespace SabreTools.Wrappers
 {
@@ -101,11 +102,11 @@ namespace SabreTools.Wrappers
                     return null;
             
                 // Try to detect XDVDFS partition
-                int redumpType = Array.IndexOf(Constants.RedumpISOLengths, data.Length);
+                int redumpType = Array.IndexOf(Data.Models.XboxISO.Constants.RedumpISOLengths, data.Length);
                 if (redumpType < 0)
                     return null;
                 
-                model.XGDType = redumpType switch
+                int xgdType = redumpType switch
                 {
                     0 => 0, // XGD1
                     1 or 2 or 3 or 4 => 1, // XGD2
@@ -123,12 +124,15 @@ namespace SabreTools.Wrappers
                 if (!magic.StartsWith(Data.Models.XDVDFS.Constants.VolumeDescriptorSignature))
                     return null;
 
-                data.SeekIfPossible(currentOffset + Constants.XisoOffsets[model.XGDType], SeekOrigin.Begin);
+                data.SeekIfPossible(currentOffset + Constants.XisoOffsets[xgdType], SeekOrigin.Begin);
                 model.GamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
                 if (model.GamePartition is null)
                     return null;
 
-                return new XboxISO(model, data, currentOffset);
+                var wrapper = new XboxISO(model, data, currentOffset);
+                wrapper.XGDType = xgdType;
+
+                return wrapper;
             }
             catch
             {
