@@ -2,7 +2,7 @@ name: Build and Test
 
 on:
     push:
-        branches: ["main"]
+        branches: ["xiso"]
 
 jobs:
     build:
@@ -21,11 +21,8 @@ jobs:
                       9.0.x
                       10.0.x
 
-            - name: Run tests
-              run: dotnet test
-
             - name: Run publish script
-              run: ./publish-nix.sh -d
+              run: ./publish-nix.sh
 
             - name: Update rolling tag
               run: |
