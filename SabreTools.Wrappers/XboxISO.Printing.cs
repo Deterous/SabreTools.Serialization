@@ -21,19 +21,13 @@ namespace SabreTools.Wrappers
 
             long initialOffset = _dataSource.Position;
 
-            if (VideoPartition is not null)
-            {
-                var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
-                if (videoWrapper is not null)
-                    videoWrapper.PrintInformation(builder);
-            }
+            var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
+            if (videoWrapper is not null)
+                videoWrapper.PrintInformation(builder);
 
-            if (GamePartition is not null)
-            {
-                var gameWrapper = new SabreTools.Wrappers.XDVDFS(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
-                if (gameWrapper is not null)
-                    gameWrapper.PrintInformation(builder);
-            }
+            var gameWrapper = new SabreTools.Wrappers.XDVDFS(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
+            if (gameWrapper is not null)
+                gameWrapper.PrintInformation(builder);
         }
     }
 }

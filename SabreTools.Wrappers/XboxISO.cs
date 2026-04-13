@@ -21,13 +21,13 @@ namespace SabreTools.Wrappers
         #region Extension Properties
 
         /// <inheritdoc cref="DiscImage.VideoPartition"/>
-        public SabreTools.Data.Models.ISO9660.Volume? VideoPartition => Model.VideoPartition;
+        public SabreTools.Data.Models.ISO9660.Volume VideoPartition => Model.VideoPartition;
 
         /// <inheritdoc cref="DiscImage.XGDType"/>
         public int XGDType => Model.XGDType;
 
         /// <inheritdoc cref="DiscImage.GamePartition"/>
-        public SabreTools.Data.Models.XDVDFS.Volume? GamePartition => Model.GamePartition;
+        public SabreTools.Data.Models.XDVDFS.Volume GamePartition => Model.GamePartition;
 
         #endregion
 
@@ -123,14 +123,18 @@ namespace SabreTools.Wrappers
                     return null;
 
                 data.SeekIfPossible(currentOffset + Constants.XisoOffsets[model.XGDType], SeekOrigin.Begin);
-                model.GamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
-                if (model.GamePartition is null)
+                var gamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
+                if (gamePartition is null)
                     return null;
 
+                model.GamePartition = gamePartition;
+
                 // Parse the Video partition last
-                model.VideoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
-                if (model.VideoPartition is null)
+                var videoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
+                if (videoPartition is null)
                     return null;
+
+                model.VideoPartition = videoPartition;
 
                 var wrapper = new XboxISO(model, data, currentOffset);
 
