@@ -19,6 +19,8 @@ namespace SabreTools.Wrappers
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
+            long initialOffset = _dataSource.Position;
+
             var ISO9660 = SabreTools.Wrappers.ISO9660.Create(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
             ISO9660.Print(builder);
             builder.AppendLine();
