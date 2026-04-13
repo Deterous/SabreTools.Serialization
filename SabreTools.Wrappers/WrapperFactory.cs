@@ -109,7 +109,7 @@ namespace SabreTools.Wrappers
             if (isoWrapper is null || isoWrapper is not ISO9660 iso)
                 return null;
 
-            return wrapper;
+            return isoWrapper;
         }
 
         /// <summary>
