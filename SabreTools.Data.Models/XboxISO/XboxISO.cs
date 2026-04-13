@@ -1,0 +1,19 @@
+namespace SabreTools.Data.Models.XboxISO
+{
+    /// <summary>
+    /// Xbox / Xbox 360 disc image with a video partition (ISO9660) and a game partition (XDVDFS)
+    /// There exists zeroed gaps before/after the start/end of the game partition
+    /// </summary>
+    public class DiscImage
+    {
+        /// <summary>
+        /// ISO9660 Video parititon, split across start and end of Disc Image
+        /// </summary>
+        public SabreTools.Data.Models.ISO9660.Volume? VideoPartition { get; set; }
+
+        /// <summary>
+        /// XDVDFS Game partition, present in middle of Disc Image
+        /// </summary>
+        public SabreTools.Data.Models.ISO9660.XDVDFS? GamePartition { get; set; }
+    }
+}
