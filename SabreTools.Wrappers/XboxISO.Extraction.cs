@@ -11,11 +11,11 @@ namespace SabreTools.Wrappers
         /// <inheritdoc/>
         public virtual bool Extract(string outputDirectory, bool includeDebug)
         {
-            var ISO9660 = SabreTools.Wrappers.ISO9660.Create(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
-            bool success |= ISO9660.Extract(outputDirectory, includeDebug);
+            var videoWrapper = SabreTools.Wrappers.ISO9660.Create(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
+            bool success = videoWrapper.Extract(outputDirectory, includeDebug);
 
-            var XDVDFS = SabreTools.Wrappers.XDVDFS.Create(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
-            success |= XDVDFS.Extract(outputDirectory, includeDebug);
+            var gameWrapper = SabreTools.Wrappers.XDVDFS.Create(GamePartition, _dataSource, initialOffset + Constants.XisoOffsets[XGDType], Constants.XisoLengths[XGDType]);
+            success |= gameWrapper.Extract(outputDirectory, includeDebug);
 
             return success;
         }
