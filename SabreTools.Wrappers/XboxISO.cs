@@ -113,7 +113,7 @@ namespace SabreTools.Wrappers
                 if (model.XGDType < 0)
                     return null;
 
-                long magicOffset = Data.Models.XDVDFS.Constants.SectorSize * Data.Models.XDVDFS.Constants.ReservedSectors;
+                long magicOffset = Constants.XisoOffsets[model.XGDType] + Data.Models.XDVDFS.Constants.SectorSize * Data.Models.XDVDFS.Constants.ReservedSectors;
                 data.SeekIfPossible(currentOffset + magicOffset, SeekOrigin.Begin);
 
                 Console.WriteLine($"magic offset: {currentOffset + magicOffset}");
