@@ -21,9 +21,7 @@ namespace SabreTools.Wrappers
 
             long initialOffset = _dataSource.Position;
 
-            Console.WriteLine("Test");
-
-            var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset);
+            var videoWrapper = new SabreTools.Wrappers.ISO9660(VideoPartition, _dataSource, initialOffset, _dataSource.Length);
             if (videoWrapper is not null)
                 videoWrapper.PrintInformation(builder);
 

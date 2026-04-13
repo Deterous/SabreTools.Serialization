@@ -109,8 +109,6 @@ namespace SabreTools.Wrappers
                     _ => -1,
                 };
 
-                Console.WriteLine($"XGDType: {model.XGDType}");
-
                 // Validate XGDType
                 if (model.XGDType < 0)
                     return null;
@@ -124,12 +122,16 @@ namespace SabreTools.Wrappers
                 if (!magic.StartsWith(Data.Models.XDVDFS.Constants.VolumeDescriptorMagic))
                     return null;
 
+                Console.WriteLine("1");
+
                 data.SeekIfPossible(currentOffset + Constants.XisoOffsets[model.XGDType], SeekOrigin.Begin);
                 var gamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
                 if (gamePartition is null)
                     return null;
 
                 model.GamePartition = gamePartition;
+
+                Console.WriteLine("2");
 
                 // Parse the Video partition last
                 var videoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
