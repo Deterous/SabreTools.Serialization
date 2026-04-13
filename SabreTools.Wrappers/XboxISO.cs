@@ -123,7 +123,7 @@ namespace SabreTools.Wrappers
 
                 if (magic is null)
                     return null;
-                if (!magic.StartsWith(Data.Models.XDVDFS.Constants.VolumeDescriptorSignature))
+                if (!magic.StartsWith(Data.Models.XDVDFS.Constants.VolumeDescriptorMagic))
                     return null;
 
                 data.SeekIfPossible(currentOffset + Constants.XisoOffsets[xgdType], SeekOrigin.Begin);
