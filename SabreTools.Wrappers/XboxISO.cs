@@ -133,7 +133,8 @@ namespace SabreTools.Wrappers
 
                 model.GamePartition = gamePartition;
 
-                Console.WriteLine("2");
+                // Reset stream position
+                data.SeekIfPossible(currentOffset, SeekOrigin.Begin);
 
                 // Parse the Video partition last
                 var videoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
