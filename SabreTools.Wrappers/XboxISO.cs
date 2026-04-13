@@ -4,6 +4,8 @@ using System.IO;
 using SabreTools.Data.Models.XboxISO;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
+using SabreTools.Matching;
+using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.Wrappers
 {
