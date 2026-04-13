@@ -213,7 +213,7 @@ namespace SabreTools.Serialization.Readers
             data.SeekIfPossible(initialOffset + (((long)offset) * Constants.SectorSize), SeekOrigin.Begin);
             long curPosition;
             Console.WriteLine("d");
-            while (size > data.Position - (((long)offset) * Constants.SectorSize))
+            while (size > data.Position - (initialOffset + ((long)offset) * Constants.SectorSize))
             {
                 Console.WriteLine("e");
                 curPosition = data.Position;
