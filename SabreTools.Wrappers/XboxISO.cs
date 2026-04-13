@@ -97,11 +97,6 @@ namespace SabreTools.Wrappers
 
                 // Create new model to fill in
                 var model = new DiscImage();
-
-                // Parse the Video partition
-                model.VideoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
-                if (model.VideoPartition is null)
-                    return null;
             
                 // Try to detect XDVDFS partition
                 int redumpType = Array.IndexOf(Constants.RedumpIsoLengths, data.Length);
@@ -129,6 +124,11 @@ namespace SabreTools.Wrappers
                 data.SeekIfPossible(currentOffset + Constants.XisoOffsets[xgdType], SeekOrigin.Begin);
                 model.GamePartition = new Serialization.Readers.XDVDFS().Deserialize(data);
                 if (model.GamePartition is null)
+                    return null;
+
+                // Parse the Video partition last
+                model.VideoPartition = new Serialization.Readers.ISO9660().Deserialize(data);
+                if (model.VideoPartition is null)
                     return null;
 
                 var wrapper = new XboxISO(model, data, currentOffset);
