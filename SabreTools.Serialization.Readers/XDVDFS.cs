@@ -94,7 +94,7 @@ namespace SabreTools.Serialization.Readers
             var signature = System.Text.Encoding.ASCII.GetString(obj.Signature);
             if (!signature.Equals(Constants.LayoutDescriptorSignature))
                 return null;
-            obj.Unusued8Bytes = data.ReadBytes(8);
+            obj.Unused8Bytes = data.ReadBytes(8);
 
             obj.XBLayoutVersion = ParseFourPartVersionType(data);
             obj.XBPremasterVersion = ParseFourPartVersionType(data);
