@@ -8,14 +8,16 @@ namespace SabreTools.Wrappers
     public partial class AtariLynxCart : IWritable
     {
         /// <inheritdoc/>
-        public bool Write(string outputDirectory, bool includeDebug)
+        public bool Write(string outputPath, bool includeDebug)
         {
-            // Get the base path
-            string outputFilename = Filename is null
-                ? Guid.NewGuid().ToString()
-                : Path.GetFileName(Filename);
-            outputFilename += ".lnx";
-            string outputPath = Path.Combine(outputDirectory, outputFilename);
+            // Ensure an output path
+            if (string.IsNullOrEmpty(outputPath))
+            {
+                string outputFilename = Filename is null
+                    ? (Guid.NewGuid().ToString() + ".lnx")
+                    : (Filename + ".new");
+                outputPath = Path.GetFullPath(outputFilename);
+            }
 
             // Check for invalid data
             if (Header is null || Model.Data is null || Model.Data.Length == 0)
@@ -46,7 +48,7 @@ namespace SabreTools.Wrappers
         /// <returns>True if the writing was successful, false otherwise</returns>
         private bool WriteHeader(Stream stream, bool includeDebug)
         {
-            if (includeDebug) Console.WriteLine("Attempting to extract header data");
+            if (includeDebug) Console.WriteLine("Attempting to write header data");
 
             if (Header is null)
             {
@@ -107,7 +109,7 @@ namespace SabreTools.Wrappers
         /// <returns>True if the writing was successful, false otherwise</returns>
         private bool WriteRom(Stream stream, bool includeDebug)
         {
-            if (includeDebug) Console.WriteLine("Attempting to extract ROM data");
+            if (includeDebug) Console.WriteLine("Attempting to write ROM data");
 
             // Try to write the data
             try
