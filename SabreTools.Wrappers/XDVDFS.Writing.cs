@@ -17,7 +17,8 @@ namespace SabreTools.Wrappers
             outputFilename += ".xiso";
             string outputPath = Path.Combine(outputDirectory, outputFilename);
 
-            if (!SabreTools.Serialization.Writers.XDVDFS().SerializeFile(Model, outputPath))
+            var writer = new SabreTools.Serialization.Writers.XDVDFS();
+            if (!writer.SerializeFile(Model, outputPath))
             {
                 if (includeDebug) Console.WriteLine("Model was invalid, cannot write!");
                 return false;
