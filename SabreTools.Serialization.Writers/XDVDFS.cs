@@ -1,17 +1,17 @@
 using System;
 using System.IO;
 using System.Text;
+using SabreTools.Data.Models.XDVDFS;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using System.Numerics;
-using System.Numerics.Extensions;
 
 namespace SabreTools.Serialization.Writers
 {
-    public class XDVDFS : BaseBinaryWriter<Data.Models.XDVDFS.Volume>
+    public class XDVDFS : BaseBinaryWriter<Volume>
     {
         /// <inheritdoc/>
-        public override Stream? SerializeStream(Data.Models.XDVDFS.Volume? obj)
+        public override Stream? SerializeStream(Volume? obj)
         {
             // If the data is invalid
             if (obj?.VolumeDescriptor?.StartSignature is null)
@@ -19,7 +19,7 @@ namespace SabreTools.Serialization.Writers
 
             // If the magic doesn't match
             string magic = Encoding.ASCII.GetString(obj.VolumeDescriptor.StartSignature);
-            if (magic != Data.Models.XDVDFS.Constants.VolumeDescriptorSignature)
+            if (magic != Constants.VolumeDescriptorSignature)
                 return null;
 
             // Validate model
@@ -72,14 +72,14 @@ namespace SabreTools.Serialization.Writers
             for (int i = 0; i < keys.Length; i++)
             {
                 uint sectorOffset = keys[i];
-                stream.SeekIfPossible(sectorOffset * Data.Models.XDVDFS.Constants.SectorSize, SeekOrigin.Begin);
+                stream.SeekIfPossible(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
                 SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
             }
 
             return stream;
         }
 
-        public static void SerializeFourPartVersionType(Stream stream, Data.Models.XDVDFS.FourPartVersionType obj)
+        public static void SerializeFourPartVersionType(Stream stream, FourPartVersionType obj)
         {
             stream.WriteUInt16LittleEndian(obj.Major);
             stream.WriteUInt16LittleEndian(obj.Minor);
@@ -87,7 +87,7 @@ namespace SabreTools.Serialization.Writers
             stream.WriteUInt16LittleEndian(obj.Revision);
         }
 
-        public static void SerializeDirectoryDescriptor(Stream stream, Data.Models.XDVDFS.DirectoryDescriptor obj)
+        public static void SerializeDirectoryDescriptor(Stream stream, DirectoryDescriptor obj)
         {
             foreach (var dr in obj.DirectoryRecords)
                 SerializeDirectoryRecord(stream, dr);
@@ -95,7 +95,7 @@ namespace SabreTools.Serialization.Writers
                 stream.Write(obj.Padding, 0, obj.Padding.Length);
         }
 
-        public static void SerializeDirectoryRecord(Stream stream, Data.Models.XDVDFS.DirectoryRecord obj)
+        public static void SerializeDirectoryRecord(Stream stream, DirectoryRecord obj)
         {
             stream.WriteUInt16LittleEndian(obj.LeftChildOffset);
             stream.WriteUInt16LittleEndian(obj.RightChildOffset);
