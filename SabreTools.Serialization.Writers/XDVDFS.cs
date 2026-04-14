@@ -4,8 +4,8 @@ using System.Text;
 using SabreTools.Data.Models.XDVDFS;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using System.Numerics;
-using System.Numerics.Extensions;
+using SabreTools.Numerics;
+using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.Serialization.Writers
 {
