@@ -17,19 +17,11 @@ namespace SabreTools.Wrappers
             outputFilename += ".xiso";
             string outputPath = Path.Combine(outputDirectory, outputFilename);
 
-            Stream? stream = new Serialization.Writers.XDVDFS().SerializeStream(Model);
-
-            // Check for invalid data
-            if (stream is null)
+            if (!SabreTools.Serialization.Writers.XDVDFS().SerializeFile(Model, outputPath))
             {
                 if (includeDebug) Console.WriteLine("Model was invalid, cannot write!");
                 return false;
             }
-
-            // Open the output file for writing
-            using var fs = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.None);
-
-            stream.CopyTo(fs);
 
             return true;
         }
