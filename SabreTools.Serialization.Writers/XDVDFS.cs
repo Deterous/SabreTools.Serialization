@@ -45,9 +45,9 @@ namespace SabreTools.Serialization.Writers
             stream.Write(obj.ReservedArea, 0, obj.ReservedArea.Length);
 
             stream.Write(obj.VolumeDescriptor.StartSignature, 0, obj.VolumeDescriptor.StartSignature.Length);
-            stream.WriteUInt32LittleEndian(obj.VolumeDescriptor.RootOffset);
-            stream.WriteUInt32LittleEndian(obj.VolumeDescriptor.RootSize);
-            stream.WriteUInt64LittleEndian(obj.VolumeDescriptor.MasteringTimestamp);
+            stream.WriteLittleEndian(obj.VolumeDescriptor.RootOffset);
+            stream.WriteLittleEndian(obj.VolumeDescriptor.RootSize);
+            stream.WriteLittleEndian(obj.VolumeDescriptor.MasteringTimestamp);
             stream.WriteByte(obj.VolumeDescriptor.UnknownByte);
             stream.Write(obj.VolumeDescriptor.Reserved, 0, obj.VolumeDescriptor.Reserved.Length);
             stream.Write(obj.VolumeDescriptor.EndSignature, 0, obj.VolumeDescriptor.EndSignature.Length);
@@ -81,10 +81,10 @@ namespace SabreTools.Serialization.Writers
 
         public static void SerializeFourPartVersionType(Stream stream, FourPartVersionType obj)
         {
-            stream.WriteUInt16LittleEndian(obj.Major);
-            stream.WriteUInt16LittleEndian(obj.Minor);
-            stream.WriteUInt16LittleEndian(obj.Build);
-            stream.WriteUInt16LittleEndian(obj.Revision);
+            stream.WriteLittleEndian(obj.Major);
+            stream.WriteLittleEndian(obj.Minor);
+            stream.WriteLittleEndian(obj.Build);
+            stream.WriteLittleEndian(obj.Revision);
         }
 
         public static void SerializeDirectoryDescriptor(Stream stream, DirectoryDescriptor obj)
@@ -97,10 +97,10 @@ namespace SabreTools.Serialization.Writers
 
         public static void SerializeDirectoryRecord(Stream stream, DirectoryRecord obj)
         {
-            stream.WriteUInt16LittleEndian(obj.LeftChildOffset);
-            stream.WriteUInt16LittleEndian(obj.RightChildOffset);
-            stream.WriteUInt32LittleEndian(obj.ExtentOffset);
-            stream.WriteUInt32LittleEndian(obj.ExtentSize);
+            stream.WriteLittleEndian(obj.LeftChildOffset);
+            stream.WriteLittleEndian(obj.RightChildOffset);
+            stream.WriteLittleEndian(obj.ExtentOffset);
+            stream.WriteLittleEndian(obj.ExtentSize);
             stream.WriteByte((byte)obj.FileFlags);
             stream.WriteByte(obj.FilenameLength);
             stream.Write(obj.Filename, 0, obj.Filename.Length);
