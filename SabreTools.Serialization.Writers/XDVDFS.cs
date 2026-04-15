@@ -70,10 +70,12 @@ namespace SabreTools.Serialization.Writers
             uint[] keys = new uint[obj.DirectoryDescriptors.Count];
             obj.DirectoryDescriptors.Keys.CopyTo(keys, 0);
             Array.Sort(keys);
+
+            // Write directory descriptors
             for (int i = 0; i < keys.Length; i++)
             {
                 uint sectorOffset = keys[i];
-                stream.SeekIfPossible(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
+                stream.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
                 SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
             }
 
