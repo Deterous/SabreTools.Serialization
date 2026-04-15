@@ -77,6 +77,8 @@ namespace SabreTools.Serialization.Writers
                 SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
             }
 
+            stream.SeekIfPossible(0, SeekOrigin.Begin);
+
             return stream;
         }
 

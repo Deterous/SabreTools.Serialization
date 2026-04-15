@@ -40,23 +40,16 @@ namespace SabreTools.Serialization.Writers
         /// <inheritdoc/>
         public virtual bool SerializeFile(TModel? obj, string? path)
         {
-            System.Console.WriteLine("1");
             if (string.IsNullOrEmpty(path))
                 return false;
 
-            System.Console.WriteLine("2");
             using var stream = SerializeStream(obj);
-            System.Console.WriteLine("3");
             if (stream is null)
                 return false;
-            System.Console.WriteLine("4");
 
             using var fs = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
-            System.Console.WriteLine("5");
             stream.BlockCopy(fs);
-            System.Console.WriteLine("6");
             fs.Flush();
-            System.Console.WriteLine("7");
 
             return true;
         }
