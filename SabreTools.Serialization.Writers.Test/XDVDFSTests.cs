@@ -9,7 +9,7 @@ namespace SabreTools.Serialization.Writers.Test
         public void SerializeFile_Null_False()
         {
             var serializer = new XDVDFS();
-            bool actual = serializer.SerializeFile(null);
+            bool actual = serializer.SerializeFile(null, null);
             Assert.False(actual);
         }
     }
