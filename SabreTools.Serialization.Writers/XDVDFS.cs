@@ -12,37 +12,95 @@ namespace SabreTools.Serialization.Writers
     public class XDVDFS : BaseBinaryWriter<Volume>
     {
         /// <inheritdoc/>
+        public override bool SerializeFile(Volume? obj, string? path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            if(!ValidateVolume(obj))
+                return false;
+
+            // Create the file stream
+            using var fs = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            // Loop over all directory descriptors in order of offset
+            uint[] keys = new uint[obj.DirectoryDescriptors.Count];
+            obj.DirectoryDescriptors.Keys.CopyTo(keys, 0);
+            Array.Sort(keys);
+
+            // Write directory descriptors
+            for (int i = 0; i < keys.Length; i++)
+            {
+                uint sectorOffset = keys[i];
+                System.Console.WriteLine($"Seeking to {sectorOffset * Constants.SectorSize}");
+                stream.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
+                SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
+            }
+
+            fs.Flush();
+
+            return true;
+        }
+
+        /// <inheritdoc/>
         public override Stream? SerializeStream(Volume? obj)
         {
-            // If the data is invalid
-            if (obj?.VolumeDescriptor?.StartSignature is null)
+            if(!ValidateVolume(obj))
                 return null;
-
-            // If the magic doesn't match
-            string magic = Encoding.ASCII.GetString(obj.VolumeDescriptor.StartSignature);
-            if (magic != Constants.VolumeDescriptorSignature)
-                return null;
-
-            // Validate model
-            if (obj.ReservedArea.Length != 0x10000)
-                return null;
-            if (obj.VolumeDescriptor.Reserved.Length != 1991)
-                return null;
-            if (obj.VolumeDescriptor.EndSignature.Length != 20)
-                return null;
-            if (obj.LayoutDescriptor is not null)
-            {
-                if (obj.LayoutDescriptor.Signature.Length != 24)
-                    return null;
-                if (obj.LayoutDescriptor.Unused8Bytes.Length != 8)
-                    return null;
-                if (obj.LayoutDescriptor.Reserved.Length != 1968)
-                    return null;
-            }
 
             // Create the output stream
             var stream = new MemoryStream();
 
+            // Loop over all directory descriptors in order of offset
+            uint[] keys = new uint[obj.DirectoryDescriptors.Count];
+            obj.DirectoryDescriptors.Keys.CopyTo(keys, 0);
+            Array.Sort(keys);
+
+            // Write directory descriptors
+            for (int i = 0; i < keys.Length; i++)
+            {
+                uint sectorOffset = keys[i];
+                SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
+            }
+
+            stream.SeekIfPossible(0, SeekOrigin.Begin);
+
+            return stream;
+        }
+
+        public static bool ValidateVolume(Volume? obj)
+        {
+            // If the data is invalid
+            if (obj?.VolumeDescriptor?.StartSignature is null)
+                return false;
+
+            // If the magic doesn't match
+            string magic = Encoding.ASCII.GetString(obj.VolumeDescriptor.StartSignature);
+            if (magic != Constants.VolumeDescriptorSignature)
+                return false;
+
+            // Validate model
+            if (obj.ReservedArea.Length != 0x10000)
+                return false;
+            if (obj.VolumeDescriptor.Reserved.Length != 1991)
+                return false;
+            if (obj.VolumeDescriptor.EndSignature.Length != 20)
+                return false;
+            if (obj.LayoutDescriptor is not null)
+            {
+                if (obj.LayoutDescriptor.Signature.Length != 24)
+                    return false;
+                if (obj.LayoutDescriptor.Unused8Bytes.Length != 8)
+                    return false;
+                if (obj.LayoutDescriptor.Reserved.Length != 1968)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static void SerializeHeader(Stream stream, Volume obj)
+        {
             stream.Write(obj.ReservedArea, 0, obj.ReservedArea.Length);
 
             stream.Write(obj.VolumeDescriptor.StartSignature, 0, obj.VolumeDescriptor.StartSignature.Length);
@@ -65,24 +123,6 @@ namespace SabreTools.Serialization.Writers
                 SerializeFourPartVersionType(stream, obj.LayoutDescriptor.XBOther3Version);
                 stream.Write(obj.LayoutDescriptor.Reserved, 0, obj.LayoutDescriptor.Reserved.Length);
             }
-
-            // Loop over all directory descriptors in order of offset
-            uint[] keys = new uint[obj.DirectoryDescriptors.Count];
-            obj.DirectoryDescriptors.Keys.CopyTo(keys, 0);
-            Array.Sort(keys);
-
-            // Write directory descriptors
-            for (int i = 0; i < keys.Length; i++)
-            {
-                uint sectorOffset = keys[i];
-                System.Console.WriteLine($"Seeking to {sectorOffset * Constants.SectorSize}");
-                stream.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
-                SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
-            }
-
-            stream.SeekIfPossible(0, SeekOrigin.Begin);
-
-            return stream;
         }
 
         public static void SerializeFourPartVersionType(Stream stream, FourPartVersionType obj)
