@@ -208,7 +208,8 @@ namespace SabreTools.Serialization.Readers
                 // If invalid record read or next descriptor cannot fit in the current sector, skip ahead
                 if (dr is null || (data.Position - initialOffset) % Constants.SectorSize > (Constants.SectorSize - Constants.MinimumRecordLength))
                 {
-                    data.SeekIfPossible(Constants.SectorSize - (int)((data.Position - initialOffset) % Constants.SectorSize), SeekOrigin.Current);
+                    long remainder = Constants.SectorSize - (int)((data.Position - initialOffset) % Constants.SectorSize);
+                    obj.Padding = data.ReadBytes(remainder);
                     continue;
                 }
 
@@ -219,6 +220,7 @@ namespace SabreTools.Serialization.Readers
 
             obj.DirectoryRecords = [.. records];
 
+            // Previously set padding assumed to be all 0xFF up to sector boundaries 
             int remainder = Constants.SectorSize - (int)(size % Constants.SectorSize);
             if (remainder > 0 && remainder < Constants.SectorSize)
                 obj.Padding = data.ReadBytes(remainder);
