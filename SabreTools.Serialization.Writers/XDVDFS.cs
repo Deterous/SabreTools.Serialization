@@ -75,6 +75,7 @@ namespace SabreTools.Serialization.Writers
             for (int i = 0; i < keys.Length; i++)
             {
                 uint sectorOffset = keys[i];
+                System.Console.WriteLine($"Seeking to {sectorOffset * Constants.SectorSize}");
                 stream.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
                 SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
             }
