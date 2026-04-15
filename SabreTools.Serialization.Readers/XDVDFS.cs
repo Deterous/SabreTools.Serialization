@@ -237,11 +237,12 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new DirectoryRecord();
 
-            obj.LeftChildOffset = data.ReadUInt16LittleEndian();
-            obj.RightChildOffset = data.ReadUInt16LittleEndian();
-            if (obj.LeftChildOffset == 0xFFFF && obj.RightChildOffset == 0xFFFF)
+            byte[] start = obj.PeekBytes(4);
+            if (start.EqualsExactly([0xFF, 0xFF, 0xFF, 0xFF]))
                 return null;
 
+            obj.LeftChildOffset = data.ReadUInt16LittleEndian();
+            obj.RightChildOffset = data.ReadUInt16LittleEndian();
             obj.ExtentOffset = data.ReadUInt32LittleEndian();
             obj.ExtentSize = data.ReadUInt32LittleEndian();
             obj.FileFlags = (FileFlags)data.ReadByteValue();

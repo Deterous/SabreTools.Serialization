@@ -9,7 +9,7 @@ using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.Serialization.Writers
 {
-    public class XDVDFS : BaseBinaryWriter<Volume>
+    public class XDVDFS : IFileWriter<Volume>
     {
         /// <inheritdoc/>
         public override bool SerializeFile(Volume? obj, string? path)
@@ -34,7 +34,6 @@ namespace SabreTools.Serialization.Writers
             for (int i = 0; i < keys.Length; i++)
             {
                 uint sectorOffset = keys[i];
-                System.Console.WriteLine($"Seeking to {sectorOffset * Constants.SectorSize}");
                 fs.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
                 SerializeDirectoryDescriptor(fs, obj.DirectoryDescriptors[sectorOffset]);
             }
@@ -42,34 +41,6 @@ namespace SabreTools.Serialization.Writers
             fs.Flush();
 
             return true;
-        }
-
-        /// <inheritdoc/>
-        public override Stream? SerializeStream(Volume? obj)
-        {
-            if(obj is null || !ValidateVolume(obj))
-                return null;
-
-            // Create the output stream
-            var stream = new MemoryStream();
-
-            SerializeHeader(stream, obj);
-
-            // Loop over all directory descriptors in order of offset
-            uint[] keys = new uint[obj.DirectoryDescriptors.Count];
-            obj.DirectoryDescriptors.Keys.CopyTo(keys, 0);
-            Array.Sort(keys);
-
-            // Write directory descriptors
-            for (int i = 0; i < keys.Length; i++)
-            {
-                uint sectorOffset = keys[i];
-                SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
-            }
-
-            stream.SeekIfPossible(0, SeekOrigin.Begin);
-
-            return stream;
         }
 
         public static bool ValidateVolume(Volume? obj)
