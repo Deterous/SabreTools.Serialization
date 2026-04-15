@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using SabreTools.Data.Models.XDVDFS;
 using SabreTools.IO.Extensions;
+using SabreTools.Matching;
 using SabreTools.Numerics.Extensions;
 
 #pragma warning disable IDE0017 // Simplify object initialization
@@ -238,7 +239,7 @@ namespace SabreTools.Serialization.Readers
             var obj = new DirectoryRecord();
 
             byte[] start = data.PeekBytes(4);
-            if (start.Equals([0xFF, 0xFF, 0xFF, 0xFF]))
+            if (start.EqualsExactly([0xFF, 0xFF, 0xFF, 0xFF]))
                 return null;
 
             obj.LeftChildOffset = data.ReadUInt16LittleEndian();
