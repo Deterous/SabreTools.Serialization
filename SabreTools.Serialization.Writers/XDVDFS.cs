@@ -17,11 +17,13 @@ namespace SabreTools.Serialization.Writers
             if (string.IsNullOrEmpty(path))
                 return false;
 
-            if(!ValidateVolume(obj))
+            if(obj is null || !ValidateVolume(obj))
                 return false;
 
             // Create the file stream
             using var fs = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            SerializeHeader(fs, obj);
 
             // Loop over all directory descriptors in order of offset
             uint[] keys = new uint[obj.DirectoryDescriptors.Count];
@@ -33,8 +35,8 @@ namespace SabreTools.Serialization.Writers
             {
                 uint sectorOffset = keys[i];
                 System.Console.WriteLine($"Seeking to {sectorOffset * Constants.SectorSize}");
-                stream.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
-                SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
+                fs.Seek(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
+                SerializeDirectoryDescriptor(fs, obj.DirectoryDescriptors[sectorOffset]);
             }
 
             fs.Flush();
@@ -45,11 +47,13 @@ namespace SabreTools.Serialization.Writers
         /// <inheritdoc/>
         public override Stream? SerializeStream(Volume? obj)
         {
-            if(!ValidateVolume(obj))
+            if(obj is null || !ValidateVolume(obj))
                 return null;
 
             // Create the output stream
             var stream = new MemoryStream();
+
+            SerializeHeader(stream, obj);
 
             // Loop over all directory descriptors in order of offset
             uint[] keys = new uint[obj.DirectoryDescriptors.Count];
