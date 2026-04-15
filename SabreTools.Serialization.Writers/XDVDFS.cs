@@ -14,36 +14,46 @@ namespace SabreTools.Serialization.Writers
         /// <inheritdoc/>
         public override Stream? SerializeStream(Volume? obj)
         {
+            Console.WriteLine("1");
             // If the data is invalid
             if (obj?.VolumeDescriptor?.StartSignature is null)
                 return null;
+            Console.WriteLine("2");
 
             // If the magic doesn't match
             string magic = Encoding.ASCII.GetString(obj.VolumeDescriptor.StartSignature);
             if (magic != Constants.VolumeDescriptorSignature)
                 return null;
+            Console.WriteLine("3");
 
             // Validate model
             if (obj.ReservedArea.Length != 0x10000)
                 return null;
+            Console.WriteLine("1");
             if (obj.VolumeDescriptor.Reserved.Length != 1991)
                 return null;
+            Console.WriteLine("1");
             if (obj.VolumeDescriptor.EndSignature.Length != 20)
                 return null;
+            Console.WriteLine("1");
             if (obj.LayoutDescriptor is not null)
             {
                 if (obj.LayoutDescriptor.Signature.Length != 20)
                     return null;
+                Console.WriteLine("1");
                 if (obj.LayoutDescriptor.Unused8Bytes.Length != 8)
                     return null;
+                Console.WriteLine("1");
                 if (obj.LayoutDescriptor.Reserved.Length != 1968)
                     return null;
+                Console.WriteLine("1");
             }
 
             // Create the output stream
             var stream = new MemoryStream();
 
             stream.Write(obj.ReservedArea, 0, obj.ReservedArea.Length);
+            Console.WriteLine("4");
 
             stream.Write(obj.VolumeDescriptor.StartSignature, 0, obj.VolumeDescriptor.StartSignature.Length);
             stream.WriteLittleEndian(obj.VolumeDescriptor.RootOffset);
@@ -52,6 +62,7 @@ namespace SabreTools.Serialization.Writers
             stream.WriteByte(obj.VolumeDescriptor.UnknownByte);
             stream.Write(obj.VolumeDescriptor.Reserved, 0, obj.VolumeDescriptor.Reserved.Length);
             stream.Write(obj.VolumeDescriptor.EndSignature, 0, obj.VolumeDescriptor.EndSignature.Length);
+            Console.WriteLine("5");
 
             if (obj.LayoutDescriptor is not null)
             {
@@ -64,6 +75,7 @@ namespace SabreTools.Serialization.Writers
                 SerializeFourPartVersionType(stream, obj.LayoutDescriptor.XBOther2Version);
                 SerializeFourPartVersionType(stream, obj.LayoutDescriptor.XBOther3Version);
                 stream.Write(obj.LayoutDescriptor.Reserved, 0, obj.LayoutDescriptor.Reserved.Length);
+                Console.WriteLine("6");
             }
 
             // Loop over all directory descriptors in order of offset
@@ -72,6 +84,7 @@ namespace SabreTools.Serialization.Writers
             Array.Sort(keys);
             for (int i = 0; i < keys.Length; i++)
             {
+                Console.WriteLine("7");
                 uint sectorOffset = keys[i];
                 stream.SeekIfPossible(sectorOffset * Constants.SectorSize, SeekOrigin.Begin);
                 SerializeDirectoryDescriptor(stream, obj.DirectoryDescriptors[sectorOffset]);
