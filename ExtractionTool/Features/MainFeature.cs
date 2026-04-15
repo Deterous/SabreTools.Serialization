@@ -115,7 +115,7 @@ namespace ExtractionTool.Features
         {
             try
             {
-                Console.WriteLine($"Attempting to reassemble {file}");
+                Console.WriteLine($"Attempting to extract all files from {file}");
                 using Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 // Read the first 16 bytes
@@ -139,17 +139,21 @@ namespace ExtractionTool.Features
                     return;
                 }
 
-                // If the wrapper is not writable
-                if (wrapper is not IWritable writable)
+                // If the wrapper is not extractable
+                if (wrapper is not IExtractable extractable)
                 {
-                    Console.WriteLine($"{ft} is not supported for writing!");
+                    Console.WriteLine($"{ft} is not supported for extraction!");
                     Console.WriteLine();
                     return;
                 }
 
-                // Attempt the writing
+                // Print the preamble
+                Console.WriteLine($"Attempting to extract from '{wrapper.Description()}'");
+                Console.WriteLine();
+
+                // Attempt the extraction
                 Directory.CreateDirectory(OutputPath);
-                writable.Write(OutputPath, Debug);
+                extractable.Extract(OutputPath, Debug);
             }
             catch (Exception ex)
             {
