@@ -38,7 +38,7 @@ namespace SabreTools.Serialization.Writers
             Console.WriteLine("1");
             if (obj.LayoutDescriptor is not null)
             {
-                if (obj.LayoutDescriptor.Signature.Length != 20)
+                if (obj.LayoutDescriptor.Signature.Length != 24)
                     return null;
                 Console.WriteLine("1");
                 if (obj.LayoutDescriptor.Unused8Bytes.Length != 8)
