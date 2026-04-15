@@ -12,7 +12,7 @@ namespace SabreTools.Serialization.Writers
     public class XDVDFS : IFileWriter<Volume>
     {
         /// <inheritdoc/>
-        public override bool SerializeFile(Volume? obj, string? path)
+        public bool SerializeFile(Volume? obj, string? path)
         {
             if (string.IsNullOrEmpty(path))
                 return false;
