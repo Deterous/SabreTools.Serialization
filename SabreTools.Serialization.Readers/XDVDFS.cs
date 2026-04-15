@@ -237,7 +237,7 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new DirectoryRecord();
 
-            byte[] start = obj.PeekBytes(4);
+            byte[] start = data.PeekBytes(4);
             if (start.EqualsExactly([0xFF, 0xFF, 0xFF, 0xFF]))
                 return null;
 
