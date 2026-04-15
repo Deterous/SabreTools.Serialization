@@ -238,7 +238,7 @@ namespace SabreTools.Serialization.Readers
             var obj = new DirectoryRecord();
 
             byte[] start = data.PeekBytes(4);
-            if (start.EqualsExactly([0xFF, 0xFF, 0xFF, 0xFF]))
+            if (start.Equals([0xFF, 0xFF, 0xFF, 0xFF]))
                 return null;
 
             obj.LeftChildOffset = data.ReadUInt16LittleEndian();
