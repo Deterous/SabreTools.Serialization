@@ -208,8 +208,8 @@ namespace SabreTools.Serialization.Readers
                 // If invalid record read or next descriptor cannot fit in the current sector, skip ahead
                 if (dr is null || (data.Position - initialOffset) % Constants.SectorSize > (Constants.SectorSize - Constants.MinimumRecordLength))
                 {
-                    long remainder = Constants.SectorSize - (int)((data.Position - initialOffset) % Constants.SectorSize);
-                    obj.Padding = data.ReadBytes(remainder);
+                    int padding = Constants.SectorSize - (int)((data.Position - initialOffset) % Constants.SectorSize);
+                    obj.Padding = data.ReadBytes(padding);
                     continue;
                 }
 
