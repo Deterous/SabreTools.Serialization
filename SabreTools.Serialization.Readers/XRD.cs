@@ -7,17 +7,17 @@ using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.Serialization.Readers
 {
-    public class XRD : BaseBinaryReader<File>
+    public class XRD : BaseBinaryReader<Data.Models.XRD.File>
     {
         /// <inheritdoc/>
-        public override File? Deserialize(Stream? data)
+        public override Data.Models.XRD.File? Deserialize(Stream? data)
         {
             // If the data is invalid
             if (data is null || !data.CanRead)
                 return null;
 
             // Simple check for a valid stream length
-            if (2312 > data.Length - data.Position)
+            if (2320 > data.Length - data.Position)
                 return null;
 
             try
@@ -26,7 +26,7 @@ namespace SabreTools.Serialization.Readers
                 long initialOffset = data.Position;
 
                 // Create a new Volume to fill
-                var xrd = new File();
+                var xrd = new Data.Models.XRD.File();
 
                 xrd.Magic = data.ReadBytes(5);
                 if (!magic.EqualsExactly(Constants.MagicBytes))

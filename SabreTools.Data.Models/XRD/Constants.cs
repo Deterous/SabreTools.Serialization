@@ -1,4 +1,4 @@
-namespace SabreTools.Data.Models.XDVDFS
+namespace SabreTools.Data.Models.XRD
 {
     public static class Constants
     {
