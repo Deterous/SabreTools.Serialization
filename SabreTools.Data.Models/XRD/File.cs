@@ -190,7 +190,7 @@ namespace SabreTools.Data.Models.XRD
         /// File offsets and hashes
         /// Length of array equal to FileCount
         /// </summary>
-        public FileInfo[] FileInfo { get; set; } = [];
+        public FileEntry[] FileInfo { get; set; } = [];
 
         /// <summary>
         /// XDVDFS Volume Descriptor
@@ -217,6 +217,6 @@ namespace SabreTools.Data.Models.XRD
         /// List of descriptors and their sector offsets and sizes
         /// The root directory descriptor is not guaranteed to be the first
         /// </summary>
-        public DirectoryInfo[] DirectoryInfo { get; set; } = [];
+        public DirectoryEntry[] DirectoryInfo { get; set; } = [];
     }
 }
