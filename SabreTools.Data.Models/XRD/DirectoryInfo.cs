@@ -15,6 +15,6 @@ namespace SabreTools.Data.Models.XRD
         /// <summary>
         /// SHA-1 Hash of file content
         /// </summary>
-        public XDVDFS.DirectoryDescriptor DirectoryDescriptor { get; set; }
+        public XDVDFS.DirectoryDescriptor DirectoryDescriptor { get; set; } = new();
     }
 }

@@ -20,21 +20,27 @@ namespace SabreTools.Data.Models.XRD
 
         /// <summary>
         /// XGD SubType
-        /// XGD1 subtype 1 = Standard
-        /// XGD2 subtype = Wave 0-20
-        /// XGD2 subtype 0x81 = Hybrid XGD2 / DVD-Video
-        /// XGD3 subtype 0 = XGD3 Beta
-        /// XGD3 subtype 1 = Standard
+        /// XGD1:
+        ///  subtype 0 = XGD1 Beta (XB00104M)
+        ///  subtype 1 = Standard
+        /// XGD2:
+        ///  subtype 0 = "Wave 0" (3CFB91D5)
+        ///  subtype 1-20 = Wave 1-20, Standard
+        ///  subtype 0x81 = Hybrid XGD2 / DVD-Video (65472451)
+        /// XGD3:
+        ///  subtype 0 = XGD3 Beta (152C2978, FD91511A, FFFFFDEB, FFFFFDE3)
+        ///  subtype 1 = Standard
         /// 0xFF = Unknown
+        /// Others undefined
         /// </summary>
         public byte XGDSubtype { get; set; }
 
         /// <summary>
         /// 8-character serial in disc ringcode
-        /// e.g. XGD1: MS00101A
-        /// e.g. XGD2/3: 1A2B3C4D
+        /// e.g. XGD1: e.g. "MS00101A"
+        /// e.g. XGD2/3: e.g. "1A2B3C4D"
         /// </summary>
-        public byte Ringcode { get; set; } = new byte[8];
+        public byte[] Ringcode { get; set; } = new byte[8];
 
         /// <summary>
         /// Size of the redump ISO in bytes
