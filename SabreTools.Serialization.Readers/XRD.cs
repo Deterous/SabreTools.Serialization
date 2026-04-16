@@ -107,14 +107,14 @@ namespace SabreTools.Serialization.Readers
                     DirectoryEntry directory = new DirectoryEntry();
                     directory.Offset = data.ReadUInt32LittleEndian();
                     directory.Size = data.ReadUInt32LittleEndian();
-                    var dd = ParseDirectoryDescriptor(data);
+                    var dd = XDVDFS.ParseDirectoryDescriptor(data);
                     if (dd is null)
                         return null;
                     directory.DirectoryDescriptor = dd;
                     xrd.DirectoryInfo[i] = directory;
                 }
 
-                return file;
+                return xrd;
             }
             catch
             {
