@@ -1,6 +1,6 @@
 namespace SabreTools.Data.Models.XRD
 {
-    public class DirectoryInfo
+    public class DirectoryEntry
     {
         /// <summary>
         /// Sector offset of descriptor in XDVDFS filesystem

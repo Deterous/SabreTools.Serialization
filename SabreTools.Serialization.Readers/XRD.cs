@@ -29,7 +29,7 @@ namespace SabreTools.Serialization.Readers
                 var xrd = new Data.Models.XRD.File();
 
                 xrd.Magic = data.ReadBytes(5);
-                if (!magic.EqualsExactly(Constants.MagicBytes))
+                if (!xrd.Magic.EqualsExactly(Constants.MagicBytes))
                     return null;
 
                 xrd.Version = data.ReadByteValue();
@@ -81,37 +81,37 @@ namespace SabreTools.Serialization.Readers
                 // Read Certificate data
                 if (xgd1)
                 {
-                    xrd.XboxCertificate = XboxExecutable.ParseCertificate();
+                    xrd.XboxCertificate = XboxExecutable.ParseCertificate(data);
                 }
                 else if (xgd2 || xgd3)
                 {
-                    xrd.Xbox360Certificate = XenonExecutable.ParseCertificate();
+                    xrd.Xbox360Certificate = XenonExecutable.ParseCertificate(data);
                 }
 
                 xrd.FileCount = data.ReadUInt64LittleEndian();
 
-                FileInfo[] files = new FileInfo[xrd.FileCount];
-                for (int i = 0; i < xrd.FileCount; i++)
+                FileEntry[] files = new FileEntry[xrd.FileCount];
+                for (ulong i = 0; i < xrd.FileCount; i++)
                 {
-                    FileInfo fileInfo = new FileInfo();
-                    fileInfo.Offset = data.ReadUInt32LittleEndian();
-                    fileInfo.SHA1 = data.ReadBytes(20);
-                    xrd.FileInfo[i] = fileInfo;
+                    FileEntry file = new FileEntry();
+                    file.Offset = data.ReadUInt32LittleEndian();
+                    file.SHA1 = data.ReadBytes(20);
+                    xrd.FileEntry[i] = file;
                 }
 
                 xrd.DirectoryCount = data.ReadUInt64LittleEndian();
 
-                DirectoryInfo[] directories = new DirectoryInfo[xrd.DirectoryCount];
-                for (int i = 0; i < xrd.DirectoryCount; i++)
+                DirectoryEntry[] directories = new DirectoryEntry[xrd.DirectoryCount];
+                for (ulong i = 0; i < xrd.DirectoryCount; i++)
                 {
-                    DirectoryInfo dirInfo = new DirectoryInfo();
-                    dirInfo.Offset = data.ReadUInt32LittleEndian();
-                    dirInfo.Size = data.ReadUInt32LittleEndian();
-                    var dd = ParseDirectoryDescriptor();
+                    DirectoryEntry directory = new DirectoryEntry();
+                    directory.Offset = data.ReadUInt32LittleEndian();
+                    directory.Size = data.ReadUInt32LittleEndian();
+                    var dd = ParseDirectoryDescriptor(data);
                     if (dd is null)
                         return null;
-                    dirInfo.DirectoryDescriptor = dd;
-                    xrd.DirectoryInfo[i] = dirInfo;
+                    directory.DirectoryDescriptor = dd;
+                    xrd.DirectoryEntry[i] = directory;
                 }
 
                 return file;
