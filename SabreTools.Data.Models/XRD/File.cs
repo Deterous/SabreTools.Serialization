@@ -1,5 +1,9 @@
 namespace SabreTools.Data.Models.XRD
 {
+    /// <summary>
+    /// Xbox Rebuild/Redump/Recovery Data
+    /// Custom file format containing descriptive metadata about Xbox / Xbox 360 disc images
+    /// </summary>
     public class File
     {
         /// <summary>
@@ -8,7 +12,7 @@ namespace SabreTools.Data.Models.XRD
         public byte[] Magic { get; set; } = new byte[5];
 
         /// <summary>
-        /// XRD Version
+        /// XRD File Format Version
         /// Currently 0x01
         /// </summary>
         public byte Version { get; set; }
@@ -24,7 +28,7 @@ namespace SabreTools.Data.Models.XRD
         ///  subtype 0 = XGD1 Beta (XB00104M)
         ///  subtype 1 = Standard
         /// XGD2:
-        ///  subtype 0 = "Wave 0" (3CFB91D5)
+        ///  subtype 0 = XGD2 Beta "Wave 0" (3CFB91D5)
         ///  subtype 1-20 = Wave 1-20, Standard
         ///  subtype 0x81 = Hybrid XGD2 / DVD-Video (65472451)
         /// XGD3:
@@ -39,6 +43,7 @@ namespace SabreTools.Data.Models.XRD
         /// 8-character serial in disc ringcode
         /// e.g. XGD1: e.g. "MS00101A"
         /// e.g. XGD2/3: e.g. "1A2B3C4D"
+        /// Can be parsed from XBE/XEX Certificate
         /// </summary>
         public byte[] Ringcode { get; set; } = new byte[8];
 
@@ -201,6 +206,12 @@ namespace SabreTools.Data.Models.XRD
         /// </summary>
         /// <remarks>2048 bytes</remarks>
         public XDVDFS.LayoutDescriptor? LayoutDescriptor { get; set; }
+
+        /// <summary>
+        /// Number of directory records in XDVDFS filesystem
+        /// </summary>
+        /// <remarks>Little-endian</remarks>
+        public ulong DirectoryCount { get; set; }
 
         /// <summary>
         /// List of descriptors and their sector offsets and sizes
