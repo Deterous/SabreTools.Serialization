@@ -160,10 +160,16 @@ namespace SabreTools.Serialization.Readers
                     if (obj.ContainsKey(dr.ExtentOffset))
                         continue;
 
+                // Ensure offset is valid
+                if ((((long)offset) * Constants.SectorSize) + size > data.Length)
+                    return null;
+
                     // Get all descriptors from child
                     var descriptors = ParseDirectoryDescriptors(data, initialOffset, dr.ExtentOffset, dr.ExtentSize);
                     if (descriptors is null)
                         continue;
+
+                    data.SeekIfPossible(initialOffset + (((long)offset) * Constants.SectorSize), SeekOrigin.Begin);
 
                     // Merge dictionaries
                     foreach (var kvp in descriptors)
@@ -190,14 +196,9 @@ namespace SabreTools.Serialization.Readers
             if (size < Constants.MinimumRecordLength)
                 return null;
 
-            // Ensure offset is valid
-            if ((((long)offset) * Constants.SectorSize) + size > data.Length)
-                return null;
-
             var obj = new DirectoryDescriptor();
             var records = new List<DirectoryRecord>();
 
-            data.SeekIfPossible(initialOffset + (((long)offset) * Constants.SectorSize), SeekOrigin.Begin);
             long curPosition;
             while (size > data.Position - (initialOffset + (((long)offset) * Constants.SectorSize)))
             {
