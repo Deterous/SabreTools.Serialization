@@ -37,10 +37,6 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 xrd.XGDType = data.ReadByteValue();
-                bool xgd1 = xrd.XGDType == 1;
-                bool xgd2 = xrd.XGDType == 2;
-                bool xgd3 = xrd.XGDType == 3;
-
                 xrd.XGDSubtype = data.ReadByteValue();
                 xrd.Ringcode = data.ReadBytes(8);
                 xrd.RedumpSize = data.ReadUInt64LittleEndian();
@@ -63,28 +59,24 @@ namespace SabreTools.Serialization.Readers
                 xrd.FillerMD5 = data.ReadBytes(16);
                 xrd.FillerSHA1 = data.ReadBytes(20);
 
-                // Read security sector ranges
-                int securityCount = (xgd2 || xgd3) ? 2 : 16;
-                xrd.SecuritySectors = new uint[securityCount];
-                for (int i = 0; i < securityCount; i++)
+                if (xrd.XGDType == 1)
                 {
-                    xrd.SecuritySectors[i] = data.ReadUInt32LittleEndian();
-                }
+                    xrd.SecuritySectors = new uint[16];
+                    for (int i = 0; i < 16; i++)
+                    {
+                        xrd.SecuritySectors[i] = data.ReadUInt32LittleEndian();
+                    }
 
-                // Read XGD3 Video ISO details
-                if (xgd3)
-                {
-                    xrd.CookedVideoISOSHA1 = data.ReadBytes(20);
-                    xrd.SystemUpdateHash = data.ReadBytes(20);
-                }
-
-                // Read Certificate data
-                if (xgd1)
-                {
                     xrd.XboxCertificate = XboxExecutable.ParseCertificate(data);
                 }
-                else if (xgd2 || xgd3)
+                else if (xrd.XGDType == 2 || xrd.XGDType == 3)
                 {
+                    xrd.SecuritySectors = new uint[2];
+                    for (int i = 0; i < 2; i++)
+                    {
+                        xrd.SecuritySectors[i] = data.ReadUInt32LittleEndian();
+                    }
+
                     xrd.Xbox360Certificate = XenonExecutable.ParseCertificate(data);
                 }
 
@@ -98,6 +90,13 @@ namespace SabreTools.Serialization.Readers
                     file.SHA1 = data.ReadBytes(20);
                     xrd.FileInfo[i] = file;
                 }
+
+                var vd = XDVDFS.ParseVolumeDescriptor(data);
+                if (vd is null)
+                    return null;
+                
+                xrd.VolumeDescriptor = vd;
+                xrd.LayoutDescriptor = XDVDFS.ParseLayoutDescriptor(data);
 
                 xrd.DirectoryCount = data.ReadUInt64LittleEndian();
 
@@ -113,6 +112,9 @@ namespace SabreTools.Serialization.Readers
                     directory.DirectoryDescriptor = dd;
                     xrd.DirectoryInfo[i] = directory;
                 }
+
+                xrd.XRDSize = data.ReadUInt32LittleEndian();
+                xrd.XRDSHA1 = data.ReadBytes(20);
 
                 return xrd;
             }

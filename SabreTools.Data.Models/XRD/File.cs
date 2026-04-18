@@ -152,21 +152,9 @@ namespace SabreTools.Data.Models.XRD
         /// <summary>
         /// The starting sector offset for each security sector range
         /// Security sector ranges are 4096-sectors long
+        /// XGD1: 16 sector offsets
         /// XGD2/3: 2 sector offsets
-        /// Default/XGD1: 16 sector offsets
-        public uint[] SecuritySectors { get; set; } = [];
-
-        /// <summary>
-        /// SHA-1 Hash of the Video ISO with system update file zeroed
-        /// </summary>
-        /// <remarks>XGD3 only, 20 bytes</remarks>
-        public byte[]? CookedVideoISOSHA1 { get; set; }
-
-        /// <summary>
-        /// SHA-1 Hash of the su20076000_00000000 file in the Video ISO
-        /// </summary>
-        /// <remarks>XGD3 only, 20 bytes</remarks>
-        public byte[]? SystemUpdateHash { get; set; }
+        public uint[]? SecuritySectors { get; set; } = [];
 
         /// <summary>
         /// XBE Certificate, starts with length of structure
@@ -218,5 +206,16 @@ namespace SabreTools.Data.Models.XRD
         /// The root directory descriptor is not guaranteed to be the first
         /// </summary>
         public DirectoryEntry[] DirectoryInfo { get; set; } = [];
+
+        /// <summary>
+        /// Size of all data in XRD file prior to this field
+        /// </summary>
+        /// <remarks>Little-endian</remarks>
+        public uint XRDSize { get; set; }
+
+        /// <summary>
+        /// SHA-1 Hash of the XRD file prior to XRDSize field
+        /// </summary>
+        public byte[] XRDSHA1 { get; set; } = new byte[20];
     }
 }
