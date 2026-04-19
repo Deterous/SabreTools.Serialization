@@ -106,7 +106,7 @@ namespace SabreTools.Serialization.Writers
                     return null;
                 for (int i = 0; i < obj.XboxCertificate.AlternateSignatureKeys.Length; i++)
                 {
-                    if (bj.XboxCertificate.AlternateSignatureKeys[i].Length != 16)
+                    if (obj.XboxCertificate.AlternateSignatureKeys[i].Length != 16)
                         return null;
                 }
                 if (obj.XboxCertificate.CodeEncKey.Length != 16)
