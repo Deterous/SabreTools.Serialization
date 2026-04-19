@@ -175,7 +175,7 @@ namespace SabreTools.Serialization.Writers
 
             byte[] fileCount = BitConverter.GetBytes(obj.FileCount);
             stream.Write(fileCount, 0, fileCount.Length);
-            if (int i = 0; i < obj.FileInfo.Length; i++)
+            for (int i = 0; i < obj.FileInfo.Length; i++)
             {
                 byte[] offset = BitConverter.GetBytes(obj.FileInfo[i].Offset);
                 stream.Write(offset, 0, offset.Length);
@@ -190,7 +190,7 @@ namespace SabreTools.Serialization.Writers
 
             byte[] directoryCount = BitConverter.GetBytes(obj.DirectoryCount);
             stream.Write(directoryCount, 0, directoryCount.Length);
-            if (int i = 0; i < obj.DirectoryInfo.Length; i++)
+            for (int i = 0; i < obj.DirectoryInfo.Length; i++)
             {
                 byte[] offset = BitConverter.GetBytes(obj.DirectoryInfo[i].Offset);
                 stream.Write(offset, 0, offset.Length);
