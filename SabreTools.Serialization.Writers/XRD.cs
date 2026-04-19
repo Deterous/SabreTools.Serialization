@@ -90,9 +90,10 @@ namespace SabreTools.Serialization.Writers
                 return null;
             if (obj.XGDType == 3 && obj.SecuritySectors?.Length != 2)
                 return null;
-            // TODO: Validate certificate fields
-            if (obj.XboxCertificate is not null && obj.XboxCertificate.SizeOfCertificate != 0)
+            // TODO: Calculate Cert length
+            if (obj.XboxCertificate is not null && obj.XboxCertificate.SizeOfCertificate != 492)
                 return null;
+            // TODO: Calculate Cert length
             if (obj.Xbox360Certificate is not null && obj.Xbox360Certificate.Length != 0)
                 return null;
             if (obj.FileCount != obj.FileInfo.Length)

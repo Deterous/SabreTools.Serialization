@@ -170,7 +170,7 @@ namespace SabreTools.Serialization.Readers
                     if (descriptors is null)
                         continue;
 
-                    data.SeekIfPossible(initialOffset + (((long)offset) * Constants.SectorSize), SeekOrigin.Begin);
+                    data.SeekIfPossible(initialOffset + (((long)dr.ExtentOffset) * Constants.SectorSize), SeekOrigin.Begin);
 
                     // Merge dictionaries
                     foreach (var kvp in descriptors)
