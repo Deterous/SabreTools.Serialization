@@ -70,6 +70,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Datafile();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Game> games = [];
             while (reader.Read())
             {
@@ -199,6 +203,10 @@ namespace SabreTools.Serialization.Readers
 
             obj.Name = reader.GetAttribute("name");
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Media> medias = [];
             List<Source> sources = [];
             List<Release> releases = [];
@@ -212,7 +220,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
@@ -285,6 +296,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Release();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Data.Models.NoIntroDatabase.File> files = [];
 
             reader.Read();
@@ -296,7 +311,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
@@ -400,6 +418,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Source();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Data.Models.NoIntroDatabase.File> files = [];
 
             reader.Read();
@@ -411,7 +433,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {

@@ -112,6 +112,12 @@ namespace SabreTools.Metadata.DatItems.Formats
             CopyMachineInformation(machine);
         }
 
+        public Disk(Data.Models.Metadata.Disk item, long machineIndex, long sourceIndex) : this(item)
+        {
+            SourceIndex = sourceIndex;
+            MachineIndex = machineIndex;
+        }
+
         #endregion
 
         #region Accessors
@@ -150,10 +156,12 @@ namespace SabreTools.Metadata.DatItems.Formats
 
             rom.DupeType = DupeType;
             rom.Machine = Machine?.Clone() as Machine;
+            rom.MachineIndex = MachineIndex;
             rom.PartInterface = PartInterface;
             rom.PartName = PartName;
             rom.RemoveFlag = RemoveFlag;
             rom.Source = Source?.Clone() as Source;
+            rom.SourceIndex = SourceIndex;
 
             return rom;
         }

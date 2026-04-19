@@ -72,6 +72,10 @@ namespace SabreTools.Serialization.Readers
 
             obj.Timestamp = reader.GetAttribute("timestamp");
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Software> softwares = [];
 
             reader.Read();
@@ -83,7 +87,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
@@ -117,6 +124,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Dump();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             reader.Read();
             while (!reader.EOF)
             {
@@ -126,10 +137,19 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
+                    case "boot":
+                        if (obj.Boot is not null && Debug)
+                            Console.WriteLine($"'{reader.Name}' element already found, overwriting");
+
+                        obj.Boot = reader.ReadElementContentAsString();
+                        break;
                     case "original":
                         if (obj.Original is not null && Debug)
                             Console.WriteLine($"'{reader.Name}' element already found, overwriting");
@@ -148,6 +168,7 @@ namespace SabreTools.Serialization.Readers
 
                     default:
                         if (Debug) Console.Error.WriteLine($"Element '{reader.Name}' is not recognized");
+                        reader.Skip();
                         break;
                 }
             }
@@ -187,6 +208,10 @@ namespace SabreTools.Serialization.Readers
             else
                 return null;
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             reader.Read();
             while (!reader.EOF)
             {
@@ -196,7 +221,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
@@ -244,6 +272,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Software();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Dump> dumps = [];
 
             reader.Read();
@@ -255,7 +287,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {

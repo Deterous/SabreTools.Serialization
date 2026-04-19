@@ -44,7 +44,7 @@ namespace SabreTools.Metadata.DatFiles
         /// DatItems and related statistics
         /// </summary>
         [JsonProperty("items"), XmlElement("items")]
-        public ItemDictionaryDB ItemsDB { get; private set; } = new ItemDictionaryDB();
+        public ItemDatabase ItemsDB { get; private set; } = new ItemDatabase();
 
         /// <summary>
         /// DAT statistics
@@ -221,13 +221,11 @@ namespace SabreTools.Metadata.DatFiles
         /// Add a DatItem to the dictionary after validation
         /// </summary>
         /// <param name="item">Item data to validate</param>
-        /// <param name="machineIndex">Index of the machine related to the item</param>
-        /// <param name="sourceIndex">Index of the source related to the item</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
         /// <returns>The index for the added item, -1 on error</returns>
-        public long AddItemDB(DatItem item, long machineIndex, long sourceIndex, bool statsOnly)
+        public long AddItemDB(DatItem item, bool statsOnly)
         {
-            return ItemsDB.AddItem(item, machineIndex, sourceIndex, statsOnly);
+            return ItemsDB.AddItem(item, statsOnly);
         }
 
         /// <summary>
@@ -268,22 +266,28 @@ namespace SabreTools.Metadata.DatFiles
             => ItemsDB.GetItemsForBucket(bucketName, filter);
 
         /// <summary>
+        /// Get the index and machine associated with a machine index
+        /// </summary>
+        public KeyValuePair<long, Machine?> GetMachineDB(long machineIndex)
+            => ItemsDB.GetMachine(machineIndex);
+
+        /// <summary>
         /// Get all machines and their indicies
         /// </summary>
         public IDictionary<long, Machine> GetMachinesDB()
             => ItemsDB.GetMachines();
 
         /// <summary>
-        /// Get the index and machine associated with an item index
+        /// Get the index and source associated with a source index
         /// </summary>
-        public KeyValuePair<long, Machine?> GetMachineForItemDB(long itemIndex)
-            => ItemsDB.GetMachineForItem(itemIndex);
+        public KeyValuePair<long, Source?> GetSourceDB(long sourceIndex)
+            => ItemsDB.GetSource(sourceIndex);
 
         /// <summary>
-        /// Get the index and source associated with an item index
+        /// Get all sources and their indicies
         /// </summary>
-        public KeyValuePair<long, Source?> GetSourceForItemDB(long itemIndex)
-            => ItemsDB.GetSourceForItem(itemIndex);
+        public IDictionary<long, Source> GetSourcesDB()
+            => ItemsDB.GetSources();
 
         /// <summary>
         /// Remove a key from the file dictionary if it exists
@@ -344,7 +348,7 @@ namespace SabreTools.Metadata.DatFiles
         public void ResetDictionary()
         {
             Items = new ItemDictionary();
-            ItemsDB = new ItemDictionaryDB();
+            ItemsDB = new ItemDatabase();
         }
 
         #endregion
@@ -884,8 +888,8 @@ namespace SabreTools.Metadata.DatFiles
                     ?? string.Empty;
 
                 // Get sources for both items
-                var datItemSource = ItemsDB.GetSourceForItem(datItem.Key);
-                var lastItemSource = ItemsDB.GetSourceForItem(lastItem.Value.Key);
+                var datItemSource = ItemsDB.GetSource(datItem.Value.SourceIndex);
+                var lastItemSource = ItemsDB.GetSource(lastItem.Value.Value.SourceIndex);
 
                 // If the current item exactly matches the last item, then we don't add it
 #if NET20 || NET35
@@ -1204,15 +1208,15 @@ namespace SabreTools.Metadata.DatFiles
                     // Compare on source if renaming
                     if (!norename)
                     {
-                        int xSourceIndex = ItemsDB.GetSourceForItem(x.Key).Value?.Index ?? 0;
-                        int ySourceIndex = ItemsDB.GetSourceForItem(y.Key).Value?.Index ?? 0;
+                        int xSourceIndex = ItemsDB.GetSource(x.Value.SourceIndex).Value?.Index ?? 0;
+                        int ySourceIndex = ItemsDB.GetSource(y.Value.SourceIndex).Value?.Index ?? 0;
                         if (xSourceIndex != ySourceIndex)
                             return xSourceIndex - ySourceIndex;
                     }
 
                     // If machine names don't match
-                    string? xMachineName = ItemsDB.GetMachineForItem(x.Key).Value?.Name;
-                    string? yMachineName = ItemsDB.GetMachineForItem(y.Key).Value?.Name;
+                    string? xMachineName = ItemsDB.GetMachine(x.Value.MachineIndex).Value?.Name;
+                    string? yMachineName = ItemsDB.GetMachine(y.Value.MachineIndex).Value?.Name;
                     if (xMachineName != yMachineName)
                         return nc.Compare(xMachineName, yMachineName);
 

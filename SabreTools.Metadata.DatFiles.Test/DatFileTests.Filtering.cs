@@ -54,14 +54,16 @@ namespace SabreTools.Metadata.DatFiles.Test
             {
                 Name = "rom.bin",
                 CRC32 = "deadbeef",
-                Machine = machine,
-                Source = source
             };
 
             DatFile datFile = new Logiqx(datFile: null, useGame: false);
+
             long sourceIndex = datFile.AddSourceDB(source);
+            datItem.SourceIndex = sourceIndex;
             long machineIndex = datFile.AddMachineDB(machine);
-            _ = datFile.AddItemDB(datItem, machineIndex, sourceIndex, statsOnly: false);
+            datItem.MachineIndex = machineIndex;
+
+            _ = datFile.AddItemDB(datItem, statsOnly: false);
 
             datFile.BucketBy(ItemKey.Machine);
             datFile.ExecuteFilters(filterRunner);
@@ -182,10 +184,17 @@ namespace SabreTools.Metadata.DatFiles.Test
             DatItem disk = new Disk { Name = "disk" };
 
             DatFile datFile = new Logiqx(datFile: null, useGame: false);
+
             long sourceIndex = datFile.AddSourceDB(source);
+            rom.SourceIndex = sourceIndex;
+            disk.SourceIndex = sourceIndex;
+
             long machineIndex = datFile.AddMachineDB(machine);
-            _ = datFile.AddItemDB(rom, machineIndex, sourceIndex, statsOnly: false);
-            _ = datFile.AddItemDB(disk, machineIndex, sourceIndex, statsOnly: false);
+            rom.MachineIndex = machineIndex;
+            disk.MachineIndex = machineIndex;
+
+            _ = datFile.AddItemDB(rom, statsOnly: false);
+            _ = datFile.AddItemDB(disk, statsOnly: false);
 
             datFile.BucketBy(ItemKey.Machine);
             datFile.SetOneRomPerGame();
@@ -194,12 +203,12 @@ namespace SabreTools.Metadata.DatFiles.Test
             Assert.Equal(2, actualDatItems.Count);
 
             var actualRom = Assert.Single(actualDatItems, i => i.Value is Rom);
-            var actualRomMachine = datFile.GetMachineForItemDB(actualRom.Key);
+            var actualRomMachine = datFile.GetMachineDB(actualRom.Value.MachineIndex);
             Assert.NotNull(actualRomMachine.Value);
             Assert.Equal("machine/rom", actualRomMachine.Value.Name);
 
             var actualDisk = Assert.Single(actualDatItems, i => i.Value is Disk);
-            var actualDiskMachine = datFile.GetMachineForItemDB(actualDisk.Key);
+            var actualDiskMachine = datFile.GetMachineDB(actualDisk.Value.MachineIndex);
             Assert.NotNull(actualDiskMachine.Value);
             Assert.Equal("machine/disk", actualDiskMachine.Value.Name);
         }
@@ -265,9 +274,9 @@ namespace SabreTools.Metadata.DatFiles.Test
             List<string> regions = ["World", "Nowhere"];
             datFile.SetOneGamePerRegion(regions);
 
-            var actualWorldMachine = Assert.Single(datFile.GetMachinesDB());
-            Assert.NotNull(actualWorldMachine.Value);
-            Assert.Equal("machine (World)", actualWorldMachine.Value.Name);
+            var actualWorldMachine = Assert.Single(datFile.GetMachinesDB()).Value;
+            Assert.NotNull(actualWorldMachine);
+            Assert.Equal("machine (World)", actualWorldMachine.Name);
         }
 
         #endregion

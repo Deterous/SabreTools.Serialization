@@ -391,9 +391,12 @@ namespace SabreTools.Metadata.DatFiles.Formats
                     return;
 
                 datItem.CopyMachineInformation(machine);
+                datItem.MachineIndex = machineIndex;
                 datItem.Source = source;
+                datItem.SourceIndex = sourceIndex;
+
                 AddItem(datItem, statsOnly);
-                AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                // AddItemDB(datItem, statsOnly);
             }
         }
 
@@ -521,7 +524,7 @@ namespace SabreTools.Metadata.DatFiles.Formats
                     foreach (var kvp in items)
                     {
                         // Get the machine for the item
-                        var machine = GetMachineForItemDB(kvp.Key);
+                        var machine = GetMachineDB(kvp.Value.MachineIndex);
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame is not null && !string.Equals(lastgame, machine.Value!.Name, StringComparison.OrdinalIgnoreCase))
@@ -653,7 +656,7 @@ namespace SabreTools.Metadata.DatFiles.Formats
         private void WriteDatItemDB(JsonTextWriter jtw, KeyValuePair<long, DatItem> datItem)
         {
             // Get the machine for the item
-            var machine = GetMachineForItemDB(datItem.Key);
+            var machine = GetMachineDB(datItem.Value.MachineIndex);
 
             // Pre-process the item name
             ProcessItemName(datItem.Value, machine.Value, forceRemoveQuotes: true, forceRomName: false);

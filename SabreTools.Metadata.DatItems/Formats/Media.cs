@@ -1,4 +1,4 @@
-﻿using System.Xml.Serialization;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using SabreTools.Data.Extensions;
 using SabreTools.Text.Extensions;
@@ -77,6 +77,12 @@ namespace SabreTools.Metadata.DatItems.Formats
             CopyMachineInformation(machine);
         }
 
+        public Media(Data.Models.Metadata.Media item, long machineIndex, long sourceIndex) : this(item)
+        {
+            SourceIndex = sourceIndex;
+            MachineIndex = machineIndex;
+        }
+
         #endregion
 
         #region Accessors
@@ -108,8 +114,10 @@ namespace SabreTools.Metadata.DatItems.Formats
 
             rom.DupeType = DupeType;
             rom.Machine = Machine?.Clone() as Machine;
+            rom.MachineIndex = MachineIndex;
             rom.RemoveFlag = RemoveFlag;
             rom.Source = Source?.Clone() as Source;
+            rom.SourceIndex = SourceIndex;
 
             return rom;
         }

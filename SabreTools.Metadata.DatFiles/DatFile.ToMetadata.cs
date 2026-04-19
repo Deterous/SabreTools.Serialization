@@ -424,7 +424,7 @@ namespace SabreTools.Metadata.DatFiles
                     continue;
 
                 // Create a machine to hold everything
-                var machine = GetMachineForItemDB(items.First().Key).Value!.GetInternalClone();
+                var machine = GetMachineDB(items.First().Value.MachineIndex).Value!.GetInternalClone();
 
                 // Create mapping dictionaries for the Parts, DataAreas, and DiskAreas associated with this machine
                 Dictionary<Data.Models.Metadata.Part, Data.Models.Metadata.DatItem> partMappings = [];
@@ -816,7 +816,11 @@ namespace SabreTools.Metadata.DatFiles
                         Start = romItem.Start ?? romItem.Offset,
                     };
 
-                    var dumpRom = new Data.Models.Metadata.Dump { Rom = rom };
+                    var dumpRom = new Data.Models.Metadata.Dump
+                    {
+                        Boot = romItem.Comment,
+                        Rom = rom,
+                    };
                     if (original is not null)
                     {
                         var newOriginal = new Data.Models.Metadata.Original

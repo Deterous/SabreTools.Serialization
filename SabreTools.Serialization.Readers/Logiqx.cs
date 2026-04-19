@@ -77,6 +77,10 @@ namespace SabreTools.Serialization.Readers
             // TODO: Fix this based on No-Intro DATs
             // obj.SchemaLocation = reader.GetAttribute("schemaLocation");
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<GameBase> games = [];
             List<Dir> dirs = [];
             while (reader.Read())
@@ -153,6 +157,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Header();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             reader.Read();
             while (!reader.EOF)
             {
@@ -162,7 +170,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
@@ -372,6 +383,10 @@ namespace SabreTools.Serialization.Readers
 
             obj.Name = reader.GetAttribute("name");
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<Dir> subdirs = [];
             List<GameBase> games = [];
 
@@ -484,6 +499,10 @@ namespace SabreTools.Serialization.Readers
             obj.CloneOfId = reader.GetAttribute("cloneofid");
             obj.Runnable = reader.GetAttribute("runnable").AsRunnable();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             List<string> comments = [];
             List<string> categories = [];
             List<Release> releases = [];
@@ -505,7 +524,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {
@@ -781,6 +803,10 @@ namespace SabreTools.Serialization.Readers
         {
             var obj = new Trurip();
 
+            // Handle empty elements
+            if (reader.IsEmptyElement)
+                return obj;
+
             reader.Read();
             while (!reader.EOF)
             {
@@ -790,7 +816,10 @@ namespace SabreTools.Serialization.Readers
 
                 // Only process starting elements
                 if (!reader.IsStartElement())
+                {
+                    reader.Skip();
                     continue;
+                }
 
                 switch (reader.Name)
                 {

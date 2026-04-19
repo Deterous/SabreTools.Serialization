@@ -6,7 +6,7 @@ using Xunit;
 
 namespace SabreTools.Metadata.DatFiles.Test
 {
-    public class ItemDictionaryDBTests
+    public class ItemDatabaseTests
     {
         #region AddItem
 
@@ -22,10 +22,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 SHA1 = "deadbeef",
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            disk.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(disk, machineIndex, sourceIndex, statsOnly: false);
+            disk.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(disk, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Disk? actualDisk = actual as Disk;
@@ -41,10 +45,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem disk = new Disk { Name = "item" };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            disk.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(disk, machineIndex, sourceIndex, statsOnly: false);
+            disk.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(disk, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Disk? actualDisk = actual as Disk;
@@ -60,10 +68,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             var file = new File { SHA1 = "deadbeef" };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            file.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(file, machineIndex, sourceIndex, statsOnly: false);
+            file.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(file, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Assert.True(actual is File);
@@ -78,10 +90,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem file = new File();
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            file.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(file, machineIndex, sourceIndex, statsOnly: false);
+            file.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(file, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Assert.True(actual is File);
@@ -100,10 +116,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 Name = "item"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            media.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(media, machineIndex, sourceIndex, statsOnly: false);
+            media.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(media, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Assert.True(actual is Media);
@@ -121,10 +141,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 Name = "item"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            media.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(media, machineIndex, sourceIndex, statsOnly: false);
+            media.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(media, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Assert.True(actual is Media);
@@ -144,10 +168,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 SHA1 = "deadbeef"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(rom, machineIndex, sourceIndex, statsOnly: false);
+            rom.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(rom, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Rom? actualRom = actual as Rom;
@@ -169,10 +197,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 Size = 12345,
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(rom, machineIndex, sourceIndex, statsOnly: false);
+            rom.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(rom, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Rom? actualRom = actual as Rom;
@@ -194,10 +226,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 SHA1 = "deadbeef"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(rom, machineIndex, sourceIndex, statsOnly: false);
+            rom.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(rom, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Rom? actualRom = actual as Rom;
@@ -215,10 +251,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem rom = new Rom { Name = "item" };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(rom, machineIndex, sourceIndex, statsOnly: false);
+            rom.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(rom, statsOnly: false);
 
             DatItem actual = Assert.Single(dict.GetItemsForBucket("default")).Value;
             Rom? actualRom = actual as Rom;
@@ -236,10 +276,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom { Name = "item" };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: true);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: true);
 
             Assert.Empty(dict.GetItemsForBucket("default"));
         }
@@ -252,10 +296,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom { Name = "item" };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             Assert.Single(dict.GetItemsForBucket("default"));
         }
@@ -268,7 +316,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         public void AddMachineTest()
         {
             Machine machine = new Machine();
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
             long machineIndex = dict.AddMachine(machine);
 
             Assert.Equal(0, machineIndex);
@@ -283,11 +331,11 @@ namespace SabreTools.Metadata.DatFiles.Test
         public void AddSourceTest()
         {
             Source source = new Source(0, source: null);
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
             long sourceIndex = dict.AddSource(source);
 
             Assert.Equal(0, sourceIndex);
-            Assert.Single(dict.GetSources());
+            Assert.NotNull(dict.GetSource(0).Value);
         }
 
         #endregion
@@ -320,11 +368,17 @@ namespace SabreTools.Metadata.DatFiles.Test
             };
 
             // Setup the dictionary
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
             long sourceIndex = dict.AddSource(source);
+            rom1.SourceIndex = sourceIndex;
+            rom2.SourceIndex = sourceIndex;
+
             long machineIndex = dict.AddMachine(machine);
-            dict.AddItem(rom1, machineIndex, sourceIndex, statsOnly: false);
-            dict.AddItem(rom2, machineIndex, sourceIndex, statsOnly: false);
+            rom1.MachineIndex = machineIndex;
+            rom2.MachineIndex = machineIndex;
+
+            dict.AddItem(rom1, statsOnly: false);
+            dict.AddItem(rom2, statsOnly: false);
 
             dict.ClearMarked();
             string key = Assert.Single(dict.SortedKeys);
@@ -346,10 +400,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom();
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             var actual = dict.GetItemsForBucket(null, filter: false);
 
@@ -365,10 +423,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom();
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             var actual = dict.GetItemsForBucket("INVALID", filter: false);
 
@@ -384,10 +446,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom { RemoveFlag = true };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             var actual = dict.GetItemsForBucket("machine", filter: true);
 
@@ -403,10 +469,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom { RemoveFlag = true };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             var actual = dict.GetItemsForBucket("machine", filter: false);
 
@@ -422,10 +492,14 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             DatItem item = new Rom();
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             var actual = dict.GetItemsForBucket("machine", filter: false);
 
@@ -440,32 +514,11 @@ namespace SabreTools.Metadata.DatFiles.Test
         public void GetMachineTest()
         {
             Machine machine = new Machine();
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
             long machineIndex = dict.AddMachine(machine);
 
             Assert.Equal(0, machineIndex);
             var actual = dict.GetMachine(machineIndex);
-            Assert.NotNull(actual);
-        }
-
-        #endregion
-
-        #region GetMachineForItem
-
-        [Fact]
-        public void GetMachineForItemTest()
-        {
-            Source source = new Source(0, source: null);
-            Machine machine = new Machine();
-            DatItem item = new Rom();
-
-            var dict = new ItemDictionaryDB();
-            long machineIndex = dict.AddMachine(machine);
-            long sourceIndex = dict.AddSource(source);
-            long itemIndex = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
-
-            var actual = dict.GetMachineForItem(itemIndex);
-            Assert.Equal(0, actual.Key);
             Assert.NotNull(actual.Value);
         }
 
@@ -477,62 +530,12 @@ namespace SabreTools.Metadata.DatFiles.Test
         public void GetSourceTest()
         {
             Source source = new Source(0, source: null);
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
             long sourceIndex = dict.AddSource(source);
 
             Assert.Equal(0, sourceIndex);
             var actual = dict.GetSource(sourceIndex);
-            Assert.NotNull(actual);
-        }
-
-        #endregion
-
-        #region GetSourceForItem
-
-        [Fact]
-        public void GetSourceForItemTest()
-        {
-            Source source = new Source(0, source: null);
-            Machine machine = new Machine();
-            DatItem item = new Rom();
-
-            var dict = new ItemDictionaryDB();
-            long machineIndex = dict.AddMachine(machine);
-            long sourceIndex = dict.AddSource(source);
-            long itemIndex = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
-
-            var actual = dict.GetSourceForItem(itemIndex);
-            Assert.Equal(0, actual.Key);
             Assert.NotNull(actual.Value);
-        }
-
-        #endregion
-
-        #region RemapDatItemToMachine
-
-        [Fact]
-        public void RemapDatItemToMachineTest()
-        {
-            Source source = new Source(0, source: null);
-
-            Machine origMachine = new Machine { Name = "original" };
-
-            Machine newMachine = new Machine { Name = "new" };
-
-            DatItem datItem = new Rom();
-
-            var dict = new ItemDictionaryDB();
-            long sourceIndex = dict.AddSource(source);
-            long origMachineIndex = dict.AddMachine(origMachine);
-            long newMachineIndex = dict.AddMachine(newMachine);
-            long itemIndex = dict.AddItem(datItem, origMachineIndex, sourceIndex, statsOnly: false);
-
-            dict.RemapDatItemToMachine(itemIndex, newMachineIndex);
-
-            var actual = dict.GetMachineForItem(itemIndex);
-            Assert.Equal(1, actual.Key);
-            Assert.NotNull(actual.Value);
-            Assert.Equal("new", actual.Value.Name);
         }
 
         #endregion
@@ -546,7 +549,7 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             Machine machine = new Machine { Name = "game-1" };
 
-            DatItem datItem = new Rom
+            DatItem item = new Rom
             {
                 Name = "rom-1",
                 Size = 1024,
@@ -554,10 +557,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 SHA1 = "0000000fbbb37f8488100b1b4697012de631a5e6"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            dict.AddItem(datItem, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            dict.AddItem(item, statsOnly: false);
 
             dict.RemoveBucket("game-1");
 
@@ -575,7 +582,7 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             Machine machine = new Machine { Name = "game-1" };
 
-            DatItem datItem = new Rom
+            DatItem item = new Rom
             {
                 Name = "rom-1",
                 Size = 1024,
@@ -583,10 +590,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 SHA1 = "0000000fbbb37f8488100b1b4697012de631a5e6"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            long itemIndex = dict.AddItem(datItem, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            long itemIndex = dict.AddItem(item, statsOnly: false);
 
             dict.RemoveItem(itemIndex);
 
@@ -601,7 +612,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         public void RemoveMachineTest()
         {
             Machine machine = new Machine();
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
             long machineIndex = dict.AddMachine(machine);
 
             bool actual = dict.RemoveMachine(machineIndex);
@@ -660,14 +671,26 @@ namespace SabreTools.Metadata.DatFiles.Test
             };
 
             // Setup the dictionary
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom1.SourceIndex = sourceIndex;
+            rom2.SourceIndex = sourceIndex;
+            rom3.SourceIndex = sourceIndex;
+            rom4.SourceIndex = sourceIndex;
+
             long machine1Index = dict.AddMachine(machine1);
+            rom1.MachineIndex = machine1Index;
+            rom2.MachineIndex = machine1Index;
+
             long machine2Index = dict.AddMachine(machine2);
-            dict.AddItem(rom1, machine1Index, sourceIndex, statsOnly: false);
-            dict.AddItem(rom2, machine1Index, sourceIndex, statsOnly: false);
-            dict.AddItem(rom3, machine2Index, sourceIndex, statsOnly: false);
-            dict.AddItem(rom4, machine2Index, sourceIndex, statsOnly: false);
+            rom3.MachineIndex = machine2Index;
+            rom4.MachineIndex = machine2Index;
+
+            dict.AddItem(rom1, statsOnly: false);
+            dict.AddItem(rom2, statsOnly: false);
+            dict.AddItem(rom3, statsOnly: false);
+            dict.AddItem(rom4, statsOnly: false);
 
             dict.BucketBy(itemKey);
             Assert.Equal(expected, dict.SortedKeys.Length);
@@ -700,11 +723,18 @@ namespace SabreTools.Metadata.DatFiles.Test
             };
 
             // Setup the dictionary
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom1.SourceIndex = sourceIndex;
+            rom2.SourceIndex = sourceIndex;
+
             long machineIndex = dict.AddMachine(machine);
-            dict.AddItem(rom1, machineIndex, sourceIndex, statsOnly: false);
-            dict.AddItem(rom2, machineIndex, sourceIndex, statsOnly: false);
+            rom1.MachineIndex = machineIndex;
+            rom2.MachineIndex = machineIndex;
+
+            dict.AddItem(rom1, statsOnly: false);
+            dict.AddItem(rom2, statsOnly: false);
 
             dict.Deduplicate();
             Assert.Equal(1, dict.DatStatistics.TotalCount);
@@ -717,7 +747,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_NullOther_NoDupe()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? selfSource = null;
             Source? lastSource = null;
@@ -732,7 +762,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_DifferentTypes_NoDupe()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? selfSource = null;
             Source? lastSource = null;
@@ -746,7 +776,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_MismatchedHashes_NoDupe()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? sourceA = new Source(0);
             long sourceAIndex = dict.AddSource(sourceA);
@@ -761,18 +791,22 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             var romA = new Rom
             {
+                SourceIndex = sourceAIndex,
+                MachineIndex = machineAIndex,
                 Name = "same-name",
                 CRC32 = "BEEFDEAD"
             };
-            long romAIndex = dict.AddItem(romA, machineAIndex, sourceAIndex);
+            long romAIndex = dict.AddItemInternal(romA);
             KeyValuePair<long, DatItem>? romAPair = new KeyValuePair<long, DatItem>(romAIndex, romA);
 
             var romB = new Rom
             {
+                SourceIndex = sourceBIndex,
+                MachineIndex = machineBIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romBIndex = dict.AddItem(romB, machineBIndex, sourceBIndex);
+            long romBIndex = dict.AddItemInternal(romB);
             KeyValuePair<long, DatItem>? romBPair = new KeyValuePair<long, DatItem>(romBIndex, romB);
 
             var actual = dict.GetDuplicateStatus(romAPair, sourceA, romBPair, sourceB);
@@ -782,7 +816,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_DifferentSource_NameMatch_ExternalAll()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? sourceA = new Source(0);
             long sourceAIndex = dict.AddSource(sourceA);
@@ -797,18 +831,22 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             var romA = new Rom
             {
+                SourceIndex = sourceAIndex,
+                MachineIndex = machineAIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romAIndex = dict.AddItem(romA, machineAIndex, sourceAIndex);
+            long romAIndex = dict.AddItemInternal(romA);
             KeyValuePair<long, DatItem>? romAPair = new KeyValuePair<long, DatItem>(romAIndex, romA);
 
             var romB = new Rom
             {
+                SourceIndex = sourceBIndex,
+                MachineIndex = machineBIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romBIndex = dict.AddItem(romB, machineBIndex, sourceBIndex);
+            long romBIndex = dict.AddItemInternal(romB);
             KeyValuePair<long, DatItem>? romBPair = new KeyValuePair<long, DatItem>(romBIndex, romB);
 
             var actual = dict.GetDuplicateStatus(romAPair, sourceA, romBPair, sourceB);
@@ -818,7 +856,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_DifferentSource_NoNameMatch_ExternalHash()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? sourceA = new Source(0);
             long sourceAIndex = dict.AddSource(sourceA);
@@ -833,18 +871,22 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             var romA = new Rom
             {
+                SourceIndex = sourceAIndex,
+                MachineIndex = machineAIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romAIndex = dict.AddItem(romA, machineAIndex, sourceAIndex);
+            long romAIndex = dict.AddItemInternal(romA);
             KeyValuePair<long, DatItem>? romAPair = new KeyValuePair<long, DatItem>(romAIndex, romA);
 
             var romB = new Rom
             {
+                SourceIndex = sourceBIndex,
+                MachineIndex = machineBIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romBIndex = dict.AddItem(romB, machineBIndex, sourceBIndex);
+            long romBIndex = dict.AddItemInternal(romB);
             KeyValuePair<long, DatItem>? romBPair = new KeyValuePair<long, DatItem>(romBIndex, romB);
 
             var actual = dict.GetDuplicateStatus(romAPair, sourceA, romBPair, sourceB);
@@ -854,7 +896,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_SameSource_NameMatch_InternalAll()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? sourceA = new Source(0);
             long sourceAIndex = dict.AddSource(sourceA);
@@ -869,18 +911,22 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             var romA = new Rom
             {
+                SourceIndex = sourceAIndex,
+                MachineIndex = machineAIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romAIndex = dict.AddItem(romA, machineAIndex, sourceAIndex);
+            long romAIndex = dict.AddItemInternal(romA);
             KeyValuePair<long, DatItem>? romAPair = new KeyValuePair<long, DatItem>(romAIndex, romA);
 
             var romB = new Rom
             {
+                SourceIndex = sourceBIndex,
+                MachineIndex = machineBIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romBIndex = dict.AddItem(romB, machineBIndex, sourceBIndex);
+            long romBIndex = dict.AddItemInternal(romB);
             KeyValuePair<long, DatItem>? romBPair = new KeyValuePair<long, DatItem>(romBIndex, romB);
 
             var actual = dict.GetDuplicateStatus(romAPair, sourceA, romBPair, sourceB);
@@ -890,7 +936,7 @@ namespace SabreTools.Metadata.DatFiles.Test
         [Fact]
         public void GetDuplicateStatus_SameSource_NoNameMatch_InternalHash()
         {
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
 
             Source? sourceA = new Source(0);
             long sourceAIndex = dict.AddSource(sourceA);
@@ -905,18 +951,22 @@ namespace SabreTools.Metadata.DatFiles.Test
 
             var romA = new Rom
             {
+                SourceIndex = sourceAIndex,
+                MachineIndex = machineAIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romAIndex = dict.AddItem(romA, machineAIndex, sourceAIndex);
+            long romAIndex = dict.AddItemInternal(romA);
             KeyValuePair<long, DatItem>? romAPair = new KeyValuePair<long, DatItem>(romAIndex, romA);
 
             var romB = new Rom
             {
+                SourceIndex = sourceBIndex,
+                MachineIndex = machineBIndex,
                 Name = "same-name",
                 CRC32 = "DEADBEEF"
             };
-            long romBIndex = dict.AddItem(romB, machineBIndex, sourceBIndex);
+            long romBIndex = dict.AddItemInternal(romB);
             KeyValuePair<long, DatItem>? romBPair = new KeyValuePair<long, DatItem>(romBIndex, romB);
 
             var actual = dict.GetDuplicateStatus(romAPair, sourceA, romBPair, sourceB);
@@ -952,11 +1002,18 @@ namespace SabreTools.Metadata.DatFiles.Test
             };
 
             // Setup the dictionary
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom1.SourceIndex = sourceIndex;
+            rom2.SourceIndex = sourceIndex;
+
             long machineIndex = dict.AddMachine(machine);
-            dict.AddItem(rom1, machineIndex, sourceIndex, statsOnly: false);
-            dict.AddItem(rom2, machineIndex, sourceIndex, statsOnly: false);
+            rom1.MachineIndex = machineIndex;
+            rom2.MachineIndex = machineIndex;
+
+            dict.AddItem(rom1, statsOnly: false);
+            dict.AddItem(rom2, statsOnly: false);
 
             // Setup the test item
             DatItem rom = new Rom
@@ -999,11 +1056,18 @@ namespace SabreTools.Metadata.DatFiles.Test
             };
 
             // Setup the dictionary
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            rom1.SourceIndex = sourceIndex;
+            rom2.SourceIndex = sourceIndex;
+
             long machineIndex = dict.AddMachine(machine);
-            dict.AddItem(rom1, machineIndex, sourceIndex, statsOnly: false);
-            dict.AddItem(rom2, machineIndex, sourceIndex, statsOnly: false);
+            rom1.MachineIndex = machineIndex;
+            rom2.MachineIndex = machineIndex;
+
+            dict.AddItem(rom1, statsOnly: false);
+            dict.AddItem(rom2, statsOnly: false);
 
             // Setup the test item
             DatItem rom = new Rom
@@ -1035,10 +1099,14 @@ namespace SabreTools.Metadata.DatFiles.Test
                 CRC32 = "deadbeef"
             };
 
-            var dict = new ItemDictionaryDB();
+            var dict = new ItemDatabase();
+
             long sourceIndex = dict.AddSource(source);
+            item.SourceIndex = sourceIndex;
             long machineIndex = dict.AddMachine(machine);
-            _ = dict.AddItem(item, machineIndex, sourceIndex, statsOnly: false);
+            item.MachineIndex = machineIndex;
+
+            _ = dict.AddItem(item, statsOnly: false);
 
             Assert.Equal(1, dict.DatStatistics.TotalCount);
             Assert.Equal(1, dict.DatStatistics.GetItemCount(Data.Models.Metadata.ItemType.Rom));

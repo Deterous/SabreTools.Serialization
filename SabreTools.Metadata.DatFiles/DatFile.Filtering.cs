@@ -160,10 +160,6 @@ namespace SabreTools.Metadata.DatFiles
             Dictionary<string, string> mapping = [];
             foreach (var machine in GetMachinesDB())
             {
-                // Get the current machine
-                if (machine.Value is null)
-                    continue;
-
                 // Get the values to check against
                 string? machineName = machine.Value.Name;
                 string? machineDesc = machine.Value.Description;
@@ -401,18 +397,14 @@ namespace SabreTools.Metadata.DatFiles
             Dictionary<string, List<string>> parents = [];
             foreach (var machine in GetMachinesDB())
             {
-                if (machine.Value is null)
-                    continue;
-
                 // Get machine information
-                Machine? machineObj = machine.Value;
-                string? machineName = machineObj?.Name?.ToLowerInvariant();
-                if (machineObj is null || machineName is null)
+                string? machineName = machine.Value?.Name?.ToLowerInvariant();
+                if (machine.Value is null || machineName is null)
                     continue;
 
                 // Get the string values
-                string? cloneOf = machineObj.CloneOf?.ToLowerInvariant();
-                string? romOf = machineObj.RomOf?.ToLowerInvariant();
+                string? cloneOf = machine.Value.CloneOf?.ToLowerInvariant();
+                string? romOf = machine.Value.RomOf?.ToLowerInvariant();
 
                 // Match on CloneOf first
                 if (!string.IsNullOrEmpty(cloneOf))
@@ -446,20 +438,20 @@ namespace SabreTools.Metadata.DatFiles
             foreach (string key in parents.Keys)
             {
                 // Find the first machine that matches the regions in order, if possible
-                string? machine = default;
+                string? machineName = default;
                 foreach (string region in regionList)
                 {
-                    machine = parents[key].Find(m => Regex.IsMatch(m, @"\(.*" + region + @".*\)", RegexOptions.IgnoreCase));
-                    if (machine != default)
+                    machineName = parents[key].Find(m => Regex.IsMatch(m, @"\(.*" + region + @".*\)", RegexOptions.IgnoreCase));
+                    if (machineName != default)
                         break;
                 }
 
                 // If we didn't get a match, use the parent
-                if (machine == default)
-                    machine = key;
+                if (machineName == default)
+                    machineName = key;
 
                 // Remove the key from the list
-                parents[key].Remove(machine);
+                parents[key].Remove(machineName);
 
                 // Remove the rest of the items from this key
                 parents[key].ForEach(k => RemoveMachineDB(k));
@@ -589,18 +581,18 @@ namespace SabreTools.Metadata.DatFiles
                 return;
 
             // Get the current machine
-            var machine = GetMachineForItemDB(datItem.Key);
+            var machine = GetMachineDB(datItem.Value.MachineIndex);
             if (machine.Value is null)
                 return;
 
             // Clone current machine to avoid conflict
             long newMachineIndex = AddMachineDB((Machine)machine.Value.Clone());
-            machine = new KeyValuePair<long, Machine?>(newMachineIndex, ItemsDB.GetMachine(newMachineIndex));
+            machine = GetMachineDB(newMachineIndex);
             if (machine.Value is null)
                 return;
 
             // Reassign the item to the new machine
-            ItemsDB.RemapDatItemToMachine(datItem.Key, newMachineIndex);
+            datItem.Value.MachineIndex = newMachineIndex;
 
             // Remove extensions from File and Rom items
             if (datItem.Value is DatItems.Formats.File || datItem.Value is Rom)
@@ -654,11 +646,13 @@ namespace SabreTools.Metadata.DatFiles
                     string? machineName = machine.Name;
                     string? machineDesc = machine.Description;
 
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
                     if (machineName is not null && Regex.IsMatch(machineName, SceneNamePattern))
                         item.Machine!.Name = Regex.Replace(machineName, SceneNamePattern, "$2");
 
                     if (machineDesc is not null && Regex.IsMatch(machineDesc, SceneNamePattern))
                         item.Machine!.Description = Regex.Replace(machineDesc, SceneNamePattern, "$2");
+#pragma warning restore SYSLIB1045
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
@@ -680,23 +674,17 @@ namespace SabreTools.Metadata.DatFiles
             foreach (var machine in GetMachinesDB())
 #endif
             {
-                // Get the current machine
-                if (machine.Value is null)
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                    return;
-#else
-                    continue;
-#endif
-
                 // Get the values to check against
                 string? machineName = machine.Value.Name;
                 string? machineDesc = machine.Value.Description;
 
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
                 if (machineName is not null && Regex.IsMatch(machineName, SceneNamePattern))
                     machine.Value.Name = Regex.Replace(machineName, SceneNamePattern, "$2");
 
                 if (machineDesc is not null && Regex.IsMatch(machineDesc, SceneNamePattern))
                     machine.Value.Description = Regex.Replace(machineDesc, SceneNamePattern, "$2");
+#pragma warning restore SYSLIB1045
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -768,10 +756,6 @@ namespace SabreTools.Metadata.DatFiles
         {
             foreach (var machine in GetMachinesDB())
             {
-                // Get the current machine
-                if (machine.Value is null)
-                    continue;
-
                 // Get the values to check against
                 string? machineName = machine.Value.Name;
                 string? cloneOf = machine.Value.CloneOf;
