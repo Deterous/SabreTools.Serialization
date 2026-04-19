@@ -144,7 +144,7 @@ namespace SabreTools.Serialization.Writers
 
             if (obj.WipedVideoISOSize is not null)
             {
-                byte[] wipedVideoISOSize = BitConverter.GetBytes(obj.WipedVideoISOSize);
+                byte[] wipedVideoISOSize = BitConverter.GetBytes(obj.WipedVideoISOSize ?? 0);
                 stream.Write(videoISOSize, 0, videoISOSize.Length);
             }
             if (obj.VideoISOCRC is not null)
@@ -164,7 +164,8 @@ namespace SabreTools.Serialization.Writers
             {
                 for (int i = 0; i < obj.SecuritySectors.Length; i++)
                 {
-                    stream.Write(obj.SecuritySectors[i], 0, obj.SecuritySectors[i].Length);
+                    byte[] securitySector = BitConverter.GetBytes(obj.SecuritySectors[i]);
+                    stream.Write(obj.securitySector, 0, obj.securitySector.Length);
                 }
             }
 

@@ -206,7 +206,7 @@ namespace SabreTools.Data.Models.XRD
         /// Number of files in the XISO
         /// </summary>
         /// <remarks>Little-endian</remarks>
-        public ulong FileCount { get; set; }
+        public int FileCount { get; set; }
 
         /// <summary>
         /// File offsets and hashes in the XISO
@@ -234,7 +234,7 @@ namespace SabreTools.Data.Models.XRD
         /// Number of directory records in the XISO
         /// </summary>
         /// <remarks>Little-endian</remarks>
-        public ulong DirectoryCount { get; set; }
+        public int DirectoryCount { get; set; }
 
         /// <summary>
         /// List of XISO descriptors and their sector offsets and sizes 
@@ -247,7 +247,7 @@ namespace SabreTools.Data.Models.XRD
         /// Field does not exist for Version = 1
         /// </summary>
         /// <remarks>Little-endian</remarks>
-        public ulong? VideoISOFileCount { get; set; }
+        public int? VideoISOFileCount { get; set; }
 
         /// <summary>
         /// File offsets and hashes in the Video ISO

@@ -90,7 +90,7 @@ namespace SabreTools.Serialization.Readers
                     xrd.Xbox360Certificate = XenonExecutable.ParseCertificate(data);
                 }
 
-                xrd.FileCount = data.ReadUInt64LittleEndian();
+                xrd.FileCount = data.ReadInt32LittleEndian();
 
                 xrd.FileInfo = new FileEntry[xrd.FileCount];
                 for (ulong i = 0; i < xrd.FileCount; i++)
@@ -109,7 +109,7 @@ namespace SabreTools.Serialization.Readers
                 xrd.VolumeDescriptor = vd;
                 xrd.LayoutDescriptor = XDVDFS.ParseLayoutDescriptor(data);
 
-                xrd.DirectoryCount = data.ReadUInt64LittleEndian();
+                xrd.DirectoryCount = data.ReadInt32LittleEndian();
 
                 xrd.DirectoryInfo = new DirectoryEntry[xrd.DirectoryCount];
                 for (ulong i = 0; i < xrd.DirectoryCount; i++)
@@ -126,7 +126,7 @@ namespace SabreTools.Serialization.Readers
 
                 if (xrd.Version == 0x02)
                 {
-                    xrd.VideoISOFileCount = data.ReadUInt64LittleEndian();
+                    xrd.VideoISOFileCount = data.ReadInt32LittleEndian();
 
                     xrd.VideoISOFileInfo = new FileEntry[xrd.VideoISOFileCount ?? 0];
                     for (ulong i = 0; i < xrd.VideoISOFileCount; i++)
