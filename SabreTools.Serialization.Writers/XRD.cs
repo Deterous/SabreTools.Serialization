@@ -90,14 +90,50 @@ namespace SabreTools.Serialization.Writers
                 return null;
             if (obj.XGDType == 3 && obj.SecuritySectors?.Length != 2)
                 return null;
-            if (obj.XboxCertificate is not null && obj.XboxCertificate.SizeOfCertificate + 16 != 492)
-                return null;
+            if (obj.XboxCertificate is not null)
+            {
+                if (obj.XboxCertificate.SizeOfCertificate + 16 != 492)
+                    return null;
+                if (obj.XboxCertificate.TitleName.Length != 0x50)
+                    return null;
+                if (obj.XboxCertificate.AlternativeTitleIDs.Length != 16)
+                    return null;
+                if (obj.XboxCertificate.LANKey.Length != 16)
+                    return null;
+                if (obj.XboxCertificate.SignatureKey.Length != 16)
+                    return null;
+                if (obj.XboxCertificate.AlternateSignatureKeys.Length != 16)
+                    return null;
+                for (int i = 0; i < obj.XboxCertificate.AlternateSignatureKeys.Length; i++)
+                {
+                    if (bj.XboxCertificate.AlternateSignatureKeys[i].Length != 16)
+                        return null;
+                }
+                if (obj.XboxCertificate.CodeEncKey.Length != 16)
+                    return null;
+            }
             if (obj.Xbox360Certificate is not null)
             {
-                // TODO: Calculate cert length
-                var certificateLength = 0;
+                var certificateLength = 388 + 24 * obj.Xbox360Certificate.Table.Length;
                 if (obj.Xbox360Certificate.Length != certificateLength)
                     return null;
+                if (obj.Xbox360Certificate.Signature.Length != 256)
+                    return null;
+                if (obj.Xbox360Certificate.UnknownHash1.Length != 20)
+                    return null;
+                if (obj.Xbox360Certificate.UnknownHash2.Length != 20)
+                    return null;
+                if (obj.Xbox360Certificate.MediaID.Length != 16)
+                    return null;
+                if (obj.Xbox360Certificate.XEXFileKey.Length != 16)
+                    return null;
+                if (obj.Xbox360Certificate.UnknownHash3.Length != 20)
+                    return null;
+                for (int i = 0; i < obj.Xbox360Certificate.Table.Length; i++)
+                {
+                    if (obj.Xbox360Certificate.Table[i].Data.Length != 20)
+                        return null;
+                }
             }
             if (obj.FileCount != obj.FileInfo.Length)
                 return null;
