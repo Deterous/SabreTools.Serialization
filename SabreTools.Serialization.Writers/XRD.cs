@@ -202,7 +202,7 @@ namespace SabreTools.Serialization.Writers
             return stream;
         }
 
-        public static void SerializeXboxCertificate(Stream stream, XboxExecutable.Certificate obj)
+        public static void SerializeXboxCertificate(Stream stream, Data.Models.XboxExecutable.Certificate obj)
         {
             byte[] sizeOfCertificate = BitConverter.GetBytes(obj.SizeOfCertificate);
             stream.Write(sizeOfCertificate, 0, sizeOfCertificate.Length);
@@ -237,7 +237,7 @@ namespace SabreTools.Serialization.Writers
             stream.Write(obj.CodeEncKey, 0, obj.CodeEncKey.Length);
         }
 
-        public static void SerializeXbox360Certificate(Stream stream, XenonExecutable.Certificate obj)
+        public static void SerializeXbox360Certificate(Stream stream, Data.Models.XenonExecutable.Certificate obj)
         {
             byte[] length = BitConverter.GetBytes(obj.Length);
             stream.Write(length, 0, length.Length);
