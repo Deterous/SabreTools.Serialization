@@ -128,7 +128,7 @@ namespace SabreTools.Serialization.Readers
                 {
                     xrd.VideoISOFileCount = data.ReadUInt64LittleEndian();
 
-                    xrd.VideoISOFileInfo = new FileEntry[xrd.VideoISOFileCount];
+                    xrd.VideoISOFileInfo = new FileEntry[xrd.VideoISOFileCount ?? 0];
                     for (ulong i = 0; i < xrd.VideoISOFileCount; i++)
                     {
                         FileEntry file = new FileEntry();
