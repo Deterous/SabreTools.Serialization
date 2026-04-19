@@ -74,9 +74,9 @@ namespace SabreTools.Serialization.Writers
                 return null;
             if (obj.WipedVideoISOCRC is not null && obj.WipedVideoISOCRC.Length != 4)
                 return null;
-            if (obj.VideoISOMD5 is not null && obj.VideoISOMD5.Length != 16)
+            if (obj.WipedVideoISOMD5 is not null && obj.WipedVideoISOMD5.Length != 16)
                 return null;
-            if (obj.VideoISOSHA1 is not null && obj.VideoISOSHA1.Length != 20)
+            if (obj.WipedVideoISOSHA1 is not null && obj.WipedVideoISOSHA1.Length != 20)
                 return null;
             if (obj.FillerCRC.Length != 4)
                 return null;
