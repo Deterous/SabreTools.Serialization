@@ -33,7 +33,7 @@ namespace SabreTools.Serialization.Readers
                     return null;
 
                 xrd.Version = data.ReadByteValue();
-                if (xrd.Version != 0x01)
+                if (xrd.Version != 0x01 || xrd.Version != 0x02)
                     return null;
 
                 xrd.XGDType = data.ReadByteValue();
@@ -55,6 +55,16 @@ namespace SabreTools.Serialization.Readers
                 xrd.VideoISOCRC = data.ReadBytes(4);
                 xrd.VideoISOMD5 = data.ReadBytes(16);
                 xrd.VideoISOSHA1 = data.ReadBytes(20);
+
+                if (xrd.Version == 0x02)
+                {
+                    xrd.WipedVideoISOSize = data.ReadUInt64LittleEndian();
+                    xrd.WipedVideoISOCRC = data.ReadBytes(4);
+                    xrd.WipedVideoISOMD5 = data.ReadBytes(16);
+                    xrd.WipedVideoISOSHA1 = data.ReadBytes(20);
+                }
+
+                xrd.FillerSize = data.ReadUInt64LittleEndian();
                 xrd.FillerCRC = data.ReadBytes(4);
                 xrd.FillerMD5 = data.ReadBytes(16);
                 xrd.FillerSHA1 = data.ReadBytes(20);
@@ -82,11 +92,12 @@ namespace SabreTools.Serialization.Readers
 
                 xrd.FileCount = data.ReadUInt64LittleEndian();
 
-                FileEntry[] files = new FileEntry[xrd.FileCount];
+                xrd.FileInfo = new FileEntry[xrd.FileCount];
                 for (ulong i = 0; i < xrd.FileCount; i++)
                 {
                     FileEntry file = new FileEntry();
                     file.Offset = data.ReadUInt32LittleEndian();
+                    file.Size = data.ReadUInt64LittleEndian();
                     file.SHA1 = data.ReadBytes(20);
                     xrd.FileInfo[i] = file;
                 }
@@ -100,7 +111,7 @@ namespace SabreTools.Serialization.Readers
 
                 xrd.DirectoryCount = data.ReadUInt64LittleEndian();
 
-                DirectoryEntry[] directories = new DirectoryEntry[xrd.DirectoryCount];
+                xrd.DirectoryInfo = new DirectoryEntry[xrd.DirectoryCount];
                 for (ulong i = 0; i < xrd.DirectoryCount; i++)
                 {
                     DirectoryEntry directory = new DirectoryEntry();
@@ -111,6 +122,21 @@ namespace SabreTools.Serialization.Readers
                         return null;
                     directory.DirectoryDescriptor = dd;
                     xrd.DirectoryInfo[i] = directory;
+                }
+
+                if (xrd.Version == 0x02)
+                {
+                    xrd.VideoISOFileCount = data.ReadUInt64LittleEndian();
+
+                    xrd.VideoISOFileInfo = new FileEntry[xrd.VideoISOFileCount];
+                    for (ulong i = 0; i < xrd.VideoISOFileCount; i++)
+                    {
+                        FileEntry file = new FileEntry();
+                        file.Offset = data.ReadUInt32LittleEndian();
+                        file.Size = data.ReadUInt64LittleEndian();
+                        file.SHA1 = data.ReadBytes(20);
+                        xrd.VideoISOFileInfo[i] = file;
+                    }
                 }
 
                 xrd.XRDSize = data.ReadUInt32LittleEndian();

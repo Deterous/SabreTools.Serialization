@@ -13,7 +13,9 @@ namespace SabreTools.Data.Models.XRD
 
         /// <summary>
         /// XRD File Format Version
-        /// Currently 0x01
+        /// 0x01 = Standard
+        /// 0x02 = Also contains Wiped Video ISO size/hashes, and Video ISO file size/hashes
+        /// Intended use is Version 0x02 only for XGD3 discs, but not mandated
         /// </summary>
         public byte Version { get; set; }
 
@@ -132,6 +134,38 @@ namespace SabreTools.Data.Models.XRD
         public byte[] VideoISOSHA1 { get; set; } = new byte[20];
 
         /// <summary>
+        /// Size of the wiped Video ISO in bytes
+        /// Field does not exist for Version = 1
+        /// </summary>
+        /// <remarks>Little-endian</remarks>
+        public ulong? WipedVideoISOSize { get; set; }
+
+        /// <summary>
+        /// CRC-32 hash of the wiped Video ISO
+        /// Field does not exist for Version = 1
+        /// </summary>
+        public byte[]? WipedVideoISOCRC { get; set; } = new byte[4];
+
+        /// <summary>
+        /// MD5 hash of the wiped Video ISO
+        /// Field does not exist for Version = 1
+        /// </summary>
+        public byte[]? WipedVideoISOMD5 { get; set; } = new byte[16];
+
+        /// <summary>
+        /// SHA-1 hash of the wiped Video ISO
+        /// Field does not exist for Version = 1
+        /// </summary>
+        public byte[]? WipedVideoISOSHA1 { get; set; } = new byte[20];
+
+        /// <summary>
+        /// Size of the filler data that has been hashed, in bytes
+        /// Should always be 2048
+        /// </summary>
+        /// <remarks>Little-endian</remarks>
+        public ulong? FillerSize { get; set; }
+
+        /// <summary>
         /// CRC-32 Hash of the first sector of the XDVDFS filesystem (filler data)
         /// The hash is used to identify filler data or brute force the seed
         /// </summary>
@@ -169,43 +203,58 @@ namespace SabreTools.Data.Models.XRD
         public XenonExecutable.Certificate? Xbox360Certificate { get; set; }
 
         /// <summary>
-        /// Number of files in XDVDFS filesystem
+        /// Number of files in the XISO
         /// </summary>
         /// <remarks>Little-endian</remarks>
         public ulong FileCount { get; set; }
 
         /// <summary>
-        /// File offsets and hashes
+        /// File offsets and hashes in the XISO
         /// Length of array equal to FileCount
         /// </summary>
         public FileEntry[] FileInfo { get; set; } = [];
 
         /// <summary>
-        /// XDVDFS Volume Descriptor
+        /// XISO Volume Descriptor
         /// </summary>
         /// <remarks>2048 bytes</remarks>
         public XDVDFS.VolumeDescriptor VolumeDescriptor { get; set; } = new();
 
         /// <summary>
         /// Xbox DVD Layout Descriptor, immediately follows Volume Descriptor
-        /// XGD1: Contains version numbers and signature bytes
-        /// XGD2: Zeroed apart from initial signature bytes
-        /// XGD3: Sector not present
+        /// XGD1: Contains version numbers and signature bytes (always present)
+        /// XGD2: Zeroed apart from initial signature bytes (always present?)
+        /// XGD3: Sector not present (always not present?)
+        /// Always check if this is present by reading LayoutDescriptor magic bytes
         /// </summary>
         /// <remarks>2048 bytes</remarks>
         public XDVDFS.LayoutDescriptor? LayoutDescriptor { get; set; }
 
         /// <summary>
-        /// Number of directory records in XDVDFS filesystem
+        /// Number of directory records in the XISO
         /// </summary>
         /// <remarks>Little-endian</remarks>
         public ulong DirectoryCount { get; set; }
 
         /// <summary>
-        /// List of descriptors and their sector offsets and sizes
+        /// List of XISO descriptors and their sector offsets and sizes 
         /// The root directory descriptor is not guaranteed to be the first
         /// </summary>
         public DirectoryEntry[] DirectoryInfo { get; set; } = [];
+
+        /// <summary>
+        /// Number of files in Video ISO
+        /// Field does not exist for Version = 1
+        /// </summary>
+        /// <remarks>Little-endian</remarks>
+        public ulong? VideoISOFileCount { get; set; }
+
+        /// <summary>
+        /// File offsets and hashes in the Video ISO
+        /// Length of array equal to VideoISOFileCount
+        /// Field does not exist for Version = 1
+        /// </summary>
+        public FileEntry[]? VideoISOFileInfo { get; set; } = [];
 
         /// <summary>
         /// Size of all data in XRD file prior to this field
