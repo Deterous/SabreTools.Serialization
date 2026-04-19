@@ -1,7 +1,7 @@
 namespace SabreTools.Data.Models.XRD
 {
     /// <summary>
-    /// Xbox Rebuild/Redump/Recovery Data
+    /// Xbox Rebuild/Recovery/Redump Data
     /// Custom file format containing descriptive metadata about Xbox / Xbox 360 disc images
     /// </summary>
     public class File

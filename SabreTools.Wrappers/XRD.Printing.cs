@@ -88,7 +88,7 @@ namespace SabreTools.Wrappers
             {
                 builder.AppendLine(Model.DirectoryInfo[i].Offset, $"XISO Directory {i} Offset");
                 builder.AppendLine(Model.DirectoryInfo[i].Size, $"XISO Directory {i} Size");
-                XDVDFS.Print(builder, Model.DirectoryDescriptor, Model.DirectoryInfo[i].Offset);
+                XDVDFS.Print(builder, Model.DirectoryInfo[i].DirectoryDescriptor, Model.DirectoryInfo[i].Offset);
             }
 
             if (Model.VideoISOFileCount is not null)
