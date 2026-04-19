@@ -147,12 +147,12 @@ namespace SabreTools.Serialization.Writers
                 byte[] wipedVideoISOSize = BitConverter.GetBytes(obj.WipedVideoISOSize ?? 0);
                 stream.Write(videoISOSize, 0, videoISOSize.Length);
             }
-            if (obj.VideoISOCRC is not null)
-                stream.Write(obj.VideoISOCRC, 0, obj.VideoISOCRC.Length);
-            if (obj.VideoISOMD5 is not null)
-                stream.Write(obj.VideoISOMD5, 0, obj.VideoISOMD5.Length);
-            if (obj.VideoISOSHA1 is not null)
-                stream.Write(obj.VideoISOSHA1, 0, obj.VideoISOSHA1.Length);
+            if (obj.WipedVideoISOCRC is not null)
+                stream.Write(obj.WipedVideoISOCRC, 0, obj.WipedVideoISOCRC.Length);
+            if (obj.WipedVideoISOMD5 is not null)
+                stream.Write(obj.WipedVideoISOMD5, 0, obj.WipedVideoISOMD5.Length);
+            if (obj.WipedVideoISOSHA1 is not null)
+                stream.Write(obj.WipedVideoISOSHA1, 0, obj.WipedVideoISOSHA1.Length);
 
             byte[] fillerSize = BitConverter.GetBytes(obj.FillerSize);
             stream.Write(fillerSize, 0, fillerSize.Length);
