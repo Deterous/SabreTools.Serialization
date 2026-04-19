@@ -254,7 +254,7 @@ namespace SabreTools.Data.Models.XRD
         /// Length of array equal to VideoISOFileCount
         /// Field does not exist for Version = 1
         /// </summary>
-        public FileEntry[]? VideoISOFileInfo { get; set; } = [];
+        public FileEntry[]? VideoISOFileInfo { get; set; }
 
         /// <summary>
         /// Size of all data in XRD file prior to this field
