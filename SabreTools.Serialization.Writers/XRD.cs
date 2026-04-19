@@ -90,12 +90,15 @@ namespace SabreTools.Serialization.Writers
                 return null;
             if (obj.XGDType == 3 && obj.SecuritySectors?.Length != 2)
                 return null;
-            // TODO: Calculate Cert length
-            if (obj.XboxCertificate is not null && obj.XboxCertificate.SizeOfCertificate != 492)
+            if (obj.XboxCertificate is not null && obj.XboxCertificate.SizeOfCertificate + 16 != 492)
                 return null;
-            // TODO: Calculate Cert length
-            if (obj.Xbox360Certificate is not null && obj.Xbox360Certificate.Length != 0)
-                return null;
+            if (obj.Xbox360Certificate is not null)
+            {
+                // TODO: Calculate cert length
+                var certificateLength = 0;
+                if (obj.Xbox360Certificate.Length != certificateLength)
+                    return null;
+            }
             if (obj.FileCount != obj.FileInfo.Length)
                 return null;
             for (int i = 0; i < obj.FileInfo.Length; i++)
