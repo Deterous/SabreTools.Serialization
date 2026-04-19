@@ -84,11 +84,11 @@ namespace SabreTools.Serialization.Writers
                 return null;
             if (obj.FillerSHA1.Length != 20)
                 return null;
-            if (obj.XGDType == 1 && obj.SecuritySectors.Length != 16)
+            if (obj.XGDType == 1 && obj.SecuritySectors?.Length != 16)
                 return null;
-            if (obj.XGDType == 2 && obj.SecuritySectors.Length != 2)
+            if (obj.XGDType == 2 && obj.SecuritySectors?.Length != 2)
                 return null;
-            if (obj.XGDType == 3 && obj.SecuritySectors.Length != 2)
+            if (obj.XGDType == 3 && obj.SecuritySectors?.Length != 2)
                 return null;
             // TODO: Validate certificate fields
             if (obj.XboxCertificate is not null && obj.XboxCertificate.SizeOfCertificate != 0)
@@ -165,7 +165,7 @@ namespace SabreTools.Serialization.Writers
                 for (int i = 0; i < obj.SecuritySectors.Length; i++)
                 {
                     byte[] securitySector = BitConverter.GetBytes(obj.SecuritySectors[i]);
-                    stream.Write(obj.securitySector, 0, obj.securitySector.Length);
+                    stream.Write(securitySector, 0, securitySector.Length);
                 }
             }
 
@@ -212,10 +212,14 @@ namespace SabreTools.Serialization.Writers
             byte[] titleID = BitConverter.GetBytes(obj.TitleID);
             stream.Write(titleID, 0, titleID.Length);
             stream.Write(obj.TitleName, 0, obj.TitleName.Length);
-            stream.Write(obj.AlternativeTitleIDs, 0, obj.AlternativeTitleIDs.Length);
-            byte[] allowedMediaTypes = BitConverter.GetBytes(obj.AllowedMediaTypes);
+            for (int i = 0; i < obj.AlternativeTitleIDs.Length; i++)
+            {
+                byte[] alternativeTitleID = BitConverter.GetBytes(obj.AlternativeTitleIDs[i]);
+                stream.Write(alternativeTitleID, 0, alternativeTitleID.Length);
+            }
+            byte[] allowedMediaTypes = BitConverter.GetBytes((uint)obj.AllowedMediaTypes);
             stream.Write(allowedMediaTypes, 0, allowedMediaTypes.Length);
-            byte[] gameRegion = BitConverter.GetBytes(obj.GameRegion);
+            byte[] gameRegion = BitConverter.GetBytes((uint)obj.GameRegion);
             stream.Write(gameRegion, 0, gameRegion.Length);
             byte[] gameRatings = BitConverter.GetBytes(obj.GameRatings);
             stream.Write(gameRatings, 0, gameRatings.Length);
@@ -267,11 +271,11 @@ namespace SabreTools.Serialization.Writers
             byte[] tableCount = BitConverter.GetBytes(obj.TableCount);
             stream.Write(tableCount, 0, tableCount.Length);
 
-            for (int i = 0; i < Table.Length; i++)
+            for (int i = 0; i < obj.Table.Length; i++)
             {
-                byte[] id = BitConverter.GetBytes(obj.Table.ID);
+                byte[] id = BitConverter.GetBytes(obj.Table[i].ID);
                 stream.Write(id, 0, id.Length);
-                stream.Write(obj.Table.Data, 0, obj.Table.Data.Length);
+                stream.Write(obj.Table[i].Data, 0, obj.Table[i].Data.Length);
             }
         }
     }

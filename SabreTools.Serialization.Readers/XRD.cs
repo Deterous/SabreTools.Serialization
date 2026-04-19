@@ -93,7 +93,7 @@ namespace SabreTools.Serialization.Readers
                 xrd.FileCount = data.ReadInt32LittleEndian();
 
                 xrd.FileInfo = new FileEntry[xrd.FileCount];
-                for (ulong i = 0; i < xrd.FileCount; i++)
+                for (int i = 0; i < xrd.FileCount; i++)
                 {
                     FileEntry file = new FileEntry();
                     file.Offset = data.ReadUInt32LittleEndian();
@@ -112,7 +112,7 @@ namespace SabreTools.Serialization.Readers
                 xrd.DirectoryCount = data.ReadInt32LittleEndian();
 
                 xrd.DirectoryInfo = new DirectoryEntry[xrd.DirectoryCount];
-                for (ulong i = 0; i < xrd.DirectoryCount; i++)
+                for (int i = 0; i < xrd.DirectoryCount; i++)
                 {
                     DirectoryEntry directory = new DirectoryEntry();
                     directory.Offset = data.ReadUInt32LittleEndian();
@@ -129,7 +129,7 @@ namespace SabreTools.Serialization.Readers
                     xrd.VideoISOFileCount = data.ReadInt32LittleEndian();
 
                     xrd.VideoISOFileInfo = new FileEntry[xrd.VideoISOFileCount ?? 0];
-                    for (ulong i = 0; i < xrd.VideoISOFileCount; i++)
+                    for (int i = 0; i < xrd.VideoISOFileCount; i++)
                     {
                         FileEntry file = new FileEntry();
                         file.Offset = data.ReadUInt32LittleEndian();
