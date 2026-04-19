@@ -163,7 +163,7 @@ namespace SabreTools.Data.Models.XRD
         /// Should always be 2048
         /// </summary>
         /// <remarks>Little-endian</remarks>
-        public ulong? FillerSize { get; set; }
+        public ulong FillerSize { get; set; }
 
         /// <summary>
         /// CRC-32 Hash of the first sector of the XDVDFS filesystem (filler data)
