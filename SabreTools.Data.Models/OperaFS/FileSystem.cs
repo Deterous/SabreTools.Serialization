@@ -7,7 +7,7 @@ namespace SabreTools.Data.Models.OperaFS
     /// Usually contained within a CDROM disc image (2352-byte bin file)
     /// All fields are Big-Endian
     /// </summary>
-    /// <see href=""/>
+    /// <see href="https://groups.google.com/g/rec.games.video.3do/c/1U3qrmLSYMQ"/>
     public sealed class FileSystem
     {
         /// <summary>
@@ -16,8 +16,9 @@ namespace SabreTools.Data.Models.OperaFS
         public VolumeDescriptor VolumeDescriptor { get; set; } = new();
 
         /// <summary>
-        /// List of all directories in filesystem
+        /// Map of all directories in filesystem, and their offsets
+        /// Duplicate directories exist at different offsets
         /// </summary>
-        public Directory[] Directories { get; set; } = [];
+        public Dictionary<uint, Directory> Directories { get; set; } = [];
     }
 }

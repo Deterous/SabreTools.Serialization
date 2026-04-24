@@ -2,37 +2,36 @@ namespace SabreTools.Data.Models.OperaFS
 {
     /// <summary>
     /// OperaFS Directory
+    /// </summary>
+    /// <see href="https://groups.google.com/g/rec.games.video.3do/c/1U3qrmLSYMQ"/>
     public class Directory
     {
         /// <summary>
-        /// 0xFFFFFFFF for the root directory
+        /// Offset of the next block
+        /// 0xFFFFFFFF implies this is the last block
         /// </summary>
         public int NextBlock { get; set; }
 
         /// <summary>
-        /// 0xFFFFFFFF for the root directory
+        /// Offset of the previous block
+        /// 0xFFFFFFFF implies this is the first block
         /// </summary>
         public int PreviousBlock { get; set; }
 
         /// <summary>
         /// Should be zeroed
         /// </summary>
-        public int DirectoryFlags { get; set; }
+        public uint Flags { get; set; }
 
         /// <summary>
         /// First free byte
         /// </summary>
-        public int FirstFreeByteOffset { get; set; }
+        public uint FirstFreeByte { get; set; }
 
         /// <summary>
         /// First entry offset
         /// </summary>
-        public int FirstEntryOffset { get; set; }
-
-        /// <summary>
-        /// Flags about this directory record
-        /// </summary>
-        public DirectoryRecordFlags DirectoryRecordFlags { get; set; } = new();
+        public uint FirstEntryOffset { get; set; }
 
         /// <summary>
         /// Directory records in this directory

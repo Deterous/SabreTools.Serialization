@@ -6,8 +6,13 @@ namespace SabreTools.Data.Models.OperaFS
     public static class Constants
     {
         /// <summary>
-        /// Example 
+        /// Standard block size for OperaFS disc images
         /// </summary>
-        public static readonly byte[] Example = [0x01, 0x5A, 0x5A, 0x5A, 0x5A, 0x5A, 0x01];
+        public static readonly int SectorSize = 2048;
+
+        /// <summary>
+        /// Start of a standard OperaFS image
+        /// </summary>
+        public static readonly byte[] MagicBytes = [0x01, 0x5A, 0x5A, 0x5A, 0x5A, 0x5A, 0x01];
     }
 }

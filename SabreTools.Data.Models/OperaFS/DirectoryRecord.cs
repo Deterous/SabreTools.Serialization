@@ -2,6 +2,8 @@ namespace SabreTools.Data.Models.OperaFS
 {
     /// <summary>
     /// OperaFS Directory Record
+    /// </summary>
+    /// <see href="https://groups.google.com/g/rec.games.video.3do/c/1U3qrmLSYMQ"/>
     public class DirectoryRecord
     {
         /// <summary>
@@ -12,12 +14,12 @@ namespace SabreTools.Data.Models.OperaFS
         /// <summary>
         /// Hash or random value to identify this record
         /// </summary>
-        public byte[] RecordID { get; set; } = new byte[4];
+        public byte[] UniqueIdentifier { get; set; } = new byte[4];
 
         /// <summary>
-        /// Type of record
+        /// Type of record, ASCII
         /// </summary>
-        public byte[] RecordType { get; set; } = new byte[4];
+        public byte[] Type { get; set; } = new byte[4];
 
         /// <summary>
         /// Sector size for this record
@@ -36,12 +38,12 @@ namespace SabreTools.Data.Models.OperaFS
         public uint BlockCount { get; set; }
 
         /// <summary>
-        /// Burst
+        /// Burst, usually 0x1
         /// </summary>
         public uint Burst { get; set; }
 
         /// <summary>
-        /// Gap
+        /// Gap, usually 0x0
         /// </summary>
         public uint Gap { get; set; }
 
@@ -49,5 +51,16 @@ namespace SabreTools.Data.Models.OperaFS
         /// Filename of record
         /// </summary>
         public byte[] Filename { get; set; } = new byte[32];
+
+        /// <summary>
+        /// Number of duplicates of the file/directory provided
+        /// </summary>
+        public uint LastAvatarIndex { get; set; }
+
+        /// <summary>
+        /// Offset of the file/directories provided
+        /// Length of array is LastAvatarIndex + 1
+        /// </summary>
+        public uint[] AvatarList { get; set; } = [];
     }
 }
