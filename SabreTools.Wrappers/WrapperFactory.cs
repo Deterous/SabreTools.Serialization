@@ -22,7 +22,7 @@ namespace SabreTools.Wrappers
                 WrapperType.BFPK => BFPK.Create(data),
                 WrapperType.BSP => BSP.Create(data),
                 WrapperType.BZip2 => BZip2.Create(data),
-                WrapperType.CDROM => CDROM.Create(data),
+                WrapperType.CDROM => CreateCDROMImageWrapper(data),
                 WrapperType.CFB => CFB.Create(data),
                 WrapperType.CHD => CHD.Create(data),
                 WrapperType.CIA => CIA.Create(data),
@@ -83,6 +83,36 @@ namespace SabreTools.Wrappers
                 WrapperType.Textfile => null,// TODO: Implement wrapper
                 _ => null,
             };
+        }
+
+        /// <summary>
+        /// Create an instance of a wrapper based on the CDROM image type
+        /// </summary>
+        /// <param name="stream">Stream data to parse</param>
+        /// <returns>IWrapper representing the CDROM image, null on error</returns>
+        public static IWrapper? CreateCDROMImageWrapper(Stream? stream)
+        {
+            // If we have no stream
+            if (stream is null)
+                return null;
+
+            // Cache the current offset
+            long initialOffset = stream.Position;
+
+            // Try to get a 3DO disc image wrapper first
+            var operaDiscImageWrapper = OperaDiscImage.Create(stream);
+            if (operaDiscImageWrapper is not null)
+                return operaDiscImageWrapper;
+
+            // Reset position in stream
+            stream.SeekIfPossible(initialOffset, SeekOrigin.Begin);
+
+            // Fallback to standard CDROM wrapper
+            var cdromWrapper = CDROM.Create(stream);
+            if (cdromWrapper is null)
+                return null;
+
+            return cdromWrapper;
         }
 
         /// <summary>
@@ -288,7 +318,9 @@ namespace SabreTools.Wrappers
 
             #region CDROM
 
-            if (magic.StartsWith([0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+            // Must come before skeleton extension check for ISO9660
+            // CDROM skeletons have same extension as ISO9660 skeletons
+            if (magic.StartsWith([0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00])
                 && (extension.Equals("bin", StringComparison.OrdinalIgnoreCase)
                     || extension.Equals("skeleton", StringComparison.OrdinalIgnoreCase)))
             {
