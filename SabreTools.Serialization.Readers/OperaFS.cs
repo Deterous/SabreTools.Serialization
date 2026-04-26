@@ -28,18 +28,23 @@ namespace SabreTools.Serialization.Readers
 
                 // Create a new FileSystem to fill
                 var volume = new FileSystem();
+                System.Console.WriteLine(".");
 
                 var volumeDescriptor = ParseVolumeDescriptor(data);
+                System.Console.WriteLine("1");
                 if (volumeDescriptor is null)
                     return null;
+                System.Console.WriteLine("2");
 
                 volume.VolumeDescriptor = volumeDescriptor;
 
                 var directories = ParseDirectories(data, volumeDescriptor, initialOffset);
+                System.Console.WriteLine("3");
                 if (directories is null)
                     return null;
                 
                 volume.Directories = directories;
+                System.Console.WriteLine("4");
 
                 return volume;
             }
@@ -73,12 +78,14 @@ namespace SabreTools.Serialization.Readers
             volumeDescriptor.RootDirectoryBlockSize = data.ReadUInt32BigEndian();
             volumeDescriptor.RootDirectoryLastAvatarIndex = data.ReadUInt32BigEndian();
             
+            System.Console.WriteLine("a");
             for (int i = 0; i < 8; i++)
             {
                 volumeDescriptor.RootDirectoryAvatarList[i] = data.ReadUInt32BigEndian();
             }
 
             volumeDescriptor.Padding = data.ReadBytes(0x77C);
+            System.Console.WriteLine("b");
 
             return volumeDescriptor;
         }
@@ -91,15 +98,18 @@ namespace SabreTools.Serialization.Readers
         public static Dictionary<uint, DirectoryDescriptor> ParseDirectories(Stream data, VolumeDescriptor volumeDescriptor, long initialOffset)
         {
             var directories = new Dictionary<uint, DirectoryDescriptor>();
+            System.Console.WriteLine("-");
 
             data.SeekIfPossible(initialOffset + volumeDescriptor.RootDirectoryAvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
             var rootDirectory = ParseDirectory(data);
+            System.Console.WriteLine("d done");
             for (int i = 0; i <= volumeDescriptor.RootDirectoryLastAvatarIndex; i++)
             {
                 directories.Add(volumeDescriptor.RootDirectoryAvatarList[i], rootDirectory);
             }
 
             var childDirectories = ParseChildDirectories(data, rootDirectory, initialOffset);
+            System.Console.WriteLine("child done");
             foreach (var kvp in childDirectories)
             {
                 if (!directories.ContainsKey(kvp.Key))
@@ -121,6 +131,7 @@ namespace SabreTools.Serialization.Readers
             foreach (var dr in parent.DirectoryRecords)
             {
                 data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
+                System.Console.WriteLine("[]");
                 var directory = ParseDirectory(data);
                 for (int i = 0; i <= dr.LastAvatarIndex; i++)
                 {
@@ -138,6 +149,7 @@ namespace SabreTools.Serialization.Readers
         /// <returns>Filled Directory on success, null on error</returns>
         public static DirectoryDescriptor ParseDirectory(Stream data)
         {
+            System.Console.WriteLine("D");
             var directory = new DirectoryDescriptor();
 
             directory.NextBlock = data.ReadInt32BigEndian();
@@ -151,6 +163,7 @@ namespace SabreTools.Serialization.Readers
             long startPosition = data.Position;
             while (data.Position < startPosition + directory.FirstFreeByte)
             {
+                System.Console.WriteLine("R");
                 var directoryRecord = ParseDirectoryRecord(data);
                 directoryRecords.Add(directoryRecord);
 
