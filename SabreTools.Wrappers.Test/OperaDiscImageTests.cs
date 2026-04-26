@@ -45,7 +45,7 @@ namespace SabreTools.Wrappers.Test
         public void EmptyStream_Null()
         {
             Stream? data = new MemoryStream([]);
-            var actual = CDROperaDiscImageOM.Create(data);
+            var actual = OperaDiscImage.Create(data);
             Assert.Null(actual);
         }
 
