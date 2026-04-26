@@ -30,7 +30,7 @@ namespace SabreTools.Wrappers
             builder.AppendLine(vd.RecordType, "    Record Type");
             builder.AppendLine(vd.VolumeSyncBytes, "    Volume Sync Bytes");
             builder.AppendLine(vd.StructureVersion, "    Structure Version");
-            builder.AppendLine((byte)vd.StructureVersion, "    Volume Flags");
+            builder.AppendLine((byte)vd.VolumeFlags, "    Volume Flags");
             builder.AppendLine(Encoding.UTF8.GetString(vd.VolumeCommentary), "    Volume Commentary");
             builder.AppendLine(Encoding.UTF8.GetString(vd.VolumeIdentifier), "    Volume Identifier");
             builder.AppendLine(vd.VolumeUniqueIdentifier, "    Volume Unique Identifier");
