@@ -18,7 +18,7 @@ namespace SabreTools.Serialization.Readers
                 return null;
 
             // Simple check for a valid stream length
-            if (sectorLength < Constants.SectorSize)
+            if (data.Length - data.Position < Constants.SectorSize)
                 return null;
 
             try
@@ -79,6 +79,8 @@ namespace SabreTools.Serialization.Readers
             }
 
             volumeDescriptor.Padding = data.ReadBytes(0x77C);
+
+            return volumeDescriptor;
         }
 
         /// <summary>
@@ -101,7 +103,7 @@ namespace SabreTools.Serialization.Readers
             foreach (var kvp in childDirectories)
             {
                 if (!directories.ContainsKey(kvp.Key))
-                    obj.Add(kvp.Key, kvp.Value);
+                    directories.Add(kvp.Key, kvp.Value);
             }
 
             return directories;
@@ -120,9 +122,9 @@ namespace SabreTools.Serialization.Readers
             {
                 data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
                 var directory = ParseDirectory(data);
-                for (int i = 0; i <= volumeDescriptor.LastAvatarIndex; i++)
+                for (int i = 0; i <= dr.LastAvatarIndex; i++)
                 {
-                    directories.Add(volumeDescriptor.AvatarList[i], directory);
+                    directories.Add(dr.AvatarList[i], directory);
                 }
             }
 
@@ -144,7 +146,7 @@ namespace SabreTools.Serialization.Readers
             directory.FirstFreeByte = data.ReadUInt32BigEndian();
             directory.FirstEntryOffset = data.ReadUInt32BigEndian();
 
-            var directoryRecords = List<DirectoryRecord>();
+            var directoryRecords = new List<DirectoryRecord>();
 
             long startPosition = data.Position;
             while (data.Position < startPosition + directory.FirstFreeByte)
@@ -172,7 +174,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled Directory Record on success, null on error</returns>
-        public static DirectoryDescriptor ParseDirectoryRecord(Stream data)
+        public static DirectoryRecord ParseDirectoryRecord(Stream data)
         {
             var directoryRecord = new DirectoryRecord();
             
