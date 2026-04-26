@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace SabreTools.Data.Models.OperaFS
 {
     /// <summary>
-    /// Opera Filesystem (or user-data-only disc image) present on 3DO game discs
+    /// Opera Filesystem (or user-data-only disc image) present on 3DO and M2 discs
     /// Usually contained within a CDROM disc image (2352-byte bin file)
     /// All fields are Big-Endian
     /// </summary>
