@@ -18,6 +18,6 @@ namespace SabreTools.Data.Models.OperaFS
         /// <summary>
         /// Padding bytes within a OperaFS FileSystem, "iamaduck"
         /// </summary>
-        public static readonly byte[] PaddingBytes = [0x69,0x61, 0x6D, 0x61 0x64, 0x75, 0x63, 0x6B];
+        public static readonly byte[] PaddingBytes = [0x69, 0x61, 0x6D, 0x61, 0x64, 0x75, 0x63, 0x6B];
     }
 }

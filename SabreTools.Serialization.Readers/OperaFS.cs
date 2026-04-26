@@ -149,7 +149,7 @@ namespace SabreTools.Serialization.Readers
             long startPosition = data.Position;
             while (data.Position < startPosition + directory.FirstFreeByte)
             {
-                var directoryRecord = ParseDirectoryRecord(Stream data);
+                var directoryRecord = ParseDirectoryRecord(data);
                 directoryRecords.Add(directoryRecord);
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY_FINAL) != 0)
