@@ -23,6 +23,9 @@ namespace SabreTools.Serialization.Readers
 
             try
             {
+                // Cache the current offset
+                long initialOffset = data.Position;
+
                 // Create a new FileSystem to fill
                 var volume = new FileSystem();
 
@@ -32,7 +35,7 @@ namespace SabreTools.Serialization.Readers
 
                 volume.VolumeDescriptor = volumeDescriptor;
 
-                var directories = ParseDirectories(data, volumeDescriptor);
+                var directories = ParseDirectories(data, volumeDescriptor, initialOffset);
                 if (directories is null)
                     return null;
                 
@@ -79,22 +82,49 @@ namespace SabreTools.Serialization.Readers
         }
 
         /// <summary>
-        /// Parse a Stream into an map of OperaFS directories
+        /// Parse a Stream into an map of OperaFS directories from a volume descriptor
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled map of directories on success, null on error</returns>
-        public static Dictionary<uint, Directory> ParseDirectories(Stream data, VolumeDescriptor volumeDescriptor)
+        public static Dictionary<uint, Directory> ParseDirectories(Stream data, VolumeDescriptor volumeDescriptor, long initialOffset)
         {
             var directories = new Dictionary<uint, Directory>();
 
-            // TODO: Seek to root directory
+            data.SeekIfPossible(initialOffset + volumeDescriptor.RootDirectoryAvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
             var rootDirectory = ParseDirectory(data);
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i <= volumeDescriptor.RootDirectoryLastAvatarIndex; i++)
+            {
                 directories.Add(volumeDescriptor.RootDirectoryAvatarList[i], rootDirectory);
+            }
 
-            // TODO: Check duplicates are identical
+            var childDirectories = ParseChildDirectories(data, rootDirectory, initialOffset);
+            foreach (var kvp in childDirectories)
+            {
+                if (!directories.ContainsKey(kvp.Key))
+                    obj.Add(kvp.Key, kvp.Value);
+            }
 
-            // TODO: Parse child directories
+            return directories;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an map of OperaFS directories from a directory
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled map of directories on success, null on error</returns>
+        public static Dictionary<uint, Directory> ParseChildDirectories(Stream data, Directory parent, long initialOffset)
+        {
+            var directories = new Dictionary<uint, Directory>();
+
+            foreach (var dr in parent.DirectoryRecords)
+            {
+                data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
+                var directory = ParseDirectory(data);
+                for (int i = 0; i <= volumeDescriptor.LastAvatarIndex; i++)
+                {
+                    directories.Add(volumeDescriptor.AvatarList[i], directory);
+                }
+            }
 
             return directories;
         }
