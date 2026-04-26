@@ -42,9 +42,9 @@ namespace SabreTools.Wrappers
             builder.AppendLine(vd.RootDirectoryLastAvatarIndex, "    Root Directory Last Avatar Index");
             builder.AppendLine(vd.RootDirectoryAvatarList, "    Root Directory Avatar List");
 
-            int offset = Array.IndexOf(Constants.PaddingBytes, data[0]);
+            int offset = Array.IndexOf(Constants.PaddingBytes, vd.Padding[0]);
             int index = 0;
-            bool isDuck = Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % pattern.Length]);
+            bool isDuck = Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % Constants.PaddingBytes.Length]);
             if (isDuck)
                 builder.AppendLine("Expected data", "    Padding");
             else
