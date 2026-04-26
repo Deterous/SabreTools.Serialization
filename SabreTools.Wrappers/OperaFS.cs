@@ -19,7 +19,7 @@ namespace SabreTools.Wrappers
         public VolumeDescriptor VolumeDescriptor => Model.VolumeDescriptor;
 
         /// <inheritdoc cref="FileSystem.Directories"/>
-        public Dictionary<uint, Directory> Directories => Model.Directories;
+        public Dictionary<uint, DirectoryDescriptor> Directories => Model.Directories;
 
         #endregion
 

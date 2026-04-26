@@ -19,6 +19,6 @@ namespace SabreTools.Data.Models.OperaFS
         /// Map of all directories in filesystem, and their offsets
         /// Duplicate directories exist at different offsets
         /// </summary>
-        public Dictionary<uint, Directory> Directories { get; set; } = [];
+        public Dictionary<uint, DirectoryDescriptor> Directories { get; set; } = [];
     }
 }

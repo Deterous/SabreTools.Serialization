@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.OperaFS;
 using SabreTools.IO.Extensions;
@@ -85,9 +86,9 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled map of directories on success, null on error</returns>
-        public static Dictionary<uint, Directory> ParseDirectories(Stream data, VolumeDescriptor volumeDescriptor, long initialOffset)
+        public static Dictionary<uint, DirectoryDescriptor> ParseDirectories(Stream data, VolumeDescriptor volumeDescriptor, long initialOffset)
         {
-            var directories = new Dictionary<uint, Directory>();
+            var directories = new Dictionary<uint, DirectoryDescriptor>();
 
             data.SeekIfPossible(initialOffset + volumeDescriptor.RootDirectoryAvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
             var rootDirectory = ParseDirectory(data);
@@ -111,9 +112,9 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled map of directories on success, null on error</returns>
-        public static Dictionary<uint, Directory> ParseChildDirectories(Stream data, Directory parent, long initialOffset)
+        public static Dictionary<uint, DirectoryDescriptor> ParseChildDirectories(Stream data, DirectoryDescriptor parent, long initialOffset)
         {
-            var directories = new Dictionary<uint, Directory>();
+            var directories = new Dictionary<uint, DirectoryDescriptor>();
 
             foreach (var dr in parent.DirectoryRecords)
             {
@@ -133,9 +134,9 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled Directory on success, null on error</returns>
-        public static Directory ParseDirectory(Stream data)
+        public static DirectoryDescriptor ParseDirectory(Stream data)
         {
-            var directory = new Directory();
+            var directory = new DirectoryDescriptor();
 
             directory.NextBlock = data.ReadInt32BigEndian();
             directory.PreviousBlock = data.ReadInt32BigEndian();
@@ -171,7 +172,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled Directory Record on success, null on error</returns>
-        public static Directory ParseDirectoryRecord(Stream data)
+        public static DirectoryDescriptor ParseDirectoryRecord(Stream data)
         {
             var directoryRecord = new DirectoryRecord();
             

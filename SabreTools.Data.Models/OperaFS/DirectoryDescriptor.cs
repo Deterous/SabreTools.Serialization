@@ -1,10 +1,10 @@
 namespace SabreTools.Data.Models.OperaFS
 {
     /// <summary>
-    /// OperaFS Directory
+    /// OperaFS Directory Descriptor
     /// </summary>
     /// <see href="https://groups.google.com/g/rec.games.video.3do/c/1U3qrmLSYMQ"/>
-    public class Directory
+    public class DirectoryDescriptor
     {
         /// <summary>
         /// Offset of the next block
