@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using SabreTools.Data.Extensions;
 using SabreTools.Data.Models.OperaFS;
 using SabreTools.IO.Extensions;
@@ -11,7 +10,7 @@ namespace SabreTools.Serialization.Readers
     public class OperaFS : BaseBinaryReader<FileSystem>
     {
         /// <inheritdoc cref="Deserialize(Stream?)" />
-        public FileSystem? Deserialize(Stream? data)
+        public override FileSystem? Deserialize(Stream? data)
         {
             // If the data is invalid
             if (data is null || !data.CanRead)
