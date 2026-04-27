@@ -35,7 +35,7 @@ namespace SabreTools.Serialization.Readers
 
                 volume.VolumeDescriptor = volumeDescriptor;
 
-                var directories = ParseDirectories(data, volumeDescriptor, initialOffset);
+                var directories = ParseRootDirectory(data, volumeDescriptor, initialOffset);
                 if (directories is null)
                     return null;
                 
@@ -88,7 +88,7 @@ namespace SabreTools.Serialization.Readers
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled map of directories on success, null on error</returns>
-        public static Dictionary<uint, DirectoryDescriptor> ParseDirectories(Stream data, VolumeDescriptor volumeDescriptor, long initialOffset)
+        public static Dictionary<uint, DirectoryDescriptor> ParseRootDirectory(Stream data, VolumeDescriptor volumeDescriptor, long initialOffset)
         {
             var directories = new Dictionary<uint, DirectoryDescriptor>();
 
@@ -130,6 +130,13 @@ namespace SabreTools.Serialization.Readers
                 for (int i = 0; i <= dr.LastAvatarIndex; i++)
                 {
                     directories.Add(dr.AvatarList[i], directory);
+                }
+
+                var childDirectories = ParseChildDirectories(data, directory, initialOffset);
+                foreach (var kvp in childDirectories)
+                {
+                    if (!directories.ContainsKey(kvp.Key))
+                        directories.Add(kvp.Key, kvp.Value);
                 }
             }
 
