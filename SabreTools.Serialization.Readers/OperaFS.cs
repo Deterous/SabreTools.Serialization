@@ -139,12 +139,21 @@ namespace SabreTools.Serialization.Readers
                 if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY) == 0)
                     continue;
 
-                // TODO: Check that each avatar is identical
                 data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
                 var directory = ParseDirectory(data);
-                for (int i = 0; i <= dr.LastAvatarIndex; i++)
+                directories.Add(dr.AvatarList[0], directory);
+                for (int i = 1; i <= dr.LastAvatarIndex; i++)
                 {
-                    directories.Add(dr.AvatarList[i], directory);
+                    // Read avatar
+                    data.SeekIfPossible(initialOffset + dr.AvatarList[i] * Constants.SectorSize, SeekOrigin.Begin);
+                    var avatar = ParseDirectory(data);
+
+                    // Add reference to original directory if avatar is identical
+                    // TODO: Check equality of all previously added unique avatars too
+                    if (avatar.EqualsExactly(directory))
+                        directories.Add(dr.AvatarList[i], directory);
+                    else
+                        directories.Add(dr.AvatarList[i], avatar);
                 }
 
                 var childDirectories = ParseChildDirectories(data, directory, initialOffset);

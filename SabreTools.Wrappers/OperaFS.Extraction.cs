@@ -67,7 +67,7 @@ namespace SabreTools.Wrappers
                     // Skip filesystem only files (e.g. Volume Descriptor "Disc Label")
                     if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.SYSTEM) != 0)
                     {
-                        if (!includeDebug) Console.WriteLine($"Skipping filesystem object {filename}");
+                        if (includeDebug) Console.WriteLine($"Skipping filesystem object {filename}");
                         continue;
                     }
 
@@ -75,7 +75,8 @@ namespace SabreTools.Wrappers
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
                         uint fileOffset = (uint)Constants.SectorSize * dr.AvatarList[i];
-                        // TODO: Deal with file avatars better ?
+
+                        // TODO: Check that all avatars are identical?
                         if (extractedFiles.Contains(fileOffset))
                         {
                             if (includeDebug) Console.WriteLine($"File duplicate at sector {dr.AvatarList[i]}");
