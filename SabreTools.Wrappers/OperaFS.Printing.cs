@@ -21,13 +21,11 @@ namespace SabreTools.Wrappers
         /// <inheritdoc/>
         public void PrintInformation(StringBuilder builder)
         {
-            Console.WriteLine("1");
             builder.AppendLine("3DO / M2 (Opera) Filesystem Information:");
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
             Print(builder, VolumeDescriptor);
-            Console.WriteLine("2");
             foreach (var kvp in Directories)
             {
                 if (printedDirectories.ContainsKey(kvp.Value))
@@ -39,9 +37,7 @@ namespace SabreTools.Wrappers
                     continue;
                 }
 
-                Console.WriteLine("3a");
                 Print(builder, kvp.Key, kvp.Value);
-                Console.WriteLine("3b");
                 printedDirectories.Add(kvp.Value, kvp.Key);
             }
         }
@@ -55,7 +51,6 @@ namespace SabreTools.Wrappers
             builder.AppendLine(vd.VolumeSyncBytes, "  Volume Sync Bytes");
             builder.AppendLine(vd.StructureVersion, "  Structure Version");
 
-            Console.WriteLine("a");
             builder.AppendLine((byte)vd.VolumeFlags, "  Volume Flags");
             if ((byte)vd.VolumeFlags != 0)
             {
@@ -78,15 +73,24 @@ namespace SabreTools.Wrappers
             builder.AppendLine(vd.RootDirectoryLastAvatarIndex, "  Root Directory Last Avatar Index");
             builder.AppendLine(vd.RootDirectoryAvatarList, "  Root Directory Avatar List");
 
-            Console.WriteLine("b");
             int offset = Array.IndexOf(Constants.PaddingBytes, vd.Padding[0]);
             int index = 0;
-            bool isDuck = Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % Constants.PaddingBytes.Length]);
-            if (isDuck)
-                builder.AppendLine("Expected data", "  Padding");
+            bool isDuck = (offset >= 0) && (offset == Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % Constants.PaddingBytes.Length]));
+            if ((vd.VolumeFlags & VolumeFlags.M2) == 0)
+            {
+                if (isDuck)
+                    builder.AppendLine("Expected data", "  Padding");
+                else
+                    builder.AppendLine("Unexpected data", "  Padding");
+            }
             else
-                builder.AppendLine("Unexpected data", "  Padding");
-            Console.WriteLine("c");       
+            {
+                if (isDuck)
+                    builder.AppendLine("Unknown M2 Extra Data not present", "  Padding");
+                    builder.AppendLine("Unknown M2 Extra Data present", "  Padding");
+                else
+                    builder.AppendLine("Unknown M2 Extra Data present", "  Padding");
+            }
 
             builder.AppendLine();
         }
@@ -102,13 +106,10 @@ namespace SabreTools.Wrappers
             builder.AppendLine(dir.FirstFreeByte, "  First Free Byte");
             builder.AppendLine(dir.FirstEntryOffset, "  First Entry Offset");
 
-            Console.WriteLine(".");
             foreach (var dr in dir.DirectoryRecords)
             {
-                Console.WriteLine("..");
                 Print(builder, dr);
             }
-            Console.WriteLine("...");
 
             builder.AppendLine();
         }
@@ -119,7 +120,6 @@ namespace SabreTools.Wrappers
             builder.AppendLine("    -------------------------");
 
             builder.AppendLine((byte)dr.DirectoryRecordFlags, "    Directory Record Flags");
-            Console.WriteLine("abc");
             if ((byte)dr.DirectoryRecordFlags != 0)
             {
                 builder.AppendLine("    Directory Record Flags (Parsed)");
@@ -143,7 +143,6 @@ namespace SabreTools.Wrappers
             builder.AppendLine(Encoding.UTF8.GetString(dr.Filename), "    Filename (Parsed)");
             builder.AppendLine(dr.LastAvatarIndex, "    LastAvatarIndex");
             builder.AppendLine(dr.AvatarList, "    AvatarList");
-            Console.WriteLine("123");
 
             builder.AppendLine();
         }
