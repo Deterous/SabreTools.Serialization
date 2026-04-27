@@ -60,24 +60,13 @@ namespace SabreTools.Wrappers
         public bool ExtractDirectory(string outputDirectory, bool includeDebug, DirectoryDescriptor dir)
         {
             // Create output directory if it does not exist
-            Console.WriteLine($"Extracting to {outputDirectory}");
             if (!string.IsNullOrEmpty(outputDirectory) && !Directory.Exists(outputDirectory))
-            {
-                try
-                {
-                    Directory.CreateDirectory(outputDirectory);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                    return false;
-                }
-            }
+                Directory.CreateDirectory(outputDirectory);
 
             bool allExtracted = true;
             foreach (var dr in dir.DirectoryRecords)
             {
-                var filename = Encoding.UTF8.GetString(dr.Filename);
+                var filename = Encoding.UTF8.GetString(dr.Filename).TrimEnd('\0');
                 if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY) == 0)
                 {
                     // Skip filesystem only files (e.g. Volume Descriptor "Disc Label")
