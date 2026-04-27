@@ -160,7 +160,10 @@ namespace SabreTools.Serialization.Readers
                 directoryRecords.Add(directoryRecord);
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY_FINAL) != 0)
+                {
+                    System.Console.WriteLine("final record");
                     break;
+                }
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.BLOCK_FINAL) != 0)
                 {
@@ -169,6 +172,7 @@ namespace SabreTools.Serialization.Readers
                     data.SeekIfPossible(nextBlock, SeekOrigin.Current);
                 }
             }
+            System.Console.WriteLine("dir done");
 
             directory.DirectoryRecords = directoryRecords.ToArray();
 
@@ -198,6 +202,7 @@ namespace SabreTools.Serialization.Readers
             directoryRecord.AvatarList = new uint[directoryRecord.LastAvatarIndex + 1];
             for (int i = 0; i <= directoryRecord.LastAvatarIndex; i++)
             {
+                System.Console.WriteLine("avatar");
                 directoryRecord.AvatarList[i] = data.ReadUInt32BigEndian();
             }
 
