@@ -120,6 +120,10 @@ namespace SabreTools.Serialization.Readers
 
             foreach (var dr in parent.DirectoryRecords)
             {
+                // Skip file records
+                if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY) == 0)
+                    continue;
+
                 // TODO: Check that each avatar is identical
                 data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
                 var directory = ParseDirectory(data);
@@ -156,14 +160,10 @@ namespace SabreTools.Serialization.Readers
                 directoryRecords.Add(directoryRecord);
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY_FINAL) != 0)
-                {
-                    System.Console.WriteLine("final dir");
                     break;
-                }
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.BLOCK_FINAL) != 0)
                 {
-                    System.Console.WriteLine("final block");
                     long nextBlock = Constants.SectorSize - ((data.Position - startPosition) % Constants.SectorSize);
                     data.SeekIfPossible(nextBlock, SeekOrigin.Current);
                 }
