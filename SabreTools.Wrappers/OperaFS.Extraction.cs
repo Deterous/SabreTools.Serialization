@@ -73,7 +73,7 @@ namespace SabreTools.Wrappers
                     if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.SYSTEM) != 0)
                         continue;
 
-                    var filepath = Path.Combine(outputDirectory, filename);
+                    var filePath = Path.Combine(outputDirectory, filename);
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
                         uint fileOffset = (uint)Constants.SectorSize * dr.AvatarList[i];
@@ -101,7 +101,7 @@ namespace SabreTools.Wrappers
 
                                     // Write the output file
                                     if (includeDebug) Console.WriteLine($"Extracting file {filename} at sector {fileOffset}");
-                                    using var fs = File.Open(filepath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                                    using var fs = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
                                     while (length > 0)
                                     {
                                         int bytesToRead = (int)Math.Min(length, chunkSize);
