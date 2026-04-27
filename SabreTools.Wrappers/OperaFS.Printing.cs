@@ -103,13 +103,15 @@ namespace SabreTools.Wrappers
             }
 
             builder.AppendLine(dr.UniqueIdentifier, "    Unique Identifier");
-            builder.AppendLine(Encoding.UTF8.GetString(dr.Type), "    Type");
+            builder.AppendLine(dr.Type, "    Type");
+            builder.AppendLine(Encoding.UTF8.GetString(dr.Type), "    Type (Parsed)");
             builder.AppendLine(dr.BlockSize, "    BlockSize");
             builder.AppendLine(dr.ByteCount, "    ByteCount");
             builder.AppendLine(dr.BlockCount, "    BlockCount");
             builder.AppendLine(dr.Burst, "    Burst");
             builder.AppendLine(dr.Gap, "    Gap");
-            builder.AppendLine(Encoding.UTF8.GetString(dr.Filename), "    Filename");
+            builder.AppendLine(dr.Filename, "    Filename");
+            builder.AppendLine(Encoding.UTF8.GetString(dr.Filename), "    Filename (Parsed)");
             builder.AppendLine(dr.LastAvatarIndex, "    LastAvatarIndex");
             builder.AppendLine(dr.AvatarList, "    AvatarList");
 
