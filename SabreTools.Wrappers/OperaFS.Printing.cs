@@ -37,7 +37,7 @@ namespace SabreTools.Wrappers
             if ((byte)vd.VolumeFlags != 0)
             {
                 builder.AppendLine("    Volume Flags (Parsed)");
-                builder.AppendLine((vd.VolumeFlags & Volume.M2) == VolumeFlags.M2, "      M2 Disc (or M1 Data Disc)");
+                builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2) == VolumeFlags.M2, "      M2 Disc (or M1 Data Disc)");
                 builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2_ONLY) == VolumeFlags.M2_ONLY, "      M2 Only");
                 builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2_DATA_DISC) == VolumeFlags.M2_DATA_DISC, "      M2 Data Disc");
                 builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2_SIGNED) == VolumeFlags.M2_SIGNED, "      M2 Signed");
