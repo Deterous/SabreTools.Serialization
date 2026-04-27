@@ -22,8 +22,8 @@ namespace SabreTools.Serialization.Readers
                 return null;
 
             // Simple check on first bytes
-            var signature = System.Text.Encoding.ASCII.GetString(data.PeekBytes(7));
-            if (!signature.Equals(Constants.MagicBytes))
+            var signature = data.PeekBytes(7);
+            if (!signature.EqualsExactly(Constants.MagicBytes))
                 return null;
 
             try
