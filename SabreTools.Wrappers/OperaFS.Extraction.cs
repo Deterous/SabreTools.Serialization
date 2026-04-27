@@ -17,7 +17,7 @@ namespace SabreTools.Wrappers
         /// <summary>
         /// List of extracted files by their sector offset
         /// </summary>
-        private readonly Dictionary<int, uint> extractedFiles = [];
+        private readonly List<uint> extractedFiles = [];
 
         /// <summary>
         /// List of extracted directories
@@ -31,13 +31,13 @@ namespace SabreTools.Wrappers
         {
             // Clear the extraction state
             extractedFiles.Clear();
-            multiExtentFiles.Clear();
+            extractedDirectories.Clear();
 
             bool allExtracted = true;
 
             for (int i = 0; i <= VolumeDescriptor.RootDirectoryLastAvatarIndex; i++)
             {
-                if (debug) Console.WriteLine($"Inspecting root directory at offset {VolumeDescriptor.RootDirectoryAvatarList[i]}");
+                if (includeDebug) Console.WriteLine($"Inspecting root directory at offset {VolumeDescriptor.RootDirectoryAvatarList[i]}");
                 bool alreadyExtracted = false;
                 var rootDirectory = Directories[VolumeDescriptor.RootDirectoryAvatarList[i]];
                 // foreach (var key in extractedDirectories.Keys)
@@ -50,14 +50,14 @@ namespace SabreTools.Wrappers
                 // }
                 if (extractedDirectories.Contains(rootDirectory))
                 {
-                    if (debug) Console.WriteLine($"Root directory duplicate");
+                    if (includeDebug) Console.WriteLine($"Root directory duplicate");
                     alreadyExtracted = true;
                     break;
                 }
 
                 if (!alreadyExtracted)
                 {
-                    if (debug) Console.WriteLine($"Extracting from root directory");
+                    if (includeDebug) Console.WriteLine($"Extracting from root directory");
                     ExtractDirectory(outputDirectory, includeDebug, rootDirectory);
                     extractedDirectories.Add(rootDirectory);
                 }
@@ -72,8 +72,8 @@ namespace SabreTools.Wrappers
             if (!string.IsNullOrEmpty(outputDirectory) && !Directory.Exists(outputDirectory))
                 Directory.CreateDirectory(outputDirectory);
 
-            bool success = true;
-            foreach (var dr in dir)
+            bool allExtracted = true;
+            foreach (var dr in dir.DirectoryRecords)
             {
                 var filename = Encoding.UTF8.GetString(dr.Filename);
                 if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY) == 0)
@@ -89,14 +89,14 @@ namespace SabreTools.Wrappers
                         {
                             try
                             {
-                                if (debug) Console.WriteLine($"Extracting file {filename} at offset {fileOffset}");
+                                if (includeDebug) Console.WriteLine($"Extracting file {filename} at offset {fileOffset}");
                                 // TODO: Extract file
 
                                 extractedFiles.Add(fileOffset);
                             }
                             catch
                             {
-                                success = false;
+                                allExtracted = false;
                             }
                         }
                     }
@@ -108,7 +108,7 @@ namespace SabreTools.Wrappers
                     // Iterate over all avatars, in case they're not identical
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
-                        if (debug) Console.WriteLine($"Inspecting directory at offset {dr.AvatarList[i]}");
+                        if (includeDebug) Console.WriteLine($"Inspecting directory at offset {dr.AvatarList[i]}");
                         // Check whether directory is already extracted
                         bool alreadyExtracted = false;
                         var childDir = Directories[dr.AvatarList[i]];
@@ -129,12 +129,22 @@ namespace SabreTools.Wrappers
                         // Extract directory if it has not already been done
                         if (!alreadyExtracted)
                         {
-                            ExtractDirectory(outputDirectory, includeDebug, childDir);
-                            extractedDirectories.Add(childDir);
+                            try
+                            {
+                                ExtractDirectory(outputDirectory, includeDebug, childDir);
+                                extractedDirectories.Add(childDir);
+                            }
+                            catch
+                            {
+                                allExtracted = false;
+                                break;
+                            }
                         }
                     }
                 }
             }
+
+            return allExtracted;
         }
     }
 }
