@@ -156,10 +156,14 @@ namespace SabreTools.Serialization.Readers
                 directoryRecords.Add(directoryRecord);
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY_FINAL) != 0)
+                {
+                    System.Console.WriteLine("final dir");
                     break;
+                }
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.BLOCK_FINAL) != 0)
                 {
+                    System.Console.WriteLine("final block");
                     long nextBlock = Constants.SectorSize - ((data.Position - startPosition) % Constants.SectorSize);
                     data.SeekIfPossible(nextBlock, SeekOrigin.Current);
                 }
@@ -180,7 +184,6 @@ namespace SabreTools.Serialization.Readers
             var directoryRecord = new DirectoryRecord();
             
             directoryRecord.DirectoryRecordFlags = (DirectoryRecordFlags)data.ReadUInt32BigEndian();
-            System.Console.WriteLine($"{directoryRecord.DirectoryRecordFlags}");
             directoryRecord.UniqueIdentifier = data.ReadBytes(4);
             directoryRecord.Type = data.ReadBytes(4);
             directoryRecord.BlockSize = data.ReadUInt32BigEndian();
@@ -190,7 +193,6 @@ namespace SabreTools.Serialization.Readers
             directoryRecord.Gap = data.ReadUInt32BigEndian();
             directoryRecord.Filename = data.ReadBytes(32);
             directoryRecord.LastAvatarIndex = data.ReadUInt32BigEndian();
-            System.Console.WriteLine($"{directoryRecord.LastAvatarIndex}");
             
             directoryRecord.AvatarList = new uint[directoryRecord.LastAvatarIndex + 1];
             for (int i = 0; i <= directoryRecord.LastAvatarIndex; i++)
