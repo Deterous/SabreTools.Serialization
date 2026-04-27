@@ -85,7 +85,7 @@ namespace SabreTools.Wrappers
 
             int offset = Array.IndexOf(Constants.PaddingBytes, vd.Padding[0]);
             int index = 0;
-            bool isDuck = (offset >= 0) && (offset == Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % Constants.PaddingBytes.Length]));
+            bool isDuck = (offset >= 0) && Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % Constants.PaddingBytes.Length]);
             if (isDuck)
                 builder.AppendLine("Expected data (iamaduck)", "  Padding");
             else
