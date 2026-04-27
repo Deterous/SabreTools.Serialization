@@ -36,6 +36,11 @@ namespace SabreTools.Data.Models.OperaFS
         /// Should be set for all retail Konami M2 discs
         /// </summary>
         M2_SIGNED = 0x08,
+
+        /// <summary>
+        /// Mask for bits that are reserved
+        /// </summary>
+        RESERVED_MASK = 0xF0,
     }
 
     /// <summary>
@@ -68,5 +73,10 @@ namespace SabreTools.Data.Models.OperaFS
         /// Final record in this directory
         /// </summary>
         DIRECTORY_FINAL = 0x80000000,
+
+        /// <summary>
+        /// Mask for bits that are reserved
+        /// </summary>
+        RESERVED_MASK = 0x3FFFFFF8,
     }
 }

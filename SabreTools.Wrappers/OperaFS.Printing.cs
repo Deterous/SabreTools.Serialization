@@ -32,7 +32,18 @@ namespace SabreTools.Wrappers
             builder.AppendLine(vd.RecordType, "  Record Type");
             builder.AppendLine(vd.VolumeSyncBytes, "  Volume Sync Bytes");
             builder.AppendLine(vd.StructureVersion, "  Structure Version");
-            builder.AppendLine(vd.VolumeFlags, "  Volume Flags");
+
+            builder.AppendLine((byte)vd.VolumeFlags, "  Volume Flags");
+            if ((byte)vd.VolumeFlags != 0)
+            {
+                builder.AppendLine("    Volume Flags (Parsed)");
+                builder.AppendLine((vd.VolumeFlags & Volume.M2) == VolumeFlags.M2, "      M2 Disc (or M1 Data Disc)");
+                builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2_ONLY) == VolumeFlags.M2_ONLY, "      M2 Only");
+                builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2_DATA_DISC) == VolumeFlags.M2_DATA_DISC, "      M2 Data Disc");
+                builder.AppendLine((vd.VolumeFlags & VolumeFlags.M2_SIGNED) == VolumeFlags.M2_SIGNED, "      M2 Signed");
+                builder.AppendLine((vd.VolumeFlags & VolumeFlags.RESERVED_MASK) != 0, "      Reserved Bits Set");
+            }
+
             builder.AppendLine(Encoding.UTF8.GetString(vd.VolumeCommentary), "  Volume Commentary");
             builder.AppendLine(Encoding.UTF8.GetString(vd.VolumeIdentifier), "  Volume Identifier");
             builder.AppendLine(vd.VolumeUniqueIdentifier, "  Volume Unique Identifier");
@@ -79,17 +90,28 @@ namespace SabreTools.Wrappers
             builder.AppendLine("    Directory Record:");
             builder.AppendLine("    -------------------------");
 
-            builder.AppendLine(dir.DirectoryRecordFlags, "    Directory Record Flags");
-            builder.AppendLine(dir.UniqueIdentifier, "    Unique Identifier");
-            builder.AppendLine(Encoding.UTF8.GetString(dir.Type), "    Type");
-            builder.AppendLine(dir.BlockSize, "    BlockSize");
-            builder.AppendLine(dir.ByteCount, "    ByteCount");
-            builder.AppendLine(dir.BlockCount, "    BlockCount");
-            builder.AppendLine(dir.Burst, "    Burst");
-            builder.AppendLine(dir.Gap, "    Gap");
-            builder.AppendLine(Encoding.UTF8.GetString(dir.Filename), "    Filename");
-            builder.AppendLine(dir.LastAvatarIndex, "    LastAvatarIndex");
-            builder.AppendLine(dir.AvatarList, "    AvatarList");
+            builder.AppendLine((byte)dr.DirectoryRecordFlags, "    Directory Record Flags");
+            if ((byte)dr.DirectoryRecordFlags != 0)
+            {
+                builder.AppendLine("    Directory Record Flags (Parsed)");
+                builder.AppendLine((dr.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY) == DirectoryRecordFlags.DIRECTORY, "      Directory");
+                builder.AppendLine((dr.DirectoryRecordFlags & DirectoryRecordFlags.READ_ONLY) == DirectoryRecordFlags.READ_ONLY, "      Read-only");
+                builder.AppendLine((dr.DirectoryRecordFlags & DirectoryRecordFlags.SYSTEM) == DirectoryRecordFlags.SYSTEM, "      Filesystem Use");
+                builder.AppendLine((dr.DirectoryRecordFlags & DirectoryRecordFlags.BLOCK_FINAL) == DirectoryRecordFlags.BLOCK_FINAL, "      Final in Block");
+                builder.AppendLine((dr.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY_FINAL) == DirectoryRecordFlags.DIRECTORY_FINAL, "      Final in Directory");
+                builder.AppendLine((dr.DirectoryRecordFlags & DirectoryRecordFlags.RESERVED_MASK) != 0, "      Reserved Bits Set");
+            }
+
+            builder.AppendLine(dr.UniqueIdentifier, "    Unique Identifier");
+            builder.AppendLine(Encoding.UTF8.GetString(dr.Type), "    Type");
+            builder.AppendLine(dr.BlockSize, "    BlockSize");
+            builder.AppendLine(dr.ByteCount, "    ByteCount");
+            builder.AppendLine(dr.BlockCount, "    BlockCount");
+            builder.AppendLine(dr.Burst, "    Burst");
+            builder.AppendLine(dr.Gap, "    Gap");
+            builder.AppendLine(Encoding.UTF8.GetString(dr.Filename), "    Filename");
+            builder.AppendLine(dr.LastAvatarIndex, "    LastAvatarIndex");
+            builder.AppendLine(dr.AvatarList, "    AvatarList");
 
             builder.AppendLine();
         }
