@@ -125,8 +125,6 @@ namespace SabreTools.Wrappers
                 }
                 else
                 {
-                    outputDirectory = Path.Combine(outputDirectory, filename);
-
                     // Iterate over all avatars, in case they're not identical
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
@@ -146,7 +144,8 @@ namespace SabreTools.Wrappers
                             try
                             {
                                 if (includeDebug) Console.WriteLine($"Extracting directory {filename} at sector {dr.AvatarList[i]}");
-                                allExtracted |= ExtractDirectory(outputDirectory, includeDebug, childDir);
+                                var outputPath = Path.Combine(outputDirectory, filename);
+                                allExtracted |= ExtractDirectory(outputPath, includeDebug, childDir);
                                 extractedDirectories.Add(childDir);
                             }
                             catch
