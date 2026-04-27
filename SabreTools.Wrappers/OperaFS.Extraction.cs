@@ -65,6 +65,7 @@ namespace SabreTools.Wrappers
             {
                 Console.WriteLine($"Creating directory {outputDirectory}");
                 Directory.CreateDirectory(outputDirectory);
+                Console.WriteLine("Done!");
             }
 
             bool allExtracted = true;
