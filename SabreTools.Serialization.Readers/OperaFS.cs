@@ -180,6 +180,7 @@ namespace SabreTools.Serialization.Readers
             var directoryRecord = new DirectoryRecord();
             
             directoryRecord.DirectoryRecordFlags = (DirectoryRecordFlags)data.ReadUInt32BigEndian();
+            System.Console.WriteLine($"{directoryRecord.DirectoryRecordFlags}");
             directoryRecord.UniqueIdentifier = data.ReadBytes(4);
             directoryRecord.Type = data.ReadBytes(4);
             directoryRecord.BlockSize = data.ReadUInt32BigEndian();
@@ -189,6 +190,7 @@ namespace SabreTools.Serialization.Readers
             directoryRecord.Gap = data.ReadUInt32BigEndian();
             directoryRecord.Filename = data.ReadBytes(32);
             directoryRecord.LastAvatarIndex = data.ReadUInt32BigEndian();
+            System.Console.WriteLine($"{directoryRecord.LastAvatarIndex}");
             
             directoryRecord.AvatarList = new uint[directoryRecord.LastAvatarIndex + 1];
             for (int i = 0; i <= directoryRecord.LastAvatarIndex; i++)
