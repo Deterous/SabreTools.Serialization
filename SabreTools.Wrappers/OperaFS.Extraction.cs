@@ -76,14 +76,14 @@ namespace SabreTools.Wrappers
                     var filepath = Path.Combine(outputDirectory, filename);
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
-                        var fileOffset = Constants.SectorSize * dr.AvatarList[i];
+                        uint fileOffset = (uint)Constants.SectorSize * dr.AvatarList[i];
                         if (!extractedFiles.Contains(fileOffset))
                         {
                             try
                             {
 
                                 // TODO: Deal with duplicate filename but different offsets/sizes
-                                if (File.Exists(outputPath))
+                                if (File.Exists(filePath))
                                     continue;
 
                                 const uint chunkSize = 2048 * 1024;
