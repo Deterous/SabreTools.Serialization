@@ -1,4 +1,5 @@
 using SabreTools.Data.Models.OperaFS;
+using SabreTools.IO;
 using SabreTools.Numerics;
 
 namespace SabreTools.Data.Extensions
