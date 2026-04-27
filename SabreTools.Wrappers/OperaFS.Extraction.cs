@@ -131,7 +131,6 @@ namespace SabreTools.Wrappers
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
                         // Check whether directory is already extracted
-                        bool alreadyExtracted = false;
                         var childDir = Directories[dr.AvatarList[i]];
                         if (extractedDirectories.Contains(childDir))
                         {
