@@ -17,9 +17,9 @@ namespace SabreTools.Data.Models.OperaFS
         public byte[] VolumeSyncBytes { get; set; } = new byte[5];
 
         /// <summary>
-        /// Should be 0x0100
+        /// Should be 0x01
         /// </summary>
-        public ushort StructureVersion { get; set; }
+        public byte StructureVersion { get; set; }
 
         /// <summary>
         /// Should be 0x00 for all 3DO discs

@@ -32,14 +32,12 @@ namespace SabreTools.Serialization.Readers
                 var volumeDescriptor = ParseVolumeDescriptor(data);
                 if (volumeDescriptor is null)
                     return null;
-                System.Console.WriteLine("vd");
 
                 volume.VolumeDescriptor = volumeDescriptor;
 
                 var directories = ParseDirectories(data, volumeDescriptor, initialOffset);
                 if (directories is null)
                     return null;
-                System.Console.WriteLine("dir");
                 
                 volume.Directories = directories;
 
@@ -63,7 +61,7 @@ namespace SabreTools.Serialization.Readers
             
             volumeDescriptor.RecordType = data.ReadByteValue();
             volumeDescriptor.VolumeSyncBytes = data.ReadBytes(5);
-            volumeDescriptor.StructureVersion = data.ReadUInt16BigEndian();
+            volumeDescriptor.StructureVersion = data.ReadByteValue();
             volumeDescriptor.VolumeFlags = (VolumeFlags)data.ReadByteValue();
             volumeDescriptor.VolumeCommentary = data.ReadBytes(32);
             volumeDescriptor.VolumeIdentifier = data.ReadBytes(32);
@@ -95,7 +93,6 @@ namespace SabreTools.Serialization.Readers
             var directories = new Dictionary<uint, DirectoryDescriptor>();
 
             data.SeekIfPossible(initialOffset + volumeDescriptor.RootDirectoryAvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
-            System.Console.WriteLine("root dir");
             var rootDirectory = ParseDirectory(data);
             for (int i = 0; i <= volumeDescriptor.RootDirectoryLastAvatarIndex; i++)
             {
@@ -123,8 +120,8 @@ namespace SabreTools.Serialization.Readers
 
             foreach (var dr in parent.DirectoryRecords)
             {
+                // TODO: Check that each avatar is identical
                 data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
-                System.Console.WriteLine("child dir");
                 var directory = ParseDirectory(data);
                 for (int i = 0; i <= dr.LastAvatarIndex; i++)
                 {
@@ -155,24 +152,18 @@ namespace SabreTools.Serialization.Readers
             long startPosition = data.Position;
             while (data.Position < startPosition + directory.FirstFreeByte)
             {
-                System.Console.WriteLine("R");
                 var directoryRecord = ParseDirectoryRecord(data);
                 directoryRecords.Add(directoryRecord);
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.DIRECTORY_FINAL) != 0)
-                {
-                    System.Console.WriteLine("final record");
                     break;
-                }
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.BLOCK_FINAL) != 0)
                 {
-                    System.Console.WriteLine("next block");
                     long nextBlock = Constants.SectorSize - ((data.Position - startPosition) % Constants.SectorSize);
                     data.SeekIfPossible(nextBlock, SeekOrigin.Current);
                 }
             }
-            System.Console.WriteLine("dir done");
 
             directory.DirectoryRecords = directoryRecords.ToArray();
 
@@ -189,7 +180,6 @@ namespace SabreTools.Serialization.Readers
             var directoryRecord = new DirectoryRecord();
             
             directoryRecord.DirectoryRecordFlags = (DirectoryRecordFlags)data.ReadUInt32BigEndian();
-            System.Console.WriteLine($"{directoryRecord.DirectoryRecordFlags}");
             directoryRecord.UniqueIdentifier = data.ReadBytes(4);
             directoryRecord.Type = data.ReadBytes(4);
             directoryRecord.BlockSize = data.ReadUInt32BigEndian();
@@ -199,12 +189,10 @@ namespace SabreTools.Serialization.Readers
             directoryRecord.Gap = data.ReadUInt32BigEndian();
             directoryRecord.Filename = data.ReadBytes(32);
             directoryRecord.LastAvatarIndex = data.ReadUInt32BigEndian();
-            System.Console.WriteLine($"{directoryRecord.LastAvatarIndex}");
             
             directoryRecord.AvatarList = new uint[directoryRecord.LastAvatarIndex + 1];
             for (int i = 0; i <= directoryRecord.LastAvatarIndex; i++)
             {
-                System.Console.WriteLine("avatar");
                 directoryRecord.AvatarList[i] = data.ReadUInt32BigEndian();
             }
 
