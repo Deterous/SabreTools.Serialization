@@ -37,21 +37,16 @@ namespace SabreTools.Wrappers
 
             for (int i = 0; i <= VolumeDescriptor.RootDirectoryLastAvatarIndex; i++)
             {
-                bool alreadyExtracted = false;
                 var rootDirectory = Directories[VolumeDescriptor.RootDirectoryAvatarList[i]];
                 if (extractedDirectories.Contains(rootDirectory))
                 {
                     if (includeDebug) Console.WriteLine($"Root directory duplicate at sector {VolumeDescriptor.RootDirectoryAvatarList[i]}");
-                    alreadyExtracted = true;
                     continue;
                 }
 
-                if (!alreadyExtracted)
-                {
-                    if (includeDebug) Console.WriteLine($"Extracting from root directory at sector {VolumeDescriptor.RootDirectoryAvatarList[i]}");
-                    allExtracted |= ExtractDirectory(outputDirectory, includeDebug, rootDirectory);
-                    extractedDirectories.Add(rootDirectory);
-                }
+                if (includeDebug) Console.WriteLine($"Extracting from root directory at sector {VolumeDescriptor.RootDirectoryAvatarList[i]}");
+                allExtracted |= ExtractDirectory(outputDirectory, includeDebug, rootDirectory);
+                extractedDirectories.Add(rootDirectory);
             }
 
             return allExtracted;
@@ -64,6 +59,7 @@ namespace SabreTools.Wrappers
                 Directory.CreateDirectory(outputDirectory);
 
             bool allExtracted = true;
+            Console.WriteLine($"---{outputDirectory}");
             foreach (var dr in dir.DirectoryRecords)
             {
                 var filename = Encoding.UTF8.GetString(dr.Filename).TrimEnd('\0');
@@ -71,55 +67,61 @@ namespace SabreTools.Wrappers
                 {
                     // Skip filesystem only files (e.g. Volume Descriptor "Disc Label")
                     if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.SYSTEM) != 0)
+                    {
+                        if (!includeDebug) Console.WriteLine($"Skipping filesystem object {filename}");
                         continue;
+                    }
 
                     var filePath = Path.Combine(outputDirectory, filename);
+                    Console.WriteLine($"------{filePath}");
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
                         uint fileOffset = (uint)Constants.SectorSize * dr.AvatarList[i];
+                        // TODO: Deal with file avatars
                         if (!extractedFiles.Contains(fileOffset))
                         {
-                            try
+                            if (includeDebug) Console.WriteLine($"File duplicate at sector {dr.AvatarList[i]}");
+                            continue;
+                        }
+
+                        try
+                        {
+                            if (File.Exists(filePath))
+                                continue;
+
+                            const uint chunkSize = 2048 * 1024;
+                            lock (_dataSourceLock)
                             {
+                                _dataSource.SeekIfPossible(fileOffset, SeekOrigin.Begin);
 
-                                // TODO: Deal with duplicate filename but different offsets/sizes
-                                if (File.Exists(filePath))
-                                    continue;
-
-                                const uint chunkSize = 2048 * 1024;
-                                lock (_dataSourceLock)
+                                // Get the length, and make sure it won't EOF
+                                uint length = dr.ByteCount;
+                                if (length > _dataSource.Length - _dataSource.Position)
                                 {
-                                    _dataSource.SeekIfPossible(fileOffset, SeekOrigin.Begin);
-
-                                    // Get the length, and make sure it won't EOF
-                                    uint length = dr.ByteCount;
-                                    if (length > _dataSource.Length - _dataSource.Position)
-                                    {
-                                        allExtracted = false;
-                                        continue;
-                                    }
-
-                                    // Write the output file
-                                    if (includeDebug) Console.WriteLine($"Extracting file {filename} at sector {dr.AvatarList[i]}");
-                                    using var fs = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-                                    while (length > 0)
-                                    {
-                                        int bytesToRead = (int)Math.Min(length, chunkSize);
-
-                                        byte[] buffer = _dataSource.ReadBytes(bytesToRead);
-                                        fs.Write(buffer, 0, bytesToRead);
-                                        fs.Flush();
-
-                                        length -= (uint)bytesToRead;
-                                    }
+                                    allExtracted = false;
+                                    continue;
                                 }
 
-                                extractedFiles.Add(fileOffset);
+                                // Write the output file
+                                if (includeDebug) Console.WriteLine($"Extracting file {filename} at sector {dr.AvatarList[i]}");
+                                using var fs = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                                while (length > 0)
+                                {
+                                    int bytesToRead = (int)Math.Min(length, chunkSize);
+
+                                    byte[] buffer = _dataSource.ReadBytes(bytesToRead);
+                                    fs.Write(buffer, 0, bytesToRead);
+                                    fs.Flush();
+
+                                    length -= (uint)bytesToRead;
+                                }
                             }
-                            catch
-                            {
-                                allExtracted = false;
-                            }
+
+                            extractedFiles.Add(fileOffset);
+                        }
+                        catch
+                        {
+                            allExtracted = false;
                         }
                     }
                 }
@@ -134,25 +136,20 @@ namespace SabreTools.Wrappers
                         if (extractedDirectories.Contains(childDir))
                         {
                             if (includeDebug) Console.WriteLine($"Directory duplicate at sector {dr.AvatarList[i]}");
-                            alreadyExtracted = true;
                             continue;
                         }
 
-                        // Extract directory if it has not already been done
-                        if (!alreadyExtracted)
+                        try
                         {
-                            try
-                            {
-                                if (includeDebug) Console.WriteLine($"Extracting directory {filename} at sector {dr.AvatarList[i]}");
-                                var outputPath = Path.Combine(outputDirectory, filename);
-                                allExtracted |= ExtractDirectory(outputPath, includeDebug, childDir);
-                                extractedDirectories.Add(childDir);
-                            }
-                            catch
-                            {
-                                allExtracted = false;
-                                break;
-                            }
+                            if (includeDebug) Console.WriteLine($"Extracting directory {filename} at sector {dr.AvatarList[i]}");
+                            var outputPath = Path.Combine(outputDirectory, filename);
+                            allExtracted |= ExtractDirectory(outputPath, includeDebug, childDir);
+                            extractedDirectories.Add(childDir);
+                        }
+                        catch
+                        {
+                            allExtracted = false;
+                            break;
                         }
                     }
                 }
