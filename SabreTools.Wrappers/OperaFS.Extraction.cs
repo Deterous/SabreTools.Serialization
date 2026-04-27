@@ -60,8 +60,12 @@ namespace SabreTools.Wrappers
         public bool ExtractDirectory(string outputDirectory, bool includeDebug, DirectoryDescriptor dir)
         {
             // Create output directory if it does not exist
+            Console.WriteLine($"Extracting to {outputDirectory}");
             if (!string.IsNullOrEmpty(outputDirectory) && !Directory.Exists(outputDirectory))
+            {
+                Console.WriteLine($"Creating directory {outputDirectory}");
                 Directory.CreateDirectory(outputDirectory);
+            }
 
             bool allExtracted = true;
             foreach (var dr in dir.DirectoryRecords)
@@ -100,7 +104,7 @@ namespace SabreTools.Wrappers
                                     }
 
                                     // Write the output file
-                                    if (includeDebug) Console.WriteLine($"Extracting file {filename} at sector {fileOffset}");
+                                    if (includeDebug) Console.WriteLine($"Extracting file {filename} at sector {dr.AvatarList[i]}");
                                     using var fs = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
                                     while (length > 0)
                                     {
