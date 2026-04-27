@@ -59,7 +59,6 @@ namespace SabreTools.Wrappers
                 Directory.CreateDirectory(outputDirectory);
 
             bool allExtracted = true;
-            Console.WriteLine($"---{outputDirectory}");
             foreach (var dr in dir.DirectoryRecords)
             {
                 var filename = Encoding.UTF8.GetString(dr.Filename).TrimEnd('\0');
@@ -73,7 +72,6 @@ namespace SabreTools.Wrappers
                     }
 
                     var filePath = Path.Combine(outputDirectory, filename);
-                    Console.WriteLine($"------{filePath}");
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
                         uint fileOffset = (uint)Constants.SectorSize * dr.AvatarList[i];

@@ -84,9 +84,12 @@ namespace SabreTools.Wrappers
                 // Cache the current offset
                 long currentOffset = data.Position;
 
+                System.Console.WriteLine("start");
                 var model = new Serialization.Readers.OperaFS().Deserialize(data);
+                System.Console.WriteLine("end");
                 if (model is null)
                     return null;
+                System.Console.WriteLine("model is not null");
 
                 return new OperaFS(model, data, currentOffset);
             }
