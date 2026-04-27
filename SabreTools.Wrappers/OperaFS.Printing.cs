@@ -73,24 +73,23 @@ namespace SabreTools.Wrappers
             builder.AppendLine(vd.RootDirectoryLastAvatarIndex, "  Root Directory Last Avatar Index");
             builder.AppendLine(vd.RootDirectoryAvatarList, "  Root Directory Avatar List");
 
+            if ((vd.VolumeFlags & VolumeFlags.M2) == VolumeFlags.M2)
+            {
+                builder.AppendLine(vd.RomTagCount, "  Rom Tag Count");
+                builder.AppendLine(vd.ApplicationID, "  Application ID");
+                if (Array.TrueForAll(vd.Reserved, b => b == 0))
+                    builder.AppendLine($"Zeroed", "      Reserved Bytes");
+                else
+                    builder.AppendLine($"Not Zeroed", "      Reserved Bytes");
+            }
+
             int offset = Array.IndexOf(Constants.PaddingBytes, vd.Padding[0]);
             int index = 0;
             bool isDuck = (offset >= 0) && (offset == Array.TrueForAll(vd.Padding, b => b == Constants.PaddingBytes[(index++ + offset) % Constants.PaddingBytes.Length]));
-            if ((vd.VolumeFlags & VolumeFlags.M2) == 0)
-            {
-                if (isDuck)
-                    builder.AppendLine("Expected data", "  Padding");
-                else
-                    builder.AppendLine("Unexpected data", "  Padding");
-            }
+            if (isDuck)
+                builder.AppendLine("Expected data (iamaduck)", "  Padding");
             else
-            {
-                if (isDuck)
-                    builder.AppendLine("Unknown M2 Extra Data not present", "  Padding");
-                    builder.AppendLine("Unknown M2 Extra Data present", "  Padding");
-                else
-                    builder.AppendLine("Unknown M2 Extra Data present", "  Padding");
-            }
+                builder.AppendLine("Unexpected data", "  Padding");
 
             builder.AppendLine();
         }

@@ -83,7 +83,17 @@ namespace SabreTools.Serialization.Readers
                 volumeDescriptor.RootDirectoryAvatarList[i] = data.ReadUInt32BigEndian();
             }
 
-            volumeDescriptor.Padding = data.ReadBytes(0x77C);
+            if ((volumeDescriptor.VolumeFlags & VolumeFlags.M2) == VolumeFlags.M2)
+            {
+                volumeDescriptor.RomTagCount = data.ReadUInt32BigEndian();
+                volumeDescriptor.ApplicationID = data.ReadUInt32BigEndian();
+                volumeDescriptor.Reserved = data.ReadBytes(36);
+                volumeDescriptor.Padding = data.ReadBytes(0x750);
+            }
+            else
+            {
+                volumeDescriptor.Padding = data.ReadBytes(0x77C);
+            }
 
             return volumeDescriptor;
         }

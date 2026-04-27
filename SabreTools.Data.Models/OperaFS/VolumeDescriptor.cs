@@ -85,9 +85,28 @@ namespace SabreTools.Data.Models.OperaFS
         public uint[] RootDirectoryAvatarList { get; set; } = new uint[8];
 
         /// <summary>
+        /// Rom tag count
+        /// </summary>
+        /// <remarks>Extended volume data, present on M2 discs only</remarks>
+        public uint? RomTagCount { get; set; }
+
+        /// <summary>
+        /// Application ID
+        /// </summary>
+        /// <remarks>Extended volume data, present on M2 discs only</remarks>
+        public uint? ApplicationID { get; set; }
+
+        /// <summary>
+        /// 36 reserved (zeroed) bytes
+        /// </summary>
+        /// <remarks>Extended volume data, present on M2 discs only</remarks>
+        public uint[]? Reserved { get; set; }
+
+        /// <summary>
         /// "iamaduck" repeated, aligned to each QWORD (0x0 or 0x8)
         /// i.e. if padding starts at offset ending in 0x4 or 0xC, then it begins with "duck"
+        /// Is 0x77C long for M1 discs, and 0x750 long for M2 discs
         /// </summary>
-        public byte[] Padding { get; set; } = new byte[0x77C];
+        public byte[] Padding { get; set; } = [];
     }
 }
