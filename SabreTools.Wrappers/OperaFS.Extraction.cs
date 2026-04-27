@@ -63,9 +63,15 @@ namespace SabreTools.Wrappers
             Console.WriteLine($"Extracting to {outputDirectory}");
             if (!string.IsNullOrEmpty(outputDirectory) && !Directory.Exists(outputDirectory))
             {
-                Console.WriteLine($"Creating directory {outputDirectory}");
-                Directory.CreateDirectory(outputDirectory);
-                Console.WriteLine("Done!");
+                try
+                {
+                    Directory.CreateDirectory(outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return false;
+                }
             }
 
             bool allExtracted = true;
