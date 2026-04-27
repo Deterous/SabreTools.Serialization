@@ -41,14 +41,14 @@ namespace SabreTools.Wrappers
                 var rootDirectory = Directories[VolumeDescriptor.RootDirectoryAvatarList[i]];
                 if (extractedDirectories.Contains(rootDirectory))
                 {
-                    if (includeDebug) Console.WriteLine($"Root directory duplicate at offset {VolumeDescriptor.RootDirectoryAvatarList[i]}");
+                    if (includeDebug) Console.WriteLine($"Root directory duplicate at sector {VolumeDescriptor.RootDirectoryAvatarList[i]}");
                     alreadyExtracted = true;
                     continue;
                 }
 
                 if (!alreadyExtracted)
                 {
-                    if (includeDebug) Console.WriteLine($"Extracting from root directory at offset {VolumeDescriptor.RootDirectoryAvatarList[i]}");
+                    if (includeDebug) Console.WriteLine($"Extracting from root directory at sector {VolumeDescriptor.RootDirectoryAvatarList[i]}");
                     allExtracted |= ExtractDirectory(outputDirectory, includeDebug, rootDirectory);
                     extractedDirectories.Add(rootDirectory);
                 }
@@ -73,16 +73,47 @@ namespace SabreTools.Wrappers
                     if ((dr.DirectoryRecordFlags & DirectoryRecordFlags.SYSTEM) != 0)
                         continue;
 
+                    var filepath = Path.Combine(outputDirectory, filename);
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
-                        var fileOffset = dr.AvatarList[i];
+                        var fileOffset = Constants.SectorSize * dr.AvatarList[i];
                         if (!extractedFiles.Contains(fileOffset))
                         {
                             try
                             {
-                                if (includeDebug) Console.WriteLine($"Extracting file {filename} at offset {fileOffset}");
-                                // TODO: Extract file
+
                                 // TODO: Deal with duplicate filename but different offsets/sizes
+                                if (File.Exists(outputPath))
+                                    continue;
+
+                                const uint chunkSize = 2048 * 1024;
+                                lock (_dataSourceLock)
+                                {
+                                    _dataSource.SeekIfPossible(fileOffset, SeekOrigin.Begin);
+
+                                    // Get the length, and make sure it won't EOF
+                                    uint length = dr.ByteCount;
+                                    if (length > _dataSource.Length - _dataSource.Position)
+                                    {
+                                        allExtracted = false;
+                                        continue;
+                                    }
+
+                                    // Write the output file
+                                    if (includeDebug) Console.WriteLine($"Extracting file {filename} at sector {fileOffset}");
+                                    using var fs = File.Open(filepath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                                    while (length > 0)
+                                    {
+                                        int bytesToRead = (int)Math.Min(length, chunkSize);
+
+                                        byte[] buffer = _dataSource.ReadBytes(bytesToRead);
+                                        fs.Write(buffer, 0, bytesToRead);
+                                        fs.Flush();
+
+                                        length -= (uint)bytesToRead;
+                                    }
+                                }
+
                                 extractedFiles.Add(fileOffset);
                             }
                             catch
@@ -104,7 +135,7 @@ namespace SabreTools.Wrappers
                         var childDir = Directories[dr.AvatarList[i]];
                         if (extractedDirectories.Contains(childDir))
                         {
-                            if (includeDebug) Console.WriteLine($"Directory duplicate at offset {dr.AvatarList[i]}");
+                            if (includeDebug) Console.WriteLine($"Directory duplicate at sector {dr.AvatarList[i]}");
                             alreadyExtracted = true;
                             continue;
                         }
@@ -114,7 +145,7 @@ namespace SabreTools.Wrappers
                         {
                             try
                             {
-                                if (includeDebug) Console.WriteLine($"Extracting directory {filename} at offset {dr.AvatarList[i]}");
+                                if (includeDebug) Console.WriteLine($"Extracting directory {filename} at sector {dr.AvatarList[i]}");
                                 allExtracted |= ExtractDirectory(outputDirectory, includeDebug, childDir);
                                 extractedDirectories.Add(childDir);
                             }
