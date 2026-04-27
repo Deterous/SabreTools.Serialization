@@ -28,7 +28,7 @@ namespace SabreTools.Wrappers
             Print(builder, Model.VolumeDescriptor);
             foreach (var kvp in Model.Directories)
             {
-                if (printedDirectories.Contains(kvp.Value))
+                if (printedDirectories.ContainsKey(kvp.Value))
                 {
                     builder.AppendLine($"  Directory Descriptor (Sector {kvp.Key}):");
                     builder.AppendLine("  -------------------------");
