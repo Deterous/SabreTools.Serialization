@@ -21,6 +21,11 @@ namespace SabreTools.Serialization.Readers
             if (data.Length - data.Position < Constants.SectorSize)
                 return null;
 
+            // Simple check on first bytes
+            var signature = System.Text.Encoding.ASCII.GetString(data.PeekBytes(7));
+            if (!signature.Equals(Constants.MagicBytes))
+                return null;
+
             try
             {
                 // Cache the current offset
@@ -38,7 +43,7 @@ namespace SabreTools.Serialization.Readers
                 var directories = ParseRootDirectory(data, volumeDescriptor, initialOffset);
                 if (directories is null)
                     return null;
-                
+
                 volume.Directories = directories;
 
                 return volume;

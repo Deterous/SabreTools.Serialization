@@ -99,7 +99,7 @@ namespace SabreTools.Wrappers
             // Cache the current offset
             long initialOffset = stream.Position;
 
-            // Try to get a 3DO disc image wrapper first
+            // Try to get a 3DO / M2 disc image wrapper
             var operaDiscImageWrapper = OperaDiscImage.Create(stream);
             if (operaDiscImageWrapper is not null)
                 return operaDiscImageWrapper;
@@ -129,10 +129,18 @@ namespace SabreTools.Wrappers
             // Cache the current offset
             long initialOffset = stream.Position;
 
-            // Try to get an Xbox ISO wrapper first
+            // Try to get an Xbox disc image wrapper
             var xboxWrapper = XboxISO.Create(stream);
             if (xboxWrapper is not null)
                 return xboxWrapper;
+
+            // Reset position in stream
+            stream.SeekIfPossible(initialOffset, SeekOrigin.Begin);
+
+            // Try to get a 3DO / M2 disc image wrapper
+            var operaFSWrapper = OperaFS.Create(stream);
+            if (operaFSWrapper is not null)
+                return operaFSWrapper;
 
             // Reset position in stream
             stream.SeekIfPossible(initialOffset, SeekOrigin.Begin);
