@@ -32,12 +32,14 @@ namespace SabreTools.Serialization.Readers
                 var volumeDescriptor = ParseVolumeDescriptor(data);
                 if (volumeDescriptor is null)
                     return null;
+                System.Console.WriteLine("vd");
 
                 volume.VolumeDescriptor = volumeDescriptor;
 
                 var directories = ParseDirectories(data, volumeDescriptor, initialOffset);
                 if (directories is null)
                     return null;
+                System.Console.WriteLine("dir");
                 
                 volume.Directories = directories;
 
@@ -93,6 +95,7 @@ namespace SabreTools.Serialization.Readers
             var directories = new Dictionary<uint, DirectoryDescriptor>();
 
             data.SeekIfPossible(initialOffset + volumeDescriptor.RootDirectoryAvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
+            System.Console.WriteLine("root dir");
             var rootDirectory = ParseDirectory(data);
             for (int i = 0; i <= volumeDescriptor.RootDirectoryLastAvatarIndex; i++)
             {
@@ -121,6 +124,7 @@ namespace SabreTools.Serialization.Readers
             foreach (var dr in parent.DirectoryRecords)
             {
                 data.SeekIfPossible(initialOffset + dr.AvatarList[0] * Constants.SectorSize, SeekOrigin.Begin);
+                System.Console.WriteLine("child dir");
                 var directory = ParseDirectory(data);
                 for (int i = 0; i <= dr.LastAvatarIndex; i++)
                 {
@@ -151,6 +155,7 @@ namespace SabreTools.Serialization.Readers
             long startPosition = data.Position;
             while (data.Position < startPosition + directory.FirstFreeByte)
             {
+                System.Console.WriteLine("R");
                 var directoryRecord = ParseDirectoryRecord(data);
                 directoryRecords.Add(directoryRecord);
 
@@ -159,6 +164,7 @@ namespace SabreTools.Serialization.Readers
 
                 if ((directoryRecord.DirectoryRecordFlags & DirectoryRecordFlags.BLOCK_FINAL) != 0)
                 {
+                    System.Console.WriteLine("next block");
                     long nextBlock = Constants.SectorSize - ((data.Position - startPosition) % Constants.SectorSize);
                     data.SeekIfPossible(nextBlock, SeekOrigin.Current);
                 }
