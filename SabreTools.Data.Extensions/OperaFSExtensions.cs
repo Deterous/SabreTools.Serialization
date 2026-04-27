@@ -27,7 +27,7 @@ namespace SabreTools.Data.Extensions
             if (dir1.DirectoryRecords.Length != dir2.DirectoryRecords.Length)
                 return false;
             
-            foreach (int i = 0; i < dir1.DirectoryRecords.Length; i++)
+            for (int i = 0; i < dir1.DirectoryRecords.Length; i++)
             {
                 if (!dir1.DirectoryRecords[i].EqualsExactly(dir2.DirectoryRecords[i]))
                     return false;
