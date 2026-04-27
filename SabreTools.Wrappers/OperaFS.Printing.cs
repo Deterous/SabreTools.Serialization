@@ -77,10 +77,12 @@ namespace SabreTools.Wrappers
             {
                 builder.AppendLine(vd.RomTagCount, "  Rom Tag Count");
                 builder.AppendLine(vd.ApplicationID, "  Application ID");
-                if (Array.TrueForAll(vd.Reserved, b => b == 0))
-                    builder.AppendLine($"Zeroed", "      Reserved Bytes");
+                if (vd.Reserved is null)
+                    builder.AppendLine(vd.Reserved, "  Reserved Bytes");
+                else if (Array.TrueForAll(vd.Reserved, b => b == 0))
+                    builder.AppendLine($"Zeroed", "  Reserved Bytes");
                 else
-                    builder.AppendLine($"Not Zeroed", "      Reserved Bytes");
+                    builder.AppendLine($"Not Zeroed", "  Reserved Bytes");
             }
 
             int offset = Array.IndexOf(Constants.PaddingBytes, vd.Padding[0]);
