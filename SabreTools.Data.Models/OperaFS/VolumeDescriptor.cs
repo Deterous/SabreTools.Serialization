@@ -100,7 +100,7 @@ namespace SabreTools.Data.Models.OperaFS
         /// 36 reserved (zeroed) bytes
         /// </summary>
         /// <remarks>Extended volume data, present on M2 discs only</remarks>
-        public uint[]? Reserved { get; set; }
+        public byte[]? Reserved { get; set; }
 
         /// <summary>
         /// "iamaduck" repeated, aligned to each QWORD (0x0 or 0x8)
