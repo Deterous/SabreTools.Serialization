@@ -12,6 +12,11 @@ namespace SabreTools.Wrappers
         public string ExportJSON() => System.Text.Json.JsonSerializer.Serialize(Model, _jsonSerializerOptions);
 #endif
 
+        /// <summary>
+        /// Map of printed directories to their sector offset
+        /// </summary>
+        private readonly Dictionary<DirectoryDescriptor, uint> printedDirectories = [];
+
         /// <inheritdoc/>
         public void PrintInformation(StringBuilder builder)
         {
@@ -21,7 +26,19 @@ namespace SabreTools.Wrappers
 
             Print(builder, Model.VolumeDescriptor);
             foreach (var kvp in Model.Directories)
+            {
+                if (printedDirectories.Contains(kvp.Value))
+                {
+                    builder.AppendLine($"  Directory Descriptor (Sector {kvp.Key}):");
+                    builder.AppendLine("  -------------------------");
+                    builder.AppendLine($"  Duplicate of Descriptor at Sector {printedDirectories[kvp.Value]}");
+                    builder.AppendLine();
+                    continue;
+                }
+
                 Print(builder, kvp.Key, kvp.Value);
+                printedDirectories.Add(kvp.Value, kvp.Key);
+            }
         }
 
         internal static void Print(StringBuilder builder, VolumeDescriptor vd)

@@ -77,8 +77,8 @@ namespace SabreTools.Wrappers
                     for (int i = 0; i <= dr.LastAvatarIndex; i++)
                     {
                         uint fileOffset = (uint)Constants.SectorSize * dr.AvatarList[i];
-                        // TODO: Deal with file avatars
-                        if (!extractedFiles.Contains(fileOffset))
+                        // TODO: Deal with file avatars better ?
+                        if (extractedFiles.Contains(fileOffset))
                         {
                             if (includeDebug) Console.WriteLine($"File duplicate at sector {dr.AvatarList[i]}");
                             continue;
