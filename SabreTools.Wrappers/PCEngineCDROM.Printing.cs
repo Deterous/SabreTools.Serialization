@@ -51,16 +51,16 @@ namespace SabreTools.Wrappers
             builder.AppendLine("  Initial Program Loader:");
             builder.AppendLine("  -------------------------");
 
-            builder.AppendLine(ipl.IPLBLK, "  Load Start Record Number of CD");
+            builder.AppendLine((uint)ipl.IPLBLK, "  Load Start Record Number of CD");
             builder.AppendLine(ipl.IPLBLN, "  Load Block Length of CD");
             builder.AppendLine(ipl.IPLSTA, "  Program Load Address");
             builder.AppendLine(ipl.IPLJMP, "  Program Execute Address");
             builder.AppendLine(ipl.IPLMPR, "  Memory Page Register (2-6)");
             builder.AppendLine((byte)ipl.OpenMode, "  OpenMode");
-            builder.AppendLine(ipl.GRPBLK, "  Opening Graphic Data Record Number");
+            builder.AppendLine((uint)ipl.GRPBLK, "  Opening Graphic Data Record Number");
             builder.AppendLine(ipl.GRPBLN, "  Opening Graphic Data Length");
             builder.AppendLine(ipl.GRPADR, "  Opening Graphic Data Read Address");
-            builder.AppendLine(ipl.ADPBLK, "  Opening ADPCM Data Record Number");
+            builder.AppendLine((uint)ipl.ADPBLK, "  Opening ADPCM Data Record Number");
             builder.AppendLine(ipl.ADPBLN, "  Opening ADPCM Data Length");
             builder.AppendLine(ipl.ADPRATE, "  Opening ADPCM Sampling Rate");
             if (ipl.Reserved is not null && Array.TrueForAll(ipl.Reserved, b => b == 0))
