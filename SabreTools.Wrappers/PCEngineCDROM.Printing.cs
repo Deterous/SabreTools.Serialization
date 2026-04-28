@@ -72,10 +72,10 @@ namespace SabreTools.Wrappers
             else
                 builder.AppendLine(ipl.Reserved, "  Reserved Bytes");
 
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.SystemString), "  ID String");
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.CopyrightString), "  Copyright String");
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.ProgramName), "  Program Name");
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.AdditionalString), "  Additional String");
+            builder.AppendLine(Encoding.GetEncoding(932).GetString(ipl.SystemString), "  ID String");
+            builder.AppendLine(Encoding.GetEncoding(932).GetString(ipl.CopyrightString), "  Copyright String");
+            builder.AppendLine(Encoding.GetEncoding(932).GetString(ipl.ProgramName), "  Program Name");
+            builder.AppendLine(Encoding.GetEncoding(932).GetString(ipl.AdditionalString), "  Additional String");
 
             builder.AppendLine();
         }
