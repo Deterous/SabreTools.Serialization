@@ -36,7 +36,7 @@ namespace SabreTools.Wrappers
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
 
-            var message = Environment.NewLine + "    " + Encoding.GetEncoding(932).GetString(bootSector.CopyrightString).Replace("\0", "    " + Environment.NewLine);
+            var message = Environment.NewLine + "    " + Encoding.GetEncoding(932).GetString(bootSector.CopyrightString).Replace("\0", Environment.NewLine + "    ");
 
             builder.AppendLine(message, "  Copyright String");
             builder.AppendLine(bootSector.BootROM, "  HuC6280 Machine Code");
@@ -72,10 +72,10 @@ namespace SabreTools.Wrappers
             else
                 builder.AppendLine(ipl.Reserved, "  Reserved Bytes");
 
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.SystemString), "ID String");
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.CopyrightString), "Copyright String");
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.ProgramName), "Program Name");
-            builder.AppendLine(Encoding.UTF8.GetString(ipl.AdditionalString), "Additional String");
+            builder.AppendLine(Encoding.UTF8.GetString(ipl.SystemString), "  ID String");
+            builder.AppendLine(Encoding.UTF8.GetString(ipl.CopyrightString), "  Copyright String");
+            builder.AppendLine(Encoding.UTF8.GetString(ipl.ProgramName), "  Program Name");
+            builder.AppendLine(Encoding.UTF8.GetString(ipl.AdditionalString), "  Additional String");
 
             builder.AppendLine();
         }
