@@ -36,7 +36,7 @@ namespace SabreTools.Wrappers
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
 
-            var message = Encoding.GetEncoding(932).GetString(bootSector.CopyrightString).Replace("\0", Environment.NewLine);
+            var message = Environment.NewLine + "    " + Encoding.GetEncoding(932).GetString(bootSector.CopyrightString).Replace("\0", "    " + Environment.NewLine);
 
             builder.AppendLine(message, "  Copyright String");
             builder.AppendLine(bootSector.BootROM, "  HuC6280 Machine Code");
