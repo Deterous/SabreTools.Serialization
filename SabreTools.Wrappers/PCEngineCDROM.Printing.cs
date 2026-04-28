@@ -32,6 +32,10 @@ namespace SabreTools.Wrappers
             builder.AppendLine("  Boot Sector:");
             builder.AppendLine("  -------------------------");
 
+#if NET462_OR_GREATER || NETCOREAPP
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+
             var message = Encoding.GetEncoding(932).GetString(bootSector.CopyrightString).Replace("\0", Environment.NewLine);
 
             builder.AppendLine(message, "  Copyright String");
