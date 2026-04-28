@@ -84,7 +84,6 @@ namespace SabreTools.Wrappers
 
             try
             {
-                System.Console.WriteLine("1");
                 // Quit early if no data in stream
                 if (data.Length - data.Position < 2 * Constants.SectorSize)
                     return null;
@@ -92,7 +91,6 @@ namespace SabreTools.Wrappers
                 // PC Engine CD-ROM header can exist after some amount of pre-gap (check 250 sectors)
                 for (int i = 0; i < 250; i++)
                 {
-                    System.Console.WriteLine("2");
                     byte[] startBytes = data.PeekBytes(16);
                     if (startBytes.EqualsExactly(Constants.MagicBytes))
                         break;
@@ -105,7 +103,6 @@ namespace SabreTools.Wrappers
                 // Cache the current offset (after the pregap)
                 long currentOffset = data.Position;
 
-                System.Console.WriteLine("3");
                 var model = new Serialization.Readers.PCEngineCDROM().Deserialize(data);
                 if (model is null)
                     return null;
@@ -113,7 +110,6 @@ namespace SabreTools.Wrappers
                 // Reset stream
                 data.Seek(currentOffset, SeekOrigin.Begin);
 
-                System.Console.WriteLine("4");
                 return new PCEngineCDROM(model, data, currentOffset);
             }
             catch
