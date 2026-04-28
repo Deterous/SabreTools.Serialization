@@ -1,3 +1,5 @@
+using SabreTools.Numerics;
+
 namespace SabreTools.Data.Models.PCEngineCDROM
 {
     /// <summary>
