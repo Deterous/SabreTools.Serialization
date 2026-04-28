@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Data.Models.PCEngineCDROM;
 using SabreTools.Matching;
 
@@ -54,7 +55,7 @@ namespace SabreTools.Wrappers
         /// <param name="data">Byte array representing the PCEngineCDROM Header</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A PCEngineCDROM Header wrapper on success, null on failure</returns>
-        public static OperaFS? Create(byte[]? data, int offset)
+        public static PCEngineCDROM? Create(byte[]? data, int offset)
         {
             // If the data is invalid
             if (data is null || data.Length == 0)
@@ -74,7 +75,7 @@ namespace SabreTools.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the PCEngineCDROM Header</param>
         /// <returns>A PCEngineCDROM Header wrapper on success, null on failure</returns>
-        public static OperaFS? Create(Stream? data)
+        public static PCEngineCDROM? Create(Stream? data)
         {
             // If the data is invalid
             if (data is null || !data.CanRead)
@@ -93,7 +94,7 @@ namespace SabreTools.Wrappers
                     byte[] startBytes = data.PeekBytes(16);
                     if (startBytes.EqualsExactly(Constants.MagicBytes))
                         break;
-                    else if (startBytes.EqualsExactly(Constants.PregapBytes) && data.Length - data.Position >= 3 * Constants.Sector)
+                    else if (startBytes.EqualsExactly(Constants.PregapBytes) && data.Length - data.Position >= 3 * Constants.SectorSize)
                         data.SeekIfPossible(Constants.SectorSize, SeekOrigin.Current);
                     else
                         return null;

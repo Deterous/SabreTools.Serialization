@@ -61,7 +61,7 @@ namespace SabreTools.Data.Models.PCEngineCDROM
         /// "Specifies the top record of data to load"
         /// </summary>
         /// <remarks>Big-Endian</remarks>
-        public UInt24 GRPBLK { get; set; }
+        public UInt24 GRPBLK { get; set; } = new();
 
         /// <summary>
         /// "Opening Graphic Data Length"
@@ -81,7 +81,7 @@ namespace SabreTools.Data.Models.PCEngineCDROM
         /// "Specifies the top record of data to load"
         /// </summary>
         /// <remarks>Big-Endian</remarks>
-        public UInt24 ADPBLK { get; set; }
+        public UInt24 ADPBLK { get; set; } = new();
 
         /// <summary>
         /// "Opening ADPCM Data Length"
