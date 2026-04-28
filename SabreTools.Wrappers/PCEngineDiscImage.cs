@@ -5,7 +5,7 @@ using SabreTools.Matching;
 
 namespace SabreTools.Wrappers
 {
-    public partial class PCEngineCDROM : WrapperBase<Header>
+    public partial class PCEngineDiscImage : WrapperBase<Header>
     {
         #region Descriptive Properties
 
