@@ -47,7 +47,7 @@ namespace SabreTools.Data.Models.PCEngineCDROM
         /// MPR2-6 (USER AREA, $4000 to $5FFF, ..., $C000 to $DFFF)
         /// MPR7 (BIOS ROM, $E000 to $FFFF)
         /// </summary>
-        public byte[] IPLMPR { get; set; } = byte[5];
+        public byte[] IPLMPR { get; set; } = new byte[5];
 
         /// <summary>
         /// "Opening mode"
