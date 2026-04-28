@@ -117,9 +117,9 @@ namespace SabreTools.Wrappers
 
             // Try to get a PC Engine CDROM wrapper
             // This reads a lot for detection, do this step last
-            var pcEngineCDROMWrapper = PCEngineCDROM.Create(stream);
-            if (pcEngineCDROMWrapper is not null)
-                return pcEngineCDROMWrapper;
+            var pcEngineDiscImageWrapper = PCEngineDiscImage.Create(stream);
+            if (pcEngineDiscImageWrapper is not null)
+                return pcEngineDiscImageWrapper;
 
             // No known filesystems found
             return null;
