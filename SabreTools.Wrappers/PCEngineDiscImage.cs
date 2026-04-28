@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.IO.Extensions;
 using SabreTools.Data.Models.PCEngineCDROM;
 using SabreTools.Matching;
+using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.Wrappers
 {
